@@ -1,0 +1,104 @@
+$font: "Noto Sans KR", sans-serif;
+
+#app {
+  font-family: $font;
+  padding: 2vh 10vw;
+}
+
+h3 {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.explanation {
+  width: 50%;
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .byeongseo {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .supporting-characters {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+
+    .show-all {
+      margin-top: 1rem;
+      summary {
+        cursor: pointer;
+      }
+
+      .char-list {
+        width: 95%;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .lower {
+    margin-top: 1rem;
+    .shift {
+      padding-right: 3%;
+      width: 50%;
+      table {
+        margin-top: 0.6rem;
+      }
+    }
+    .ctrl {
+      padding-right: 3%;
+      width: 50%;
+      table {
+        margin-top: 0.6rem;
+      }
+    }
+  }
+}
+
+textarea {
+  font-family: $font;
+  width: 50%;
+  resize: none;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+code {
+  background-color: lightgray;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: inherit;
+  width: fit-content;
+}
+
+table {
+  border-collapse: collapse;
+  border: 0;
+
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+}
+th,
+td {
+  border: 1px solid #aaa;
+  background-clip: padding-box;
+  scroll-snap-align: start;
+}
+
+.title-sm {
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+}

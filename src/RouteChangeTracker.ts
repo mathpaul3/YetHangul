@@ -8,9 +8,9 @@ const RouteChangeTracker = () => {
 
   // 로컬에서는 기록하지 않음
   useEffect(() => {
-    console.log(window.location.href);
     if (!window.location.href.includes("localhost")) {
-      ReactGA.initialize(import.meta.env.VITE_GA_TRACKING_ID as string);
+      console.log(import.meta.env.VITE_GA_TRACKING_ID as string);
+      ReactGA.initialize(import.meta.env.VITE_GA_TRACKING_ID as string, {});
       setInitialized(true);
     }
   }, []);

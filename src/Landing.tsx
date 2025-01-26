@@ -13,6 +13,7 @@ import {
   JongSungsWithExplanation,
   JungSungsWithExplanation,
 } from "@/variables";
+import ReactGA from "react-ga4";
 
 function Landing() {
   const [text, setText] = useState("");
@@ -21,6 +22,10 @@ function Landing() {
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    ReactGA.event({
+      category: "Input",
+      action: "옛한글 입력",
+    });
     let result = hanguelToYetHanguel(phonemeState, keyState);
     phonemeState.after = (result[0] as string)?.normalize("NFKD") ?? "";
     if (result != "" && result != phonemeState.curKey) {

@@ -14,13 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Env Variables
+        run: |
+          echo -e VITE_GA_TRACKING_ID=${{ secrets.VITE_GA_TRACKING_ID }} >> ".env"
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/Hydrogen
+          cache: yarn
+      - run: yarn
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker Hub login
+      - name: docker hub login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -54,5 +65,4 @@ jobs:
             ${{ secrets.PATH_TO_DOCKER }} run \
             -p ${{ secrets.DOCKER_PORT }}:80 \
             --name ${{ secrets.DOCKER_CONTAINER_NAME }} \
-            -e VITE_GA_TRACKING_ID=${{ secrets.VITE_GA_TRACKING_ID }} \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:v${{ github.run_number }}

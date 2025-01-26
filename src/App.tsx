@@ -18,12 +18,11 @@ import ReactGA from "react-ga";
 const gaTrackingId = import.meta.env.VITE_GA_TRACKING_ID;
 
 // react-ga 초기화 및 debug 사용
-ReactGA.initialize(gaTrackingId, { debug: true });
+ReactGA.initialize(gaTrackingId);
 // 추적하려는 page 설정
 ReactGA.pageview(window.location.pathname);
 
 function App() {
-  console.log(gaTrackingId);
   const [text, setText] = useState("");
   const [phonemeState, _] = useState<PhonemeStateType>(initialPhonemeState);
   const [keyState, __] = useState<KeyStateType>(initialKeyState);
@@ -66,7 +65,6 @@ function App() {
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // console.log(e.key, e.metaKey, e.altKey, e.shiftKey, e.ctrlKey, e.location);
     phonemeState.lastKey = phonemeState.curKey;
     if (["Backspace", "Shift", "Control", "Meta"].includes(e.key)) {
       if (e.key == "Backspace") {

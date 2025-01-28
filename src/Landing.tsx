@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   hanguelToYetHanguel,
   isChoSung,
@@ -58,19 +58,26 @@ function Landing() {
   const [buttonKeyState, setButtonKeyState] = useState<KeyStateType>({
     ...initialKeyState,
   });
+  const [isAndroid, setIsAndroid] = useState<boolean>(false);
   const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (navigator.userAgent.toLowerCase().includes("android")) {
+      setIsAndroid(true);
+    }
+  }, []);
 
   const onChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     char?: string
   ) => {
-    if (!window.location.href.includes("localhost")) {
+    if (!window.location.href.includes("5173")) {
       ReactGA.event({
         category: "Input",
         action: "옛한글 입력",
       });
     }
-
+    if ((char?.length ?? 2) > 1) return;
     phonemeState.lastKey = phonemeState.curKey;
     phonemeState.ago = phonemeState.before;
     phonemeState.before = phonemeState.after;
@@ -82,6 +89,10 @@ function Landing() {
       ref.current?.selectionStart ?? ref.current?.value.length ?? 0;
     let selectionEnd =
       ref.current?.selectionEnd ?? ref.current?.value.length ?? 0;
+    if (isAndroid) {
+      selectionStart -= 1;
+      selectionEnd -= 1;
+    }
 
     let result = hanguelToYetHanguel(phonemeState, {
       leftCtrlKey: keyState.leftCtrlKey || buttonKeyState.leftCtrlKey,
@@ -116,7 +127,6 @@ function Landing() {
             (result[0] as string) +
             prv.slice(selectionEnd)
         );
-        ref.current?.setSelectionRange(selectionStart + 1, selectionEnd + 1);
       } else {
         setText(
           (prv) =>
@@ -252,6 +262,7 @@ function Landing() {
       ref.current?.select();
       return;
     }
+    if (isAndroid) return;
     onChange(e as any, e.key);
   };
 
@@ -518,6 +529,13 @@ function Landing() {
           <textarea
             ref={ref}
             value={text}
+            onChange={(e) => {
+              let key = (e.nativeEvent as InputEvent).data;
+              if (key == null) {
+                key = "Unidentified";
+              }
+              isAndroid && onChange(e, key);
+            }}
             onKeyDown={onKeyDown}
             onKeyUp={onKeyUp}
           />

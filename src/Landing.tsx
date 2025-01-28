@@ -22,12 +22,23 @@ function Landing() {
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    ReactGA.event({
-      category: "Input",
-      action: "옛한글 입력",
-    });
+    if (!window.location.href.includes("localhost")) {
+      ReactGA.event({
+        category: "Input",
+        action: "옛한글 입력",
+      });
+    }
+
+    phonemeState.lastKey = phonemeState.curKey;
+    phonemeState.ago = phonemeState.before;
+    phonemeState.before = phonemeState.after;
+
+    let { data } = e.nativeEvent as InputEvent;
+    phonemeState.curKey = data ?? "";
+
     let result = hanguelToYetHanguel(phonemeState, keyState);
     phonemeState.after = (result[0] as string)?.normalize("NFKD") ?? "";
+
     if (result != "" && result != phonemeState.curKey) {
       if (isJongSung(phonemeState.before) && isJungSung(phonemeState.after)) {
         let chosung_result = hanguelToYetHanguel(
@@ -62,7 +73,6 @@ function Landing() {
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    phonemeState.lastKey = phonemeState.curKey;
     if (["Backspace", "Shift", "Control", "Meta"].includes(e.key)) {
       if (e.key == "Backspace") {
         phonemeState.ago = "";
@@ -75,10 +85,8 @@ function Landing() {
       keyState.rightCtrlKey = e.ctrlKey && e.location == 1;
       keyState.leftShiftKey = e.shiftKey && e.location == 1;
       keyState.rightShiftKey = e.shiftKey && e.location == 2;
+    } else if (e.key == "Unidentified") {
     } else {
-      phonemeState.ago = phonemeState.before;
-      phonemeState.before = phonemeState.after;
-      phonemeState.curKey = e.key;
       if (keyState.leftCtrlKey || keyState.rightCtrlKey) {
         onChange(e as any);
       }
@@ -100,8 +108,6 @@ function Landing() {
         (e.ctrlKey && e.location == 2) || (e.metaKey && e.location == 2);
       keyState.leftShiftKey = e.shiftKey && e.location == 1;
       keyState.rightShiftKey = e.shiftKey && e.location == 2;
-    } else {
-      phonemeState.curKey = e.key;
     }
   };
 
@@ -284,6 +290,7 @@ function Landing() {
           </div>
         </div>
         <textarea
+          id="input"
           ref={ref}
           value={text}
           onChange={onChange}

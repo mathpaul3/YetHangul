@@ -1,8 +1,57 @@
-$font: "Noto Sans KR", sans-serif;
+@font-face {
+  font-family: "NanumBarunGothic-YetHangul";
+  font-weight: 400;
+  src: url("../fonts/NanumBarunGothic-YetHangul.ttf") format("truetype");
+}
+
+$font: "NanumBarunGothic-YetHangul", "Noto Sans KR", sans-serif;
+$deselected-color: #e7eaf6;
+$selected-color: #a2a8d3;
 
 #app {
   font-family: $font;
-  padding: 2vh 10vw;
+}
+
+@media (max-width: 768px) {
+  #app {
+    padding: 2vh 5vw;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .explanation {
+    order: 1;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .input-area {
+    order: 0;
+    width: 100%;
+    height: 40vh;
+    padding: 1rem 0;
+  }
+}
+
+@media (min-width: 769px) {
+  #app {
+    padding: 2vh 10vw;
+  }
+
+  .container {
+    display: flex;
+  }
+
+  .explanation {
+    width: 50%;
+  }
+
+  .input-area {
+    width: 50%;
+  }
 }
 
 h3 {
@@ -20,8 +69,6 @@ h3 {
 }
 
 .explanation {
-  width: 50%;
-
   .title {
     font-size: 1rem;
   }
@@ -68,12 +115,45 @@ h3 {
   }
 }
 
+.button-container {
+  display: flex;
+  height: 1.5rem;
+
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid gray;
+    background-color: inherit;
+    margin-right: 0.3rem;
+    height: fit-content;
+    .text {
+      font-size: 0.8rem;
+      margin: 0px 0px;
+      padding: 2px 0;
+    }
+    .left {
+      margin: 0 0.3rem;
+    }
+    .right {
+      padding-right: 0.1rem;
+    }
+  }
+  .selected {
+    background-color: $selected-color;
+  }
+  .deselected {
+    background-color: $deselected-color;
+  }
+}
+
 textarea {
   font-family: $font;
-  width: 50%;
   resize: none;
   overflow-wrap: anywhere;
   word-break: break-all;
+  width: 100%;
+  height: calc(100% - 1rem);
 }
 
 code {

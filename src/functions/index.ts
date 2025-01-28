@@ -514,6 +514,9 @@ export const hangeulToYetHangeulJungSung = (
       if (prevKey == "\u116D")
         // ᅭ
         return ["\uD7B3", true]; // ힳ
+      if (prevKey == "\u116E")
+        // ᅮ
+        return ["\u118A", true]; // ᆊ
       if (prevKey == "\u1172")
         // ᅲ
         return ["\uD7B7", true]; // ힷ
@@ -545,9 +548,6 @@ export const hangeulToYetHangeulJungSung = (
       if (prevKey == "\u116D")
         // ᅭ
         return ["\u1185", true]; // ᆅ
-      if (prevKey == "\u116E")
-        // ᅮ
-        return ["\u118A", true]; // ᆊ
       if (prevKey == "\u1175")
         // ᅵ
         return ["\uD7BE", true]; // ힾ (ㅣ+ㅒ)
@@ -662,6 +662,9 @@ export const hangeulToYetHangeulJungSung = (
       if (prevKey == "\u1173")
         // ᅳ
         return ["\uD7BC", true]; // ힼ (ㅡ+ㅗ)
+      if (prevKey == "\u1199")
+        // ᆙ
+        return ["\uD7BD", true]; // ힽ (ㅣ+ㅑ+ㅗ)
       if (prevKey == "\u1175")
         // ᅵ
         return ["\u119A", true]; // ᆚ
@@ -713,9 +716,6 @@ export const hangeulToYetHangeulJungSung = (
       if (prevKey == "\u1174")
         // ᅴ
         return ["\u1197", true]; // ᆗ
-      if (prevKey == "\u1199")
-        // ᆙ
-        return ["\uD7BD", true]; // ힽ
       if (prevKey == "\u1175")
         // ᅵ
         return ["\u119B", true]; // ᆛ
@@ -1120,7 +1120,7 @@ export const hangeulToYetHangeulJongSung = (
       if (prevKey == "\u11BA")
         // ᆺ
         return ["\u11BB", true]; // ᆻ
-      if (prevKey == "\u11BC")
+      if (prevKey == "\u11F0")
         // ᆼ
         return ["\u11F1", true]; // ᇱ
       if (prevKey == "\u11C1")
@@ -1229,7 +1229,7 @@ export const hangeulToYetHangeulJongSung = (
         if (prevKey == "\u11BA")
           // ᆺ
           return ["\uD7EE", true]; // ퟮ
-        if (prevKey == "\u11BC")
+        if (prevKey == "\u11F0")
           // ᆼ
           return ["\u11F2", true]; // ᇲ
 

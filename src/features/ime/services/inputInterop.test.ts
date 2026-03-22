@@ -89,10 +89,18 @@ describe('input interop', () => {
   })
 
   it('keeps enter and delete beforeinput flows stable after focus regain', () => {
-    const staleCompositionText = '가'
-
     expect(isLineBreakBeforeInput('insertParagraph', null)).toBe(true)
     expect(isLineBreakBeforeInput('insertLineBreak', null)).toBe(true)
+
+    const initialComposition = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: null,
+    })
+
+    expect(initialComposition).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
 
     expect(
       resolveBeforeInputInterop({
@@ -100,11 +108,11 @@ describe('input interop', () => {
         inputType: 'deleteContentBackward',
         isComposing: false,
         compositionActive: false,
-        recentCommittedText: staleCompositionText,
+        recentCommittedText: initialComposition.nextRecentCommittedText,
       }),
     ).toEqual({
       dispatchText: null,
-      nextRecentCommittedText: staleCompositionText,
+      nextRecentCommittedText: initialComposition.nextRecentCommittedText,
     })
 
     expect(
@@ -113,11 +121,31 @@ describe('input interop', () => {
         inputType: 'insertParagraph',
         isComposing: false,
         compositionActive: false,
-        recentCommittedText: staleCompositionText,
+        recentCommittedText: initialComposition.nextRecentCommittedText,
       }),
     ).toEqual({
       dispatchText: null,
-      nextRecentCommittedText: staleCompositionText,
+      nextRecentCommittedText: initialComposition.nextRecentCommittedText,
+    })
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '간',
+        recentCommittedText: initialComposition.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: null,
+    })
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '간',
+        recentCommittedText: null,
+      }),
+    ).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
     })
   })
 

@@ -11,6 +11,8 @@ import {
   getSelectionBounds,
   insertUnitsAt,
   normalizeSelectionRangeToDocument,
+  moveCaretBackwardUnit,
+  moveCaretForwardUnit,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
@@ -96,6 +98,31 @@ describe('editorUnits', () => {
     expect(afterDelete.units.length).toBeGreaterThan(0)
   })
 
+  it('keeps a long document stable across repeated replacements, delete-backspace cycles, and copy serialization', () => {
+    const units = segmentTextToEditorUnits(
+      '가\n나\n다\n라\n마\n바\n사\n아\n자\n차\n카\n타\n파\n하',
+    )
+    const prefix = units.slice(0, 3)
+    const suffix = units.slice(-3)
+
+    const firstReplacement = replaceSelectionWithUnits(units, { start: 4, end: 10 }, ['가', '\n', '하'])
+    const secondReplacement = replaceSelectionWithUnits(
+      firstReplacement.units,
+      { start: 7, end: 12 },
+      ['마'],
+    )
+    const afterBackspace = deleteBackwardUnit(secondReplacement.units, secondReplacement.caretIndex)
+    const afterDelete = deleteForwardUnit(afterBackspace.units, afterBackspace.caretIndex)
+
+    expect(afterDelete.units.slice(0, 3)).toEqual(prefix)
+    expect(afterDelete.units.slice(-3)).toEqual(suffix)
+    expect(afterDelete.units.join('')).not.toContain('\r')
+    expect(
+      serializeUnits(afterDelete.units, createSelectionRange(0, 3)),
+    ).toBe('가\n나')
+    expect(afterDelete.units.length).toBeGreaterThan(0)
+  })
+
   it('inserts units at a caret position', () => {
     expect(insertUnitsAt(['가', '나'], 1, ['다'])).toEqual(['가', '다', '나'])
   })
@@ -170,6 +197,15 @@ describe('editorUnits', () => {
     })
   })
 
+  it('clamps stale selection replacement bounds to the current document length', () => {
+    expect(
+      replaceSelectionWithUnits(['가', '\n', '나'], { start: 1, end: 5 }, ['하']),
+    ).toEqual({
+      units: ['가', '하'],
+      caretIndex: 2,
+    })
+  })
+
   it('creates normalized selection ranges', () => {
     expect(createSelectionRange(4, 1)).toEqual({ start: 1, end: 4 })
     expect(createSelectionRange(2, 2)).toBeNull()
@@ -207,6 +243,13 @@ describe('editorUnits', () => {
       units: ['가', '나'],
       caretIndex: 1,
     })
+  })
+
+  it('moves caret through units with clamp-safe helpers', () => {
+    expect(moveCaretBackwardUnit(0, 3)).toBe(0)
+    expect(moveCaretBackwardUnit(2, 3)).toBe(1)
+    expect(moveCaretForwardUnit(1, 3)).toBe(2)
+    expect(moveCaretForwardUnit(3, 3)).toBe(3)
   })
 
   it('moves through a newline boundary with backspace and delete in sequence', () => {

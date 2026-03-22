@@ -73,5 +73,26 @@ describe('input interop', () => {
       nextRecentCommittedText: null,
     })
   })
-})
 
+  it('allows the same composition text again after the duplicate marker has been cleared', () => {
+    const consumed = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: '간',
+    })
+
+    expect(consumed).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: null,
+    })
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '간',
+        recentCommittedText: consumed.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+  })
+})

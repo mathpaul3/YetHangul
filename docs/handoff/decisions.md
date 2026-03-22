@@ -172,6 +172,7 @@
 - unit 위의 짧은 클릭은 selection을 남기지 않고 caret 이동으로 처리하고, 실제 drag가 일어났을 때만 selection을 만든다.
 - 극단적 상호작용 시나리오와 대응 전략은 `docs/handoff/extreme-interaction-cases.md`에 별도 정리한다.
 - focus 이탈이나 `visibilitychange`가 발생하면 hardware modifier state, pressed key highlight, drag-in-progress 상태를 초기화한다.
+- editor blur 시에는 조합 중이던 composition buffer를 먼저 document에 commit하고, 그 뒤 hardware interaction state와 recent IME duplicate marker를 초기화한다.
 - selection replacement와 newline unit 삭제는 `editorUnits.ts` helper(`replaceSelectionWithUnits`, `deleteBackwardUnit`, `deleteForwardUnit`)를 기준으로 처리한다.
 
 ## Objective Quality Criteria

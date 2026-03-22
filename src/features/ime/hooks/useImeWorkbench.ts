@@ -135,6 +135,8 @@ export function useImeWorkbench() {
     isDraggingSelectionRef.current = false
     didMoveSelectionRef.current = false
     dragStartUnitIndexRef.current = null
+    compositionActiveRef.current = false
+    recentImeCommitRef.current = null
   }
 
   useEffect(() => {
@@ -626,6 +628,7 @@ export function useImeWorkbench() {
   }
 
   function handleEditorBlur() {
+    commitCompositionToDocument()
     resetHardwareInteractionState()
   }
 

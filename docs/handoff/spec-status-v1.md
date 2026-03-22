@@ -150,6 +150,7 @@
 - 영문/외국어 key는 literal text로 통과시키고, 실제 한글 자모 key value는 엔진으로 보내는 정책 반영
 - `beforeinput`, `compositionstart`, `compositionend`를 부분 연결해서 시스템 IME가 만든 한글 자모/음절을 normalize 후 엔진에 투입하기 시작함
 - `beforeinput` / `compositionend` 중복 commit을 recent text 기반 dedupe로 방어하기 시작함
+- blur 시 조합 중이던 buffer를 document에 commit하고, recent IME duplicate marker를 초기화하도록 보강함
 - `Enter`는 줄바꿈 literal input으로 처리되도록 연결함
 - 여전히 브라우저별 `composition*` 세부 차이와 실제 DOM 편집 surface까지 포함한 end-to-end 검증은 더 필요함
 
@@ -210,7 +211,7 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 88
+- 현재 테스트 수: 89
 
 ## 24. MVP 완료 정의
 

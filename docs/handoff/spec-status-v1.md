@@ -131,6 +131,8 @@
   - `docs/handoff/input-parity-checklist.md`의 modifier 사용감 / auto-repeat / composition / caret-selection 항목이 아직 Partial이다.
 - Done 조건:
   - input-parity-checklist의 on-screen 관련 항목이 모두 Done이 되고, on-screen keyboard의 키 배치/피드백이 hardware와의 체감 차이를 더 이상 유의미하게 만들지 않을 때.
+- Next proof needed:
+  - on-screen modifier, Backspace repeat, Enter, and copy flows that match hardware parity in a cross-browser smoke test.
 
 ## 17. 모바일 자체 자판
 
@@ -143,6 +145,8 @@
   - 터치 중심 환경에서의 조합 안내와 시각적 feedback이 hardware/on-screen parity 수준까지 닿지 않았다.
 - Done 조건:
   - 모바일에서 현재 조합 상태, modifier 상태, 선택/삭제 결과가 명확히 보이고, 작은 화면에서도 60% 배열이 깨지지 않는 상태가 검증되면.
+- Next proof needed:
+  - Mobile and Mobile-Small screenshots or a smoke run that show stable rows, visible state feedback, and no layout collapse.
 
 ## 18. 하드웨어 키보드 감지
 
@@ -155,6 +159,8 @@
   - 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.
 - Done 조건:
   - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
+- Next proof needed:
+  - A platform matrix showing the detected mode for connected and disconnected keyboard cases on desktop/tablet.
 
 ## 19. 입력 이벤트 처리
 
@@ -175,6 +181,8 @@
   - hardware key path와 system IME path를 같은 수준으로 검증하는 회귀 세트가 더 필요하다.
 - Done 조건:
   - 주요 브라우저/OS 조합에서 `keydown`, `beforeinput`, `composition*`가 동일한 편집 결과로 수렴하고, 중복 commit/누락이 재현되지 않으면.
+- Next proof needed:
+  - A cross-browser input matrix covering insert, delete, enter, and composition end behavior.
 
 ## 19-1. 편집기 레이어
 
@@ -195,6 +203,8 @@
   - selection/caret 복사 경로와 브라우저 native selection을 완전히 동일한 수준으로 잠그는 단계는 아직 아니다.
 - Done 조건:
   - click/drag/replace/delete/home-end/newline/copy가 주요 브라우저에서 동일한 단위 모델로 안정화되고, 장문 및 모바일 interaction 회귀가 통과하면.
+- Next proof needed:
+  - A long-document interaction run showing caret, selection, replace, delete, and copy behavior staying stable across multiple edits.
 
 ## 20. 붙여넣기 정규화
 
@@ -265,6 +275,8 @@
   - 운영/배포는 준비되어 있지만, 입력기 본체의 최종 사용감과 브라우저 호환성을 더 잠가야 한다.
 - Done 조건:
   - 위 사용자-facing Partial 항목들이 모두 Done이 되고, spec의 핵심 입력/편집 경로가 주요 브라우저와 기기군에서 재현성 있게 통과하면.
+- Next proof needed:
+  - One end-to-end smoke test per remaining Partial area that passes without manual intervention.
 
 ## 현재 다음 우선순위
 

@@ -20,6 +20,14 @@ function isCompositionInputType(inputType: string) {
   return inputType.includes('Composition') || inputType === 'insertFromComposition'
 }
 
+export function isLineBreakBeforeInput(inputType: string, data: string | null) {
+  if (inputType === 'insertParagraph' || inputType === 'insertLineBreak') {
+    return true
+  }
+
+  return inputType === 'insertText' && (data === '\n' || data === '\r')
+}
+
 export function resolveBeforeInputInterop({
   data,
   inputType,
@@ -77,4 +85,3 @@ export function resolveCompositionEndInterop({
     nextRecentCommittedText: data,
   }
 }
-

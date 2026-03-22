@@ -18,6 +18,7 @@ import {
   resolveTransientModifiersFromKeyboardEvent,
 } from '@/features/ime/services/hardwareKeyboard'
 import {
+  isLineBreakBeforeInput,
   resolveBeforeInputInterop,
   resolveCompositionEndInterop,
 } from '@/features/ime/services/inputInterop'
@@ -533,7 +534,7 @@ export function useImeWorkbench() {
   function handleBeforeInput(event: React.FormEvent<HTMLElement>) {
     const nativeEvent = event.nativeEvent as InputEvent
 
-    if (nativeEvent.inputType === 'insertParagraph') {
+    if (isLineBreakBeforeInput(nativeEvent.inputType, nativeEvent.data)) {
       event.preventDefault()
       handleLiteralInput('\n')
       return

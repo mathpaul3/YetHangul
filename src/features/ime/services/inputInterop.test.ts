@@ -322,6 +322,80 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps composition-end and beforeinput insert surfaces aligned in a small recovered-focus matrix', () => {
+    const recovered = resolveCompositionEndInterop({
+      data: '나',
+      recentCommittedText: null,
+    })
+
+    expect(recovered).toEqual({
+      dispatchText: '나',
+      nextRecentCommittedText: '나',
+    })
+
+    const cases = [
+      {
+        name: 'insertText',
+        decision: resolveBeforeInputInterop({
+          data: '나',
+          inputType: 'insertText',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: recovered.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: '나',
+          nextRecentCommittedText: recovered.nextRecentCommittedText,
+        },
+      },
+      {
+        name: 'insertReplacementText',
+        decision: resolveBeforeInputInterop({
+          data: '나',
+          inputType: 'insertReplacementText',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: recovered.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: '나',
+          nextRecentCommittedText: recovered.nextRecentCommittedText,
+        },
+      },
+      {
+        name: 'insertFromComposition duplicate',
+        decision: resolveBeforeInputInterop({
+          data: '나',
+          inputType: 'insertFromComposition',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: recovered.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: null,
+          nextRecentCommittedText: null,
+        },
+      },
+    ] as const
+
+    for (const testCase of cases) {
+      expect(testCase.decision, testCase.name).toEqual(testCase.expected)
+    }
+
+    expect(
+      resolveBeforeInputInterop({
+        data: '나',
+        inputType: 'insertFromComposition',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: cases[2].decision.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '나',
+      nextRecentCommittedText: '나',
+    })
+  })
+
   it('keeps insertReplacementText stable after focus regain in the same beforeinput contract', () => {
     const committed = resolveCompositionEndInterop({
       data: '간',

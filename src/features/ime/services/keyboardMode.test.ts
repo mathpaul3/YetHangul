@@ -59,6 +59,15 @@ describe('keyboard mode detection', () => {
       expected: 'auto',
     },
     {
+      name: 'prefers auto mode when touch is exposed only through maxTouchPoints',
+      navigator: {
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+        maxTouchPoints: 5,
+      },
+      window: {},
+      expected: 'auto',
+    },
+    {
       name: 'prefers hardware mode for desktop user agents without touch',
       navigator: {
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',

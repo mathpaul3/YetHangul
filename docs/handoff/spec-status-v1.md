@@ -161,6 +161,7 @@
 - 왜 Partial인지:
   - 현재 감지는 user agent와 keyboard event 기반 heuristics에 의존한다.
   - 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.
+  - touch-capable desktop heuristic은 `ontouchstart`와 `maxTouchPoints` 각각에 대한 regression matrix로 일부 검증되었지만, platform/browser coverage는 여전히 제한적이다.
 - Done 조건:
   - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
 - Next proof needed:

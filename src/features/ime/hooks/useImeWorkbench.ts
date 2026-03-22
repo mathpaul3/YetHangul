@@ -234,23 +234,7 @@ export function useImeWorkbench() {
     }
 
     if (symbolId === INPUT_SYMBOL_IDS.BACKSPACE) {
-      if (selectionRangeRef.current) {
-        deleteSelection()
-        return
-      }
-
-      if (compositionUnits.length === 0) {
-        const nextState = deleteBackwardUnit(documentUnitsRef.current, caretIndexRef.current)
-
-        if (
-          nextState.units !== documentUnitsRef.current ||
-          nextState.caretIndex !== caretIndexRef.current
-        ) {
-          documentUnitsRef.current = nextState.units
-          caretIndexRef.current = nextState.caretIndex
-          setDocumentUnits(nextState.units)
-          setCaretIndex(nextState.caretIndex)
-        }
+      if (handleEditorBackspace()) {
         return
       }
     }
@@ -259,6 +243,45 @@ export function useImeWorkbench() {
       deleteSelection()
     }
     dispatch({ type: 'input', symbolId })
+  }
+
+  function handleEditorBackspace() {
+    if (selectionRangeRef.current) {
+      deleteSelection()
+      return true
+    }
+
+    if (compositionUnits.length === 0) {
+      const nextState = deleteBackwardUnit(documentUnitsRef.current, caretIndexRef.current)
+
+      if (
+        nextState.units !== documentUnitsRef.current ||
+        nextState.caretIndex !== caretIndexRef.current
+      ) {
+        documentUnitsRef.current = nextState.units
+        caretIndexRef.current = nextState.caretIndex
+        setDocumentUnits(nextState.units)
+        setCaretIndex(nextState.caretIndex)
+      }
+      return true
+    }
+
+    return false
+  }
+
+  function handleEditorDelete() {
+    if (selectionRangeRef.current) {
+      deleteSelection()
+      return
+    }
+
+    if (compositionUnits.length === 0 && caretIndexRef.current < documentUnitsRef.current.length) {
+      const nextState = deleteForwardUnit(documentUnitsRef.current, caretIndexRef.current)
+      documentUnitsRef.current = nextState.units
+      caretIndexRef.current = nextState.caretIndex
+      setDocumentUnits(nextState.units)
+      setCaretIndex(nextState.caretIndex)
+    }
   }
 
   function clearBackspaceRepeat() {
@@ -516,6 +539,18 @@ export function useImeWorkbench() {
       return
     }
 
+    if (nativeEvent.inputType === 'deleteContentBackward') {
+      event.preventDefault()
+      handleEditorBackspace()
+      return
+    }
+
+    if (nativeEvent.inputType === 'deleteContentForward') {
+      event.preventDefault()
+      handleEditorDelete()
+      return
+    }
+
     const decision = resolveBeforeInputInterop({
       data: nativeEvent.data,
       inputType: nativeEvent.inputType,
@@ -692,11 +727,7 @@ export function useImeWorkbench() {
     ) {
       if (caretIndexRef.current > 0) {
         event.preventDefault()
-        const nextState = deleteBackwardUnit(documentUnitsRef.current, caretIndexRef.current)
-        documentUnitsRef.current = nextState.units
-        caretIndexRef.current = nextState.caretIndex
-        setDocumentUnits(nextState.units)
-        setCaretIndex(nextState.caretIndex)
+        handleEditorBackspace()
       }
       return
     }
@@ -704,11 +735,7 @@ export function useImeWorkbench() {
     if (event.key === 'Delete' && compositionUnits.length === 0 && !selectionRangeRef.current) {
       if (caretIndexRef.current < documentUnitsRef.current.length) {
         event.preventDefault()
-        const nextState = deleteForwardUnit(documentUnitsRef.current, caretIndexRef.current)
-        documentUnitsRef.current = nextState.units
-        caretIndexRef.current = nextState.caretIndex
-        setDocumentUnits(nextState.units)
-        setCaretIndex(nextState.caretIndex)
+        handleEditorDelete()
       }
       return
     }

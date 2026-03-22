@@ -695,4 +695,5 @@ describe('engine', () => {
       expect(covered.has(entry.char)).toBe(true)
     }
   })
+
 })

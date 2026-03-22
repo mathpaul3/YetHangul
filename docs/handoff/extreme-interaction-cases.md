@@ -31,28 +31,33 @@
 - 시나리오:
   1. 여러 음절을 drag로 선택한다.
   2. 바로 자모를 입력하거나 paste한다.
+  3. 선택을 지운 직후 backspace/delete/arrow 이동을 연속으로 수행한다.
 - 위험:
   - 선택 범위가 안 지워진 채 새 조합이 append될 수 있다.
   - selection이 비워졌는데 브라우저 native selection이 남아 복사/붙여넣기 동작이 엇갈릴 수 있다.
+  - selection replacement 직후 caret가 예상 밖 위치로 남아 다음 삭제가 엉뚱한 unit에 작동할 수 있다.
 - 대응:
   - 입력 시작 전 selection이 있으면 항상 먼저 selection delete를 수행한다.
   - native selection은 최대한 제거하고, 자체 selection만 source of truth로 유지한다.
+  - selection replacement 이후에는 caret index를 replacement 끝점에 다시 고정한다.
 - 테스트:
-  - “선택 -> 입력”, “선택 -> 붙여넣기”, “선택 -> 줄바꿈 입력” 회귀 테스트
+  - “선택 -> 입력”, “선택 -> 붙여넣기”, “선택 -> 줄바꿈 입력”, “선택 -> delete/backspace 연속” 회귀 테스트
 
 ## 3. 클릭과 drag의 경계
 
 - 시나리오:
   1. 사용자가 unit 위를 클릭한다.
   2. 클릭인지 drag인지 애매한 아주 짧은 이동이 들어온다.
+  3. 클릭 후 즉시 입력하면 caret만 이동해야 하는데 selection이 남아 있으면 안 된다.
 - 위험:
   - 클릭인데 selection이 생기거나, drag였는데 caret만 이동할 수 있다.
+  - click-only와 drag transition의 판정이 흔들리면 삭제/복사 범위가 예상과 달라질 수 있다.
 - 대응:
   - pointer down에서는 selection을 만들지 않고 anchor만 기록한다.
   - 실제 pointer move/enter가 있었을 때만 selection을 생성한다.
   - 클릭 종료 시 movement가 없으면 caret 이동으로 확정한다.
 - 테스트:
-  - “click only”, “drag one unit”, “drag backwards”를 분리 테스트
+  - “click only”, “drag one unit”, “drag backwards”, “click 후 즉시 입력”을 분리 테스트
 
 ## 4. 조합 버퍼 + selection 확장 충돌
 
@@ -74,14 +79,17 @@
 - 시나리오:
   1. 여러 줄 텍스트가 있다.
   2. 줄 끝/줄 시작에서 `ArrowLeft/Right`, `Backspace`, `Delete`, `Home`, `End`를 누른다.
+  3. 줄 시작에 caret을 둔 뒤 backspace를 누르고 바로 delete를 눌러 같은 경계에서 연속 조작한다.
 - 위험:
   - 줄바꿈이 일반 unit처럼 처리되지 않거나, 반대로 화면상 줄바꿈과 내부 unit 경계가 다르게 보일 수 있다.
   - `Backspace`가 줄 전체를 지우거나, `Delete`가 다음 줄 첫 글자를 건너뛸 수 있다.
+  - 줄 시작/끝에서 연속으로 누를 때 caret가 줄 밖으로 튀는 문제가 생길 수 있다.
 - 대응:
   - newline을 독립 unit으로 유지하되 렌더링은 실제 줄바꿈처럼 보이게 한다.
   - `Home/End`는 현재 줄 기준으로 이동하도록 맞춘다.
+  - `Backspace/Delete`는 newline unit을 다른 unit과 같은 경로로만 지운다.
 - 테스트:
-  - “줄 끝 Backspace”, “줄 시작 Delete”, “newline 양옆 caret 이동” 테스트
+  - “줄 끝 Backspace”, “줄 시작 Delete”, “newline 양옆 caret 이동”, “줄 경계 backspace -> delete 연속” 테스트
 
 ## 6. 방점 + 편집기 상호작용
 

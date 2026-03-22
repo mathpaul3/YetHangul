@@ -121,6 +121,7 @@
 - on-screen modifier는 키보드 배열 안에서 `off -> oneshot -> locked -> off` 순으로 순환되도록 정리됨
 - 하드웨어 `Shift`/`Ctrl` 눌림 상태도 on-screen modifier 시각 상태에 반영됨
 - 하드웨어로 눌린 일반 키도 on-screen keyboard의 대응 keycap에 하이라이트로 반영됨
+- on-screen keyboard pointer interaction이 editor focus를 빼앗지 않도록 조정해서, 하드웨어와 on-screen 입력의 조합 흐름 차이를 줄임
 - meta-row의 modifier 상태 텍스트는 제거됨
 - 세부 레이아웃과 시각적 완성도는 여전히 보강 여지 있음
 

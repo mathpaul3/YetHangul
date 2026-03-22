@@ -174,6 +174,7 @@
 - focus 이탈이나 `visibilitychange`가 발생하면 hardware modifier state, pressed key highlight, drag-in-progress 상태를 초기화한다.
 - editor blur 시에는 조합 중이던 composition buffer를 먼저 document에 commit하고, 그 뒤 hardware interaction state와 recent IME duplicate marker를 초기화한다.
 - selection replacement와 newline unit 삭제는 `editorUnits.ts` helper(`replaceSelectionWithUnits`, `deleteBackwardUnit`, `deleteForwardUnit`)를 기준으로 처리한다.
+- on-screen keyboard의 pointer down은 기본 포커스 이동을 막아서, 내부 버튼 클릭만으로 editor blur/commit이 발생하지 않게 한다.
 
 ## Objective Quality Criteria
 

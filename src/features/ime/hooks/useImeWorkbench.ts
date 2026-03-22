@@ -649,7 +649,13 @@ export function useImeWorkbench() {
     }
   }
 
-  function handleEditorBlur() {
+  function handleEditorBlur(event: React.FocusEvent<HTMLElement>) {
+    const nextFocusedTarget = event.relatedTarget
+
+    if (nextFocusedTarget instanceof Node && event.currentTarget.contains(nextFocusedTarget)) {
+      return
+    }
+
     commitCompositionToDocument()
     resetHardwareInteractionState()
   }

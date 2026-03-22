@@ -106,6 +106,10 @@ export function ImeWorkbench() {
     return pressedVisualKeys[label] ? 'keycap-pressed' : ''
   }
 
+  function preventVirtualKeyboardFocus(event: React.PointerEvent<HTMLElement>) {
+    event.preventDefault()
+  }
+
   return (
     <main
       className="page-shell"
@@ -214,6 +218,7 @@ export function ImeWorkbench() {
                     className={`keycap ${getKeycapClass(digit)}`}
                     key={digit}
                     type="button"
+                    onPointerDown={preventVirtualKeyboardFocus}
                     onClick={() => handleLiteralInput(digit)}
                   >
                     {digit}
@@ -227,6 +232,7 @@ export function ImeWorkbench() {
                       className={`keycap ${getKeycapClass(label)}`}
                       key={label}
                       type="button"
+                      onPointerDown={preventVirtualKeyboardFocus}
                       onClick={() => handleInput(symbolId)}
                     >
                       {label}
@@ -245,6 +251,7 @@ export function ImeWorkbench() {
                         <button
                           className="keycap-cluster-main"
                           type="button"
+                          onPointerDown={preventVirtualKeyboardFocus}
                           onClick={() => handleModifierMainClick(action)}
                         >
                           {label}
@@ -258,6 +265,7 @@ export function ImeWorkbench() {
                       className={`keycap ${getKeycapClass(label)}`}
                       key={label}
                       type="button"
+                      onPointerDown={preventVirtualKeyboardFocus}
                       onClick={() => handleInput(action)}
                     >
                       {label}
@@ -276,6 +284,7 @@ export function ImeWorkbench() {
                         <button
                           className="keycap-cluster-main"
                           type="button"
+                          onPointerDown={preventVirtualKeyboardFocus}
                           onClick={() => handleModifierMainClick(action)}
                         >
                           {label}
@@ -290,6 +299,7 @@ export function ImeWorkbench() {
                         className={`keycap keycap-utility keycap-${action} ${getKeycapClass(label)}`}
                         key={label}
                         type="button"
+                        onPointerDown={preventVirtualKeyboardFocus}
                         onClick={() => handleUtilityInput(action)}
                       >
                         {label}
@@ -302,6 +312,7 @@ export function ImeWorkbench() {
                       className={`keycap keycap-utility ${getKeycapClass(label)}`}
                       key={label}
                       type="button"
+                      onPointerDown={preventVirtualKeyboardFocus}
                       onClick={() => handleInput(INPUT_SYMBOL_IDS.BACKSPACE)}
                     >
                       {label}

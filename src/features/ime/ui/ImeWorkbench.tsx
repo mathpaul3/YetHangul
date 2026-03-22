@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
 import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMode'
 import { useImeWorkbench } from '@/features/ime/hooks/useImeWorkbench'
@@ -48,6 +49,7 @@ const keyboardUtilityRows = {
     ['Space', 'space'],
     ['.', 'period'],
     [';', 'semicolon'],
+    ['Enter', 'enter'],
     ['Backspace', 'backspace'],
   ],
 } as const
@@ -60,6 +62,7 @@ const modifierLabels = {
 } as const
 
 export function ImeWorkbench() {
+  const rootRef = useRef<HTMLElement | null>(null)
   const {
     engineState,
     hardwareModifierState,
@@ -110,8 +113,13 @@ export function ImeWorkbench() {
     event.preventDefault()
   }
 
+  function restoreEditorFocus() {
+    rootRef.current?.focus()
+  }
+
   return (
     <main
+      ref={rootRef}
       className="page-shell"
       onPointerUp={handleSelectionEnd}
       onPointerCancel={handleSelectionEnd}
@@ -219,7 +227,10 @@ export function ImeWorkbench() {
                     key={digit}
                     type="button"
                     onPointerDown={preventVirtualKeyboardFocus}
-                    onClick={() => handleLiteralInput(digit)}
+                    onClick={() => {
+                      handleLiteralInput(digit, digit)
+                      restoreEditorFocus()
+                    }}
                   >
                     {digit}
                   </button>
@@ -233,7 +244,10 @@ export function ImeWorkbench() {
                       key={label}
                       type="button"
                       onPointerDown={preventVirtualKeyboardFocus}
-                      onClick={() => handleInput(symbolId)}
+                      onClick={() => {
+                        handleInput(symbolId, label)
+                        restoreEditorFocus()
+                      }}
                     >
                       {label}
                     </button>
@@ -252,7 +266,10 @@ export function ImeWorkbench() {
                           className="keycap-cluster-main"
                           type="button"
                           onPointerDown={preventVirtualKeyboardFocus}
-                          onClick={() => handleModifierMainClick(action)}
+                          onClick={() => {
+                            handleModifierMainClick(action)
+                            restoreEditorFocus()
+                          }}
                         >
                           {label}
                         </button>
@@ -266,7 +283,10 @@ export function ImeWorkbench() {
                       key={label}
                       type="button"
                       onPointerDown={preventVirtualKeyboardFocus}
-                      onClick={() => handleInput(action)}
+                      onClick={() => {
+                        handleInput(action, label)
+                        restoreEditorFocus()
+                      }}
                     >
                       {label}
                     </button>
@@ -285,7 +305,10 @@ export function ImeWorkbench() {
                           className="keycap-cluster-main"
                           type="button"
                           onPointerDown={preventVirtualKeyboardFocus}
-                          onClick={() => handleModifierMainClick(action)}
+                          onClick={() => {
+                            handleModifierMainClick(action)
+                            restoreEditorFocus()
+                          }}
                         >
                           {label}
                         </button>
@@ -293,14 +316,22 @@ export function ImeWorkbench() {
                     )
                   }
 
-                  if (action === 'space' || action === 'period' || action === 'semicolon') {
+                  if (
+                    action === 'space' ||
+                    action === 'period' ||
+                    action === 'semicolon' ||
+                    action === 'enter'
+                  ) {
                     return (
                       <button
                         className={`keycap keycap-utility keycap-${action} ${getKeycapClass(label)}`}
                         key={label}
                         type="button"
                         onPointerDown={preventVirtualKeyboardFocus}
-                        onClick={() => handleUtilityInput(action)}
+                        onClick={() => {
+                          handleUtilityInput(action)
+                          restoreEditorFocus()
+                        }}
                       >
                         {label}
                       </button>
@@ -313,7 +344,10 @@ export function ImeWorkbench() {
                       key={label}
                       type="button"
                       onPointerDown={preventVirtualKeyboardFocus}
-                      onClick={() => handleInput(INPUT_SYMBOL_IDS.BACKSPACE)}
+                      onClick={() => {
+                        handleInput(INPUT_SYMBOL_IDS.BACKSPACE, label)
+                        restoreEditorFocus()
+                      }}
                     >
                       {label}
                     </button>

@@ -88,6 +88,7 @@ export function useImeWorkbench() {
   const selectionRangeRef = useRef<SelectionRange>(null)
   const compositionActiveRef = useRef(false)
   const recentImeCommitRef = useRef<string | null>(null)
+  const virtualKeyTimeoutsRef = useRef<Record<string, number>>({})
   const selectionAnchorRef = useRef<number | null>(null)
   const isDraggingSelectionRef = useRef(false)
   const didMoveSelectionRef = useRef(false)
@@ -157,6 +158,18 @@ export function useImeWorkbench() {
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      if (typeof window === 'undefined') {
+        return
+      }
+
+      for (const timeoutId of Object.values(virtualKeyTimeoutsRef.current)) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [])
+
   function setHardwareModifier(modifierKey: ModifierKey, pressed: boolean) {
     pressedModifiersRef.current[modifierKey] = pressed
 
@@ -185,7 +198,29 @@ export function useImeWorkbench() {
     })
   }
 
-  function handleInput(symbolId: number) {
+  function flashVirtualKey(label: string) {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    setPressedVisualKey(label, true)
+
+    const existingTimeout = virtualKeyTimeoutsRef.current[label]
+    if (existingTimeout) {
+      window.clearTimeout(existingTimeout)
+    }
+
+    virtualKeyTimeoutsRef.current[label] = window.setTimeout(() => {
+      setPressedVisualKey(label, false)
+      delete virtualKeyTimeoutsRef.current[label]
+    }, 110)
+  }
+
+  function handleInput(symbolId: number, visualKeyLabel?: string) {
+    if (visualKeyLabel) {
+      flashVirtualKey(visualKeyLabel)
+    }
+
     if (symbolId === INPUT_SYMBOL_IDS.BACKSPACE) {
       if (selectionRangeRef.current) {
         deleteSelection()
@@ -214,7 +249,11 @@ export function useImeWorkbench() {
     dispatch({ type: 'input', symbolId })
   }
 
-  function handleLiteralInput(text: string) {
+  function handleLiteralInput(text: string, visualKeyLabel?: string) {
+    if (visualKeyLabel) {
+      flashVirtualKey(visualKeyLabel)
+    }
+
     if (selectionRangeRef.current) {
       deleteSelection()
     }
@@ -307,6 +346,15 @@ export function useImeWorkbench() {
       modifierKey,
       mode: nextMode,
     })
+
+    const labelMap: Record<ModifierKey, string> = {
+      leftCtrl: 'L Ctrl',
+      rightCtrl: 'R Ctrl',
+      leftShift: 'L Shift',
+      rightShift: 'R Shift',
+    }
+
+    flashVirtualKey(labelMap[modifierKey])
   }
 
   function dispatchUnicodeText(text: string) {
@@ -354,9 +402,23 @@ export function useImeWorkbench() {
     await navigator.clipboard.writeText(renderedUnits.slice(bounds.start, bounds.end).join(''))
   }
 
-  function handleUtilityInput(utilityKey: 'space' | 'period' | 'semicolon') {
+  function handleUtilityInput(utilityKey: 'space' | 'period' | 'semicolon' | 'enter') {
+    const utilityLabelMap = {
+      space: 'Space',
+      period: '.',
+      semicolon: ';',
+      enter: 'Enter',
+    } as const
+
+    flashVirtualKey(utilityLabelMap[utilityKey])
+
     if (selectionRangeRef.current) {
       deleteSelection()
+    }
+
+    if (utilityKey === 'enter') {
+      dispatch({ type: 'literalInput', text: '\n' })
+      return
     }
 
     const ctrlActive =

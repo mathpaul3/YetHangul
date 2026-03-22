@@ -122,6 +122,9 @@
 - 하드웨어 `Shift`/`Ctrl` 눌림 상태도 on-screen modifier 시각 상태에 반영됨
 - 하드웨어로 눌린 일반 키도 on-screen keyboard의 대응 keycap에 하이라이트로 반영됨
 - on-screen keyboard pointer interaction이 editor focus를 빼앗지 않도록 조정해서, 하드웨어와 on-screen 입력의 조합 흐름 차이를 줄임
+- on-screen key press도 짧은 pressed highlight를 직접 보여주도록 보강함
+- bottom row에 `Enter`를 추가해 하드웨어와 같은 줄바꿈 경로를 on-screen에서도 제공함
+- on-screen 입력 뒤 editor root로 focus를 되돌려 이후 하드웨어 입력이 자연스럽게 이어지도록 조정함
 - meta-row의 modifier 상태 텍스트는 제거됨
 - 세부 레이아웃과 시각적 완성도는 여전히 보강 여지 있음
 
@@ -242,3 +245,4 @@
 - 4. 모바일 자체 자판의 조합 힌트와 시각 피드백 강화
 - 5. 태블릿/하드웨어 키보드 감지 품질 보강
 - 극단 상호작용 시나리오 목록과 대응 초안은 `docs/handoff/extreme-interaction-cases.md`에 정리함
+- 하드웨어/on-screen 입력 차이 추적은 `docs/handoff/input-parity-checklist.md`에 정리함

@@ -240,6 +240,7 @@
 - 목표 inventory count 125/95/138 검증 테스트 포함
 - target inventory coverage 100%와 missing sample 0건 검증 테스트 포함
 - auxiliary coverage(방점, 채움문자) 100% 검증 테스트 포함
+- ambiguous standalone final canonicalization, final-only primitive exact round-trip, mixed literal+Hangul undo/reparse, compound-final carry/reparse regression 테스트 포함
 - `Ctrl + Shift + ㅎ`, `Ctrl + Shift + ㅏ`, 문맥형 `Shift + ㅁ`, 문맥형 `Ctrl + Space` 테스트 포함
 - `Ctrl + ㅇ + ㅏ + Ctrl + ㅇ -> ᅌᅡᇰ` 회귀 테스트 포함
 - 방점 중첩 무시 및 방점 비허용 문맥 무시 회귀 테스트 포함
@@ -255,7 +256,7 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 117
+- 현재 테스트 수: 124
 
 ## 24. MVP 완료 정의
 

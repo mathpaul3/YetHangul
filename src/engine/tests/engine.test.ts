@@ -269,6 +269,47 @@ describe('engine', () => {
     expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('간')
   })
 
+  it('restores a reparsed compound-final boundary exactly after literal undo', () => {
+    const reparseState = runSequence([
+      INPUT_SYMBOL_IDS.GIYEOK,
+      INPUT_SYMBOL_IDS.A,
+      INPUT_SYMBOL_IDS.BIEUP,
+      INPUT_SYMBOL_IDS.SIOS,
+      INPUT_SYMBOL_IDS.A,
+    ])
+
+    const withLiteral = applyLiteralInput(reparseState, 'X')
+    expect(jamoIdsToUnicode([...withLiteral.committed, ...withLiteral.active.jamoIds])).toBe(
+      '갑사X',
+    )
+
+    const undone = applyInput(withLiteral, INPUT_SYMBOL_IDS.BACKSPACE)
+    expect(jamoIdsToUnicode([...undone.committed, ...undone.active.jamoIds])).toBe('갑사')
+  })
+
+  it('keeps recursive carry plus contextual macro boundaries stable under undo', () => {
+    const reparseState = runSequence([
+      INPUT_SYMBOL_IDS.GIYEOK,
+      INPUT_SYMBOL_IDS.A,
+      INPUT_SYMBOL_IDS.BIEUP,
+      INPUT_SYMBOL_IDS.SIOS,
+      INPUT_SYMBOL_IDS.A,
+    ])
+
+    const macroState = applyInputWithModifiers(
+      reparseState,
+      INPUT_SYMBOL_IDS.MIEUM,
+      { leftShift: true },
+    )
+
+    expect(jamoIdsToUnicode([...macroState.committed, ...macroState.active.jamoIds])).toBe(
+      '갑사ퟠ',
+    )
+
+    const undone = applyInput(macroState, INPUT_SYMBOL_IDS.BACKSPACE)
+    expect(jamoIdsToUnicode([...undone.committed, ...undone.active.jamoIds])).toBe('갑사')
+  })
+
   it('maps ctrl + ieung to old ieung', () => {
     const state = applyInputWithModifiers(
       createInitialEngineState(),

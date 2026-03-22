@@ -161,6 +161,7 @@
 - `Copy All`, `Copy Selection` 버튼을 추가했고, 브라우저 기본 selection은 가능한 한 차단하는 방향으로 정리 중
 - 조합 버퍼 flush와 selection bounds 계산을 `editorUnits.ts` helper로 분리했고, 훅은 snapshot ref 기준으로 caret/document 동기화를 맞추도록 보강함
 - 줄바꿈 unit을 editor surface에서 실제 line break처럼 보이도록 렌더링 보강함
+- unit 위 클릭은 caret 이동, drag일 때만 selection 생성으로 interaction을 보정함
 - caret/selection 관련 실제 사용자 interaction 회귀 테스트는 아직 더 필요함
 
 ## 20. 붙여넣기 정규화

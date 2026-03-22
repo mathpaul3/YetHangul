@@ -88,6 +88,8 @@ export function useImeWorkbench() {
   const recentImeCommitRef = useRef<string | null>(null)
   const selectionAnchorRef = useRef<number | null>(null)
   const isDraggingSelectionRef = useRef(false)
+  const didMoveSelectionRef = useRef(false)
+  const dragStartUnitIndexRef = useRef<number | null>(null)
   const compositionText = useMemo(
     () => jamoIdsToUnicode(getRenderedJamoIds(engineState)),
     [engineState],
@@ -613,11 +615,14 @@ export function useImeWorkbench() {
   function handleSelectionStart(unitIndex: number) {
     commitCompositionToDocument()
     isDraggingSelectionRef.current = true
+    didMoveSelectionRef.current = false
+    dragStartUnitIndexRef.current = unitIndex
     selectionAnchorRef.current = unitIndex
-    selectionRangeRef.current = { start: unitIndex, end: unitIndex + 1 }
+    selectionRangeRef.current = null
     caretIndexRef.current = unitIndex + 1
-    setSelectionRange({ start: unitIndex, end: unitIndex + 1 })
+    setSelectionRange(null)
     setCaretIndex(unitIndex + 1)
+    clearBrowserSelection()
   }
 
   function handleSelectionEnter(unitIndex: number) {
@@ -626,14 +631,17 @@ export function useImeWorkbench() {
     }
 
     const anchor = selectionAnchorRef.current
+    didMoveSelectionRef.current = true
     selectionRangeRef.current = {
       start: Math.min(anchor, unitIndex),
       end: Math.max(anchor + 1, unitIndex + 1),
     }
+    caretIndexRef.current = unitIndex + 1
     setSelectionRange({
       start: Math.min(anchor, unitIndex),
       end: Math.max(anchor + 1, unitIndex + 1),
     })
+    setCaretIndex(unitIndex + 1)
   }
 
   function handleSelectionEnd() {
@@ -642,6 +650,12 @@ export function useImeWorkbench() {
     }
 
     isDraggingSelectionRef.current = false
+    if (!didMoveSelectionRef.current && dragStartUnitIndexRef.current != null) {
+      collapseSelectionTo(dragStartUnitIndexRef.current + 1)
+    }
+
+    didMoveSelectionRef.current = false
+    dragStartUnitIndexRef.current = null
     selectionAnchorRef.current = null
   }
 

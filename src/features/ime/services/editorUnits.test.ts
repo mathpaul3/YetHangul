@@ -320,6 +320,16 @@ describe('editorUnits', () => {
     })
   })
 
+  it('keeps a newline-spanning selection normalized after pointer-cancel cleanup', () => {
+    const draggedSelection = createSelectionRange(1, 4)
+
+    expect(serializeUnits(['가', '\n', '나', '\n', '다'], draggedSelection)).toBe('\n나\n')
+    expect(normalizeSelectionRangeToDocument(draggedSelection, 5)).toEqual({
+      start: 1,
+      end: 4,
+    })
+  })
+
   it('finds the current line start from the caret position', () => {
     expect(getLineStartIndex(['가', '\n', '나', '다'], 0)).toBe(0)
     expect(getLineStartIndex(['가', '\n', '나', '다'], 1)).toBe(0)

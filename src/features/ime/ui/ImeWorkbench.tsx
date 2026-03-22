@@ -84,6 +84,7 @@ export function ImeWorkbench() {
     handleModifierMainPointerEnd,
     handleCaretPlacement,
     handleSelectionEnd,
+    handlePointerCancel,
     handleSelectionEnter,
     handleSelectionStart,
     handleKeyDown,
@@ -143,7 +144,7 @@ export function ImeWorkbench() {
       ref={rootRef}
       className="page-shell"
       onPointerUp={handleSelectionEnd}
-      onPointerCancel={handleSelectionEnd}
+      onPointerCancel={handlePointerCancel}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       onFocus={handleEditorFocus}

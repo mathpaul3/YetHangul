@@ -987,6 +987,11 @@ export function useImeWorkbench() {
     selectionAnchorRef.current = null
   }
 
+  function handlePointerCancel() {
+    handleSelectionEnd()
+    clearNavigationRepeat()
+  }
+
   return {
     caretIndex,
     selectionRange,
@@ -1011,6 +1016,7 @@ export function useImeWorkbench() {
     handleSelectionStart,
     handleSelectionEnter,
     handleSelectionEnd,
+    handlePointerCancel,
     handleKeyDown,
     handleKeyUp,
     handleEditorFocus,

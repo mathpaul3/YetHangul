@@ -20,6 +20,9 @@ import {
   TARGET_INVENTORY_COUNTS,
   TARGET_INVENTORY_COVERAGE,
 } from '@/engine/tables/targetInventory'
+import {
+  BASE_FINAL_TARGET_CHARS,
+} from '@/engine/tables/baseInventoryCoverage'
 import { normalizePastedTextToInputSymbols } from '@/features/ime/services/normalizePaste'
 
 function runSequence(sequence: number[]) {
@@ -30,6 +33,12 @@ function render(sequence: number[]) {
   const state = runSequence(sequence)
   return jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])
 }
+
+function roundTrip(char: string) {
+  return render(normalizeUnicodeToInputSymbols(char))
+}
+
+const MEDIAL_ONLY_OVERLAP_CHARS = new Set(['ᆧ'])
 
 describe('engine', () => {
   it('covers the core ctrl-based consonant shape conversions from the spec', () => {
@@ -621,6 +630,40 @@ describe('engine', () => {
     for (const entry of TARGET_INVENTORY.final) {
       expect(normalizePastedTextToInputSymbols(entry.char).length).toBeGreaterThan(0)
     }
+  })
+
+  it('round-trips every target initial jamo exactly through normalize -> engine -> unicode', () => {
+    for (const entry of TARGET_INVENTORY.initial) {
+      expect(roundTrip(entry.char)).toBe(entry.char)
+    }
+  })
+
+  it('round-trips every target medial jamo exactly through normalize -> engine -> unicode', () => {
+    for (const entry of TARGET_INVENTORY.medial) {
+      expect(roundTrip(entry.char)).toBe(entry.char)
+    }
+  })
+
+  it('canonicalizes standalone base final jamo toward initial-bearing forms', () => {
+    for (const char of BASE_FINAL_TARGET_CHARS) {
+      expect(roundTrip(char)).not.toBe(char)
+    }
+  })
+
+  it('round-trips standalone final-only primitives exactly through normalize -> engine -> unicode', () => {
+    for (const entry of PRIMITIVE_FINALS) {
+      if (BASE_FINAL_TARGET_CHARS.includes(entry.char) || MEDIAL_ONLY_OVERLAP_CHARS.has(entry.char)) {
+        continue
+      }
+      expect(roundTrip(entry.char)).toBe(entry.char)
+    }
+  })
+
+  it('treats tone marks as context-sensitive marks rather than standalone round-trip symbols', () => {
+    expect(normalizeUnicodeToInputSymbols('〮')).toEqual([INPUT_SYMBOL_IDS.TONE_SINGLE])
+    expect(normalizeUnicodeToInputSymbols('〯')).toEqual([INPUT_SYMBOL_IDS.TONE_DOUBLE])
+    expect(roundTrip('〮')).toBe('')
+    expect(roundTrip('〯')).toBe('')
   })
 
   it('promotes every archaic initial rule from sequential input', () => {

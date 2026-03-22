@@ -141,17 +141,30 @@ const CONJOINING_TO_SYMBOL: Record<string, number[]> = {
   '〯': [INPUT_SYMBOL_IDS.TONE_DOUBLE],
 }
 
-const DIRECT_TARGET_TO_SYMBOL: Record<string, number[]> = Object.fromEntries([
-  ...TARGET_INVENTORY.initial
-    .filter((entry) => !BASE_INITIAL_TARGET_CHARS.includes(entry.char))
-    .map((entry) => [entry.char, [INPUT_SYMBOL_IDS[toInventorySymbolName(entry)]]]),
-  ...TARGET_INVENTORY.medial
-    .filter((entry) => !BASE_MEDIAL_TARGET_CHARS.includes(entry.char))
-    .map((entry) => [entry.char, [INPUT_SYMBOL_IDS[toInventorySymbolName(entry)]]]),
-  ...TARGET_INVENTORY.final
-    .filter((entry) => !BASE_FINAL_TARGET_CHARS.includes(entry.char))
-    .map((entry) => [entry.char, [INPUT_SYMBOL_IDS[toInventorySymbolName(entry)]]]),
-])
+const DIRECT_TARGET_TO_SYMBOL: Record<string, number[]> = {}
+
+function registerDirectTargetSymbols(entries: readonly { char: string }[], symbolLookup: (char: string) => number) {
+  for (const entry of entries) {
+    if (DIRECT_TARGET_TO_SYMBOL[entry.char] != null) {
+      continue
+    }
+
+    DIRECT_TARGET_TO_SYMBOL[entry.char] = [symbolLookup(entry.char)]
+  }
+}
+
+registerDirectTargetSymbols(
+  TARGET_INVENTORY.initial.filter((entry) => !BASE_INITIAL_TARGET_CHARS.includes(entry.char)),
+  (char) => INPUT_SYMBOL_IDS[toInventorySymbolName({ kind: 'initial', char, codePoint: char.codePointAt(0) ?? 0, label: `U+${(char.codePointAt(0) ?? 0).toString(16).toUpperCase().padStart(4, '0')}` })],
+)
+registerDirectTargetSymbols(
+  TARGET_INVENTORY.medial.filter((entry) => !BASE_MEDIAL_TARGET_CHARS.includes(entry.char)),
+  (char) => INPUT_SYMBOL_IDS[toInventorySymbolName({ kind: 'medial', char, codePoint: char.codePointAt(0) ?? 0, label: `U+${(char.codePointAt(0) ?? 0).toString(16).toUpperCase().padStart(4, '0')}` })],
+)
+registerDirectTargetSymbols(
+  TARGET_INVENTORY.final.filter((entry) => !BASE_FINAL_TARGET_CHARS.includes(entry.char)),
+  (char) => INPUT_SYMBOL_IDS[toInventorySymbolName({ kind: 'final', char, codePoint: char.codePointAt(0) ?? 0, label: `U+${(char.codePointAt(0) ?? 0).toString(16).toUpperCase().padStart(4, '0')}` })],
+)
 
 const S_BASE = 0xac00
 const L_BASE = 0x1100
@@ -198,13 +211,13 @@ export function normalizeUnicodeToInputSymbols(text: string) {
       continue
     }
 
-    if (CONJOINING_TO_SYMBOL[char] != null) {
-      normalized.push(...CONJOINING_TO_SYMBOL[char])
+    if (DIRECT_TARGET_TO_SYMBOL[char] != null) {
+      normalized.push(...DIRECT_TARGET_TO_SYMBOL[char])
       continue
     }
 
-    if (DIRECT_TARGET_TO_SYMBOL[char] != null) {
-      normalized.push(...DIRECT_TARGET_TO_SYMBOL[char])
+    if (CONJOINING_TO_SYMBOL[char] != null) {
+      normalized.push(...CONJOINING_TO_SYMBOL[char])
       continue
     }
 
@@ -222,4 +235,3 @@ export function normalizeUnicodeToInputSymbols(text: string) {
 
   return normalized
 }
-

@@ -41,6 +41,7 @@ export const STATE_IDS = Object.freeze({
   INITIAL_MEDIAL: 3,
   INITIAL_MEDIAL_FINAL: 4,
   TONE_ATTACHED: 5,
+  FINAL_ONLY: 6,
 } as const)
 
 function register(
@@ -153,6 +154,13 @@ export function createTransitionMap(): TransitionMap {
     register(map, STATE_IDS.TONE_ATTACHED, symbolId, {
       nextStateId: STATE_IDS.INITIAL_ONLY,
       op: 'commit_and_restart',
+    })
+  }
+
+  for (const symbolId of DIRECT_FINAL_SYMBOL_IDS) {
+    register(map, STATE_IDS.EMPTY, symbolId, {
+      nextStateId: STATE_IDS.FINAL_ONLY,
+      op: 'append_final',
     })
   }
 

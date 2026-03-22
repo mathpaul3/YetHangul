@@ -126,7 +126,11 @@
 - on-screen 입력 뒤 editor root로 focus를 되돌려 이후 하드웨어 입력이 자연스럽게 이어지도록 조정함
 - on-screen `Backspace`는 long press repeat를 지원해 하드웨어 auto-repeat와의 차이를 일부 줄임
 - meta-row의 modifier 상태 텍스트는 제거됨
-- 세부 레이아웃과 시각적 완성도는 여전히 보강 여지 있음
+- 왜 Partial인지:
+  - 기능적 경로는 대부분 맞췄지만, on-screen modifier 사용감과 utility key parity가 아직 hardware parity와 완전히 일치하지 않는다.
+  - `docs/handoff/input-parity-checklist.md`의 modifier 사용감 / auto-repeat / composition / caret-selection 항목이 아직 Partial이다.
+- Done 조건:
+  - input-parity-checklist의 on-screen 관련 항목이 모두 Done이 되고, on-screen keyboard의 키 배치/피드백이 hardware와의 체감 차이를 더 이상 유의미하게 만들지 않을 때.
 
 ## 17. 모바일 자체 자판
 
@@ -134,7 +138,11 @@
 - 모바일 우선 자체 자판이 두벌식 QWERTY 한글 배열에 가깝게 재배치됨
 - `PC / Tablet / Mobile / Mobile-Small` 4단계 media query로 재정리함
 - 60% 키보드 줄 배열 자체는 유지하고, 폭/간격/패딩만 줄이는 방식으로 레이아웃 붕괴를 완화함
-- 조합 힌트와 더 세밀한 active modifier 피드백은 아직 부족
+- 왜 Partial인지:
+  - 레이아웃과 기본 입력은 갖췄지만, 모바일에서 조합 힌트와 active modifier 피드백이 아직 충분히 명시적이지 않다.
+  - 터치 중심 환경에서의 조합 안내와 시각적 feedback이 hardware/on-screen parity 수준까지 닿지 않았다.
+- Done 조건:
+  - 모바일에서 현재 조합 상태, modifier 상태, 선택/삭제 결과가 명확히 보이고, 작은 화면에서도 60% 배열이 깨지지 않는 상태가 검증되면.
 
 ## 18. 하드웨어 키보드 감지
 
@@ -142,7 +150,11 @@
 - user agent 기반 선호 모드와 keyboard event adapter는 구현
 - 좌/우 Ctrl/Shift 상태는 keydown/keyup 기반으로 추적
 - blur / visibilitychange 시 stuck modifier 방지를 위한 hardware state reset을 추가함
-- 실제 연결 감지와 환경별 신뢰도 높은 판정은 미완료
+- 왜 Partial인지:
+  - 현재 감지는 user agent와 keyboard event 기반 heuristics에 의존한다.
+  - 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.
+- Done 조건:
+  - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
 
 ## 19. 입력 이벤트 처리
 
@@ -158,7 +170,11 @@
 - `beforeinput`의 `insertParagraph`도 editor-layer 줄바꿈 경로로 연결함
 - blur 시 조합 중이던 buffer를 document에 commit하고, recent IME duplicate marker를 초기화하도록 보강함
 - `Enter`는 줄바꿈 literal input으로 처리되도록 연결함
-- 여전히 브라우저별 `composition*` 세부 차이와 실제 DOM 편집 surface까지 포함한 end-to-end 검증은 더 필요함
+- 왜 Partial인지:
+  - `beforeinput` / `composition*` 경로는 연결했지만, 브라우저별 실제 DOM surface 차이까지 포괄하는 end-to-end 안정성은 아직 충분히 잠기지 않았다.
+  - hardware key path와 system IME path를 같은 수준으로 검증하는 회귀 세트가 더 필요하다.
+- Done 조건:
+  - 주요 브라우저/OS 조합에서 `keydown`, `beforeinput`, `composition*`가 동일한 편집 결과로 수렴하고, 중복 commit/누락이 재현되지 않으면.
 
 ## 19-1. 편집기 레이어
 
@@ -174,7 +190,11 @@
 - unit 위 클릭은 caret 이동, drag일 때만 selection 생성으로 interaction을 보정함
 - selection replacement와 Backspace/Delete의 newline unit 처리도 helper 기반으로 정리함
 - on-screen `Backspace`도 하드웨어 `Backspace`와 같은 editor-layer 삭제 경로를 타도록 수정함
-- caret/selection 관련 실제 사용자 interaction 회귀 테스트는 아직 더 필요함
+- 왜 Partial인지:
+  - caret/selection의 핵심 편집 흐름은 동작하지만, 장문 편집과 모바일 touch selection 같은 실제 사용자 interaction edge case가 아직 남아 있다.
+  - selection/caret 복사 경로와 브라우저 native selection을 완전히 동일한 수준으로 잠그는 단계는 아직 아니다.
+- Done 조건:
+  - click/drag/replace/delete/home-end/newline/copy가 주요 브라우저에서 동일한 단위 모델로 안정화되고, 장문 및 모바일 interaction 회귀가 통과하면.
 
 ## 20. 붙여넣기 정규화
 
@@ -240,6 +260,11 @@
   - 모바일 자판의 실사용 완성도
   - paste/composition/input 이벤트 완성도
   - `Shift + ㅁ` 같은 macro 규칙 정제
+- 왜 Partial인지:
+  - 섹션 16/17/18/19/19-1에 남아 있는 사용자-facing parity와 DOM/event edge case가 아직 MVP 수준의 최종 안정성에 도달하지 않았다.
+  - 운영/배포는 준비되어 있지만, 입력기 본체의 최종 사용감과 브라우저 호환성을 더 잠가야 한다.
+- Done 조건:
+  - 위 사용자-facing Partial 항목들이 모두 Done이 되고, spec의 핵심 입력/편집 경로가 주요 브라우저와 기기군에서 재현성 있게 통과하면.
 
 ## 현재 다음 우선순위
 

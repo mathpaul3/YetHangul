@@ -28,6 +28,18 @@ describe('keyboard mode detection', () => {
     expect(detectPreferredKeyboardMode()).toBe('auto')
   })
 
+  it('prefers auto mode for touch-capable non-mobile devices', () => {
+    vi.stubGlobal('navigator', {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+      maxTouchPoints: 5,
+    })
+    vi.stubGlobal('window', {
+      ontouchstart: () => undefined,
+    })
+
+    expect(detectPreferredKeyboardMode()).toBe('auto')
+  })
+
   it('prefers hardware mode for desktop user agents', () => {
     vi.stubGlobal('navigator', {
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',

@@ -76,6 +76,7 @@ export function ImeWorkbench() {
     clearBackspaceRepeat,
     handleLiteralInput,
     handleUtilityInput,
+    handleNavigationInput,
     handleModifierMainClick,
     handleCaretPlacement,
     handleSelectionEnd,
@@ -285,6 +286,27 @@ export function ImeWorkbench() {
                   ))}
                 </div>
               ))}
+              <div className="keyboard-row keyboard-row-nav">
+                {[
+                  ['←', 'arrowLeft'],
+                  ['→', 'arrowRight'],
+                  ['Home', 'home'],
+                  ['End', 'end'],
+                ].map(([label, direction]) => (
+                  <button
+                    className={`keycap keycap-utility ${getKeycapClass(label)}`}
+                    key={label}
+                    type="button"
+                    onPointerDown={preventVirtualKeyboardFocus}
+                    onClick={() => {
+                      handleNavigationInput(direction as 'arrowLeft' | 'arrowRight' | 'home' | 'end')
+                      restoreEditorFocus()
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
               <div className="keyboard-row keyboard-row-shift">
                 {keyboardUtilityRows.shift.map(([label, action]) => {
                   if (action === 'leftShift' || action === 'rightShift') {

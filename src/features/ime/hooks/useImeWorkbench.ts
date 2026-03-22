@@ -33,6 +33,8 @@ import {
   getLineEndIndex,
   getLineStartIndex,
   insertUnitsAt,
+  moveCaretBackwardUnit,
+  moveCaretForwardUnit,
   normalizeSelectionRangeToDocument,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
@@ -550,6 +552,68 @@ export function useImeWorkbench() {
     })
   }
 
+  function isShiftActive() {
+    return (
+      engineState.modifierState.leftShift !== 'off' ||
+      engineState.modifierState.rightShift !== 'off' ||
+      hardwareModifierState.leftShift === true ||
+      hardwareModifierState.rightShift === true
+    )
+  }
+
+  function handleNavigationInput(direction: 'arrowLeft' | 'arrowRight' | 'home' | 'end') {
+    const utilityLabelMap = {
+      arrowLeft: '←',
+      arrowRight: '→',
+      home: 'Home',
+      end: 'End',
+    } as const
+
+    flashVirtualKey(utilityLabelMap[direction])
+    commitCompositionToDocument()
+
+    const flushState = {
+      caretIndex: caretIndexRef.current,
+      unitCount: documentUnitsRef.current.length,
+    }
+
+    if (direction === 'arrowLeft' || direction === 'arrowRight') {
+      if (!isShiftActive()) {
+        const bounds = getSelectionBounds(selectionRangeRef.current)
+
+        if (bounds) {
+          collapseSelectionTo(direction === 'arrowLeft' ? bounds.start : bounds.end)
+          return
+        }
+      }
+
+      const nextCaretIndex =
+        direction === 'arrowLeft'
+          ? moveCaretBackwardUnit(flushState.caretIndex, flushState.unitCount)
+          : moveCaretForwardUnit(flushState.caretIndex, flushState.unitCount)
+
+      if (isShiftActive()) {
+        extendSelectionTo(nextCaretIndex)
+        return
+      }
+
+      collapseSelectionTo(nextCaretIndex)
+      return
+    }
+
+    const targetIndex =
+      direction === 'home'
+        ? getLineStartIndex(documentUnitsRef.current, flushState.caretIndex)
+        : getLineEndIndex(documentUnitsRef.current, flushState.caretIndex)
+
+    if (isShiftActive()) {
+      extendSelectionTo(targetIndex)
+      return
+    }
+
+    collapseSelectionTo(targetIndex)
+  }
+
   function handlePaste(event: React.ClipboardEvent<HTMLElement>) {
     const text = event.clipboardData.getData('text/plain')
     const hasSupportedChars = [...text].some((char) => normalizeUnicodeToInputSymbols(char).length > 0)
@@ -631,71 +695,25 @@ export function useImeWorkbench() {
 
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
-      const flushState = commitCompositionToDocument()
-      const currentIndex = flushState.caretIndex
-      const unitCount = flushState.unitCount
-
-      if (event.shiftKey) {
-        extendSelectionTo(clampCaretIndex(currentIndex - 1, unitCount))
-        return
-      }
-
-      const bounds = getSelectionBounds(selectionRangeRef.current)
-
-      if (bounds) {
-        collapseSelectionTo(bounds.start)
-        return
-      }
-
-      caretIndexRef.current = clampCaretIndex(currentIndex - 1, unitCount)
-      setCaretIndex(clampCaretIndex(currentIndex - 1, unitCount))
+      handleNavigationInput('arrowLeft')
       return
     }
 
     if (event.key === 'ArrowRight') {
       event.preventDefault()
-      const flushState = commitCompositionToDocument()
-      const currentIndex = flushState.caretIndex
-      const unitCount = flushState.unitCount
-
-      if (event.shiftKey) {
-        extendSelectionTo(clampCaretIndex(currentIndex + 1, unitCount))
-        return
-      }
-
-      const bounds = getSelectionBounds(selectionRangeRef.current)
-
-      if (bounds) {
-        collapseSelectionTo(bounds.end)
-        return
-      }
-
-      caretIndexRef.current = clampCaretIndex(currentIndex + 1, unitCount)
-      setCaretIndex(clampCaretIndex(currentIndex + 1, unitCount))
+      handleNavigationInput('arrowRight')
       return
     }
 
     if (event.key === 'Home') {
       event.preventDefault()
-      const flushState = commitCompositionToDocument()
-      const targetIndex = getLineStartIndex(documentUnitsRef.current, flushState.caretIndex)
-      if (event.shiftKey) {
-        extendSelectionTo(targetIndex)
-      } else {
-        collapseSelectionTo(targetIndex)
-      }
+      handleNavigationInput('home')
       return
     }
 
     if (event.key === 'End') {
       event.preventDefault()
-      const flushState = commitCompositionToDocument()
-      const targetIndex = getLineEndIndex(documentUnitsRef.current, flushState.caretIndex)
-      if (event.shiftKey) {
-        extendSelectionTo(targetIndex)
-      } else {
-        collapseSelectionTo(targetIndex)
-      }
+      handleNavigationInput('end')
       return
     }
 
@@ -908,6 +926,7 @@ export function useImeWorkbench() {
     clearBackspaceRepeat,
     handleLiteralInput,
     handleUtilityInput,
+    handleNavigationInput,
     handleModifierMainClick,
     handleCaretPlacement,
     handleSelectionStart,

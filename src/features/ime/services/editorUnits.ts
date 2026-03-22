@@ -156,7 +156,7 @@ export function replaceSelectionWithUnits(
   selectionRange: UnitSelectionRange,
   inserted: string[],
 ) {
-  const bounds = getSelectionBounds(selectionRange)
+  const bounds = normalizeSelectionRangeToDocument(selectionRange, units.length)
 
   if (bounds == null) {
     return {
@@ -257,6 +257,14 @@ export function deleteForwardUnit(
     units: deleteUnitRange(units, caretIndex, caretIndex + 1),
     caretIndex,
   }
+}
+
+export function moveCaretBackwardUnit(caretIndex: number, unitCount: number) {
+  return clampCaretIndex(caretIndex - 1, unitCount)
+}
+
+export function moveCaretForwardUnit(caretIndex: number, unitCount: number) {
+  return clampCaretIndex(caretIndex + 1, unitCount)
 }
 
 export function getLineStartIndex(

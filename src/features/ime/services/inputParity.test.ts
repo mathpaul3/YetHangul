@@ -36,8 +36,10 @@ function createKeyboardStub({
 function renderFromHardwareSequence(
   sequence: Array<{
     key: string
+    code?: string
     ctrlKey?: boolean
     shiftKey?: boolean
+    location?: number
   }>,
 ) {
   let state = createInitialEngineState()
@@ -45,8 +47,10 @@ function renderFromHardwareSequence(
   for (const step of sequence) {
     const event = createKeyboardStub({
       key: step.key,
+      code: step.code,
       ctrlKey: step.ctrlKey,
       shiftKey: step.shiftKey,
+      location: step.location,
     })
     const symbolId = resolveInputSymbolFromKeyboardEvent(event)
 
@@ -70,8 +74,10 @@ function renderFromHardwareSequence(
 function renderFromOnscreenSequence(
   sequence: Array<{
     key: string
+    code?: string
     ctrlKey?: boolean
     shiftKey?: boolean
+    location?: number
   }>,
 ) {
   let state = createInitialEngineState()
@@ -79,8 +85,10 @@ function renderFromOnscreenSequence(
   for (const step of sequence) {
     const event = createKeyboardStub({
       key: step.key,
+      code: step.code,
       ctrlKey: step.ctrlKey,
       shiftKey: step.shiftKey,
+      location: step.location,
     })
     const symbolId = resolveInputSymbolFromKeyboardEvent(event)
 
@@ -161,26 +169,51 @@ describe('input parity', () => {
       name: string
       sequence: Array<{
         key: string
+        code?: string
         ctrlKey?: boolean
         shiftKey?: boolean
+        location?: number
       }>
     }> = [
       {
         name: 'simple syllable',
-        sequence: [{ key: 'ㄱ' }, { key: 'ㅏ' }, { key: 'ㄴ' }],
+        sequence: [
+          { key: 'ㄱ', code: 'KeyR' },
+          { key: 'ㅏ', code: 'KeyK' },
+          { key: 'ㄴ', code: 'KeyS' },
+        ],
       },
       {
         name: 'newline and backspace boundary',
-        sequence: [{ key: 'ㄱ' }, { key: 'ㅏ' }, { key: '\n' }, { key: 'ㄴ' }, { key: 'ㅏ' }],
+        sequence: [
+          { key: 'ㄱ', code: 'KeyR' },
+          { key: 'ㅏ', code: 'KeyK' },
+          { key: '\n', code: 'Enter' },
+          { key: 'ㄴ', code: 'KeyS' },
+          { key: 'ㅏ', code: 'KeyK' },
+        ],
       },
       {
         name: 'modifier filler flow',
         sequence: [
-          { key: 'ㄱ' },
-          { key: ' ', ctrlKey: true },
-          { key: 'ㅏ' },
-          { key: '.' , ctrlKey: true },
-          { key: 'ㄴ' },
+          { key: 'ㄱ', code: 'KeyR' },
+          { key: ' ', code: 'Space', ctrlKey: true, location: 0 },
+          { key: 'ㅏ', code: 'KeyK' },
+          { key: '.', code: 'Period', ctrlKey: true, location: 0 },
+          { key: 'ㄴ', code: 'KeyS' },
+        ],
+      },
+      {
+        name: 'cross-browser surface metadata',
+        sequence: [
+          { key: 'ㄴ', code: 'KeyW', location: 0 },
+          { key: 'ㄱ', code: 'KeyR', location: 0 },
+          { key: 'ㅏ', code: 'KeyK', location: 0 },
+          { key: 'ㅏ', code: 'KeyK', location: 0 },
+          { key: 'ㅊ', code: 'KeyC', location: 0 },
+          { key: '\n', code: 'Enter', location: 0 },
+          { key: 'ㄱ', code: 'KeyA', location: 3 },
+          { key: 'ㅏ', code: 'KeyK', location: 3 },
         ],
       },
     ]

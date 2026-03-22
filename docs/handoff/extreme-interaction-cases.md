@@ -210,6 +210,7 @@
   - 현재는 desktop/tablet interaction을 먼저 기준으로 잡고, 모바일은 별도 정책이 필요하다.
 - 테스트:
   - viewport 기준으로 interaction policy를 분기하는 경우 E2E 수준 테스트 필요
+  - 현재 `editorUnits.test.ts`에 touch-like drag selection을 copy/replacement/delete 흐름으로 고정하는 regression이 추가됨
 
 ## 14. 붙여넣기 문자열에 줄바꿈/조합용 자모/완성형이 섞인 경우
 
@@ -245,6 +246,7 @@
   - selection copy / button copy 결과 일치 테스트
   - blur/focus 이후 같은 selection을 다시 복사했을 때 결과가 같은지 테스트
   - repeated copy flow가 같은 selection serialization을 유지하는지 테스트
+  - 현재 `editorUnits.test.ts`에 touch-like drag selection이 blur/focus 이후에도 같은 copy serialization을 유지하고, replacement 뒤 delete/backspace로 이어져도 안정적인 regression이 추가됨
 
 ## 16. 입력 도중 focus 이탈
 
@@ -334,6 +336,7 @@
   - 현재 `keyboardMode.test.ts`와 `inputParity.test.ts`에 mode detection 및 hardware/onscreen parity 회귀가 추가됨
   - enter/backspace parity after a selection-like edit sequence도 테스트로 고정됨
   - small parity matrix with filler / newline / backspace-like edits도 테스트로 고정됨
+  - cross-browser surface metadata가 달라져도 같은 editing sequence가 같은 output으로 수렴하는 regression이 `inputParity.test.ts`에 추가됨
 
 ## 21. native selection / clipboard serialization 경계
 

@@ -78,6 +78,33 @@ describe('editorUnits', () => {
     expect(secondCopy).toBe(firstCopy)
   })
 
+  it('keeps touch-like drag selection stable across copy, replacement, and follow-up delete-backspace', () => {
+    const units = segmentTextToEditorUnits('가\n나\n다\n라')
+    const draggedSelection = createSelectionRange(5, 1)
+    const firstCopy = serializeUnits(units, draggedSelection)
+    const blurredSelection = createSelectionRange(1, 5)
+
+    expect(firstCopy).toBe('\n나\n다')
+    expect(serializeUnits(units, blurredSelection)).toBe(firstCopy)
+
+    const replaced = replaceSelectionWithUnits(units, draggedSelection, ['하'])
+
+    expect(replaced).toEqual({
+      units: ['가', '하', '\n', '라'],
+      caretIndex: 2,
+    })
+
+    expect(deleteBackwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가', '\n', '라'],
+      caretIndex: 1,
+    })
+
+    expect(deleteForwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가', '하', '라'],
+      caretIndex: 2,
+    })
+  })
+
   it('keeps a long multi-line document stable across replacement and boundary deletes', () => {
     const units = segmentTextToEditorUnits(
       '가\n나\n다\n라\n마\n바\n사\n아\n자\n차\n카\n타',

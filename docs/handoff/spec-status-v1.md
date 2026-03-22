@@ -185,7 +185,7 @@
 - Done 조건:
   - 주요 브라우저/OS 조합에서 `keydown`, `beforeinput`, `composition*`가 동일한 편집 결과로 수렴하고, 중복 commit/누락이 재현되지 않으면.
 - Next proof needed:
-  - A cross-browser input matrix covering insert, delete, enter, and composition-end behavior.
+  - A cross-browser input matrix covering insert, delete, enter, focus-regain, and composition-end behavior.
 
 ## 19-1. 편집기 레이어
 
@@ -282,12 +282,14 @@
 - Done 조건:
   - 위 사용자-facing Partial 항목들이 모두 Done이 되고, spec의 핵심 입력/편집 경로가 주요 브라우저와 기기군에서 재현성 있게 통과하면.
 - Next proof needed:
-  - One end-to-end smoke test per remaining Partial area that passes without manual intervention.
+  - One smoke test for each remaining Partial area: on-screen parity, mobile parity, hardware detection, input events, and editor-layer stability.
 
 ## 현재 다음 우선순위
 
 - 1. composition 이벤트 처리의 실제 DOM surface 검증 넓히기
 - 2. caret/selection editor-layer 회귀 테스트를 더 늘리기
+- 3. on-screen / mobile parity smoke coverage를 16/17 기준으로 고정하기
+- 4. hardware detection matrix와 focus-regain input regression을 18/19 기준으로 고정하기
 - 3. 실제 사용자 interaction 기준 회귀 테스트를 더 늘리기
 - 4. 모바일 자체 자판의 조합 힌트와 시각 피드백 강화
 - 5. 태블릿/하드웨어 키보드 감지 품질 보강

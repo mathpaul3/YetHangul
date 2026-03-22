@@ -197,6 +197,30 @@ describe('editorUnits', () => {
     })
   })
 
+  it('keeps selection replacement followed by enter and delete stable across the same boundary', () => {
+    const replaced = replaceSelectionWithUnits(
+      ['가', '\n', '나', '다'],
+      { start: 1, end: 3 },
+      ['마'],
+    )
+
+    const afterEnter = insertUnitsAt(replaced.units, replaced.caretIndex, ['\n'])
+
+    expect(afterEnter).toEqual(['가', '마', '\n', '다'])
+
+    const afterBackspace = deleteBackwardUnit(afterEnter, 3)
+
+    expect(afterBackspace).toEqual({
+      units: ['가', '마', '다'],
+      caretIndex: 2,
+    })
+
+    expect(deleteForwardUnit(afterBackspace.units, afterBackspace.caretIndex)).toEqual({
+      units: ['가', '마'],
+      caretIndex: 2,
+    })
+  })
+
   it('clamps stale selection replacement bounds to the current document length', () => {
     expect(
       replaceSelectionWithUnits(['가', '\n', '나'], { start: 1, end: 5 }, ['하']),

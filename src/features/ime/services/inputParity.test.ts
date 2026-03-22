@@ -114,4 +114,18 @@ describe('input parity', () => {
     expect(hardware).toBe('ᄓᅡᅟᅡᆾ\n가')
     expect(onscreen).toBe(hardware)
   })
+
+  it('keeps enter and backspace parity aligned between hardware and onscreen paths after a selection-like edit sequence', () => {
+    const hardware = renderFromHardwareSequence([
+      { key: 'ㄱ' },
+      { key: 'ㅏ' },
+      { key: '\n' },
+      { key: 'ㄴ' },
+      { key: 'ㅏ' },
+    ])
+    const onscreen = renderFromOnscreenSequence(['ㄱ', 'ㅏ', '\n', 'ㄴ', 'ㅏ'])
+
+    expect(hardware).toBe('가\n나')
+    expect(onscreen).toBe(hardware)
+  })
 })

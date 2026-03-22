@@ -149,6 +149,54 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps focus-regain delete and enter flows from blocking a fresh composition session', () => {
+    const committed = resolveCompositionEndInterop({
+      data: '가',
+      recentCommittedText: null,
+    })
+
+    expect(committed).toEqual({
+      dispatchText: '가',
+      nextRecentCommittedText: '가',
+    })
+
+    const deleteAfterFocusRegain = resolveBeforeInputInterop({
+      data: null,
+      inputType: 'deleteContentBackward',
+      isComposing: false,
+      compositionActive: false,
+      recentCommittedText: committed.nextRecentCommittedText,
+    })
+
+    expect(deleteAfterFocusRegain).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: committed.nextRecentCommittedText,
+    })
+
+    const enterAfterFocusRegain = resolveBeforeInputInterop({
+      data: null,
+      inputType: 'insertParagraph',
+      isComposing: false,
+      compositionActive: false,
+      recentCommittedText: deleteAfterFocusRegain.nextRecentCommittedText,
+    })
+
+    expect(enterAfterFocusRegain).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: deleteAfterFocusRegain.nextRecentCommittedText,
+    })
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '나',
+        recentCommittedText: enterAfterFocusRegain.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '나',
+      nextRecentCommittedText: '나',
+    })
+  })
+
   it('consumes duplicate beforeinput emitted after composition commit', () => {
     expect(
       resolveBeforeInputInterop({

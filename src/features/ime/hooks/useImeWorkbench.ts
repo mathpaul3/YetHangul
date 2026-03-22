@@ -186,6 +186,28 @@ export function useImeWorkbench() {
   }
 
   function handleInput(symbolId: number) {
+    if (symbolId === INPUT_SYMBOL_IDS.BACKSPACE) {
+      if (selectionRangeRef.current) {
+        deleteSelection()
+        return
+      }
+
+      if (compositionUnits.length === 0) {
+        const nextState = deleteBackwardUnit(documentUnitsRef.current, caretIndexRef.current)
+
+        if (
+          nextState.units !== documentUnitsRef.current ||
+          nextState.caretIndex !== caretIndexRef.current
+        ) {
+          documentUnitsRef.current = nextState.units
+          caretIndexRef.current = nextState.caretIndex
+          setDocumentUnits(nextState.units)
+          setCaretIndex(nextState.caretIndex)
+        }
+        return
+      }
+    }
+
     if (selectionRangeRef.current) {
       deleteSelection()
     }

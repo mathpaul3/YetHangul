@@ -165,6 +165,7 @@
 - 줄바꿈 unit을 editor surface에서 실제 line break처럼 보이도록 렌더링 보강함
 - unit 위 클릭은 caret 이동, drag일 때만 selection 생성으로 interaction을 보정함
 - selection replacement와 Backspace/Delete의 newline unit 처리도 helper 기반으로 정리함
+- on-screen `Backspace`도 하드웨어 `Backspace`와 같은 editor-layer 삭제 경로를 타도록 수정함
 - caret/selection 관련 실제 사용자 interaction 회귀 테스트는 아직 더 필요함
 
 ## 20. 붙여넣기 정규화

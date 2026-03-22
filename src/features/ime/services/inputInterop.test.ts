@@ -247,6 +247,44 @@ describe('input interop', () => {
     })
   })
 
+  it('allows insertFromComposition again after the focus-regain duplicate marker has cleared', () => {
+    const firstComposition = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: null,
+    })
+
+    expect(firstComposition).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+
+    const duplicateSuppressed = resolveBeforeInputInterop({
+      data: '간',
+      inputType: 'insertFromComposition',
+      isComposing: false,
+      compositionActive: false,
+      recentCommittedText: firstComposition.nextRecentCommittedText,
+    })
+
+    expect(duplicateSuppressed).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: null,
+    })
+
+    expect(
+      resolveBeforeInputInterop({
+        data: '간',
+        inputType: 'insertFromComposition',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: duplicateSuppressed.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+  })
+
   it('keeps insertLineBreak stable after focus regain in the same beforeinput contract', () => {
     const committed = resolveCompositionEndInterop({
       data: '간',

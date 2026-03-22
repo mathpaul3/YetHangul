@@ -161,12 +161,12 @@
 - touch-capable heuristic은 `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 regression test로 일부 커버하기 시작함
 - 왜 Partial인지:
   - 현재 감지는 user agent와 keyboard event 기반 heuristics에 의존한다.
-  - 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.
-  - touch-capable desktop heuristic은 `ontouchstart`와 `maxTouchPoints` 각각에 대한 regression matrix로 일부 검증되었지만, platform/browser coverage는 여전히 제한적이다.
+  - touch-capable desktop signal 자체는 일부 회귀로 잠갔지만, 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.
+  - 결국 남은 gap은 attached/disconnected keyboard의 matrix proof 쪽으로 더 좁혀져 있다.
 - Done 조건:
   - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
 - Next proof needed:
-  - A platform matrix showing detected mode for connected and disconnected keyboard cases on desktop/tablet.
+  - A platform matrix showing connected and disconnected keyboard cases on desktop/tablet, with touch-capable signals staying stable across browsers.
 
 ## 19. 입력 이벤트 처리
 
@@ -185,6 +185,7 @@
 - `beforeinput` / `composition*` 경로에 대한 회귀 테스트를 확장했고, delete/enter/focus-regain 시나리오를 QA regression으로 고정하기 시작함
 - focus regain 뒤 delete/enter 후 새 composition session을 허용하는 regression test가 추가됨
 - focus regain 뒤 `insertLineBreak`도 같은 beforeinput contract로 유지되는 regression이 추가됨
+- focus regain 뒤 duplicate marker가 cleared 되면 `insertFromComposition`도 다시 허용되는 regression이 추가됨
 - hardware/on-screen parity regression에 key metadata(`code`, `location`)까지 포함한 작은 matrix가 추가됨
 - 왜 Partial인지:
   - 엔진은 maintenance mode에 들어왔고, 남은 차이는 `beforeinput` / `composition*` / DOM surface parity 같은 브라우저 표면 차이 쪽에 있다.

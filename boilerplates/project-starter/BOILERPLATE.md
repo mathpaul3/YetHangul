@@ -10,6 +10,8 @@
 - `docs/handoff/decisions.md`
 - `docs/handoff/spec-status-v1.md`
 - `docs/process/PROJECT_START_CHECKLIST.md`
+- `docs/process/AGENT_PROFILES.md`
+- `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`
 
 ## How To Use
 
@@ -17,7 +19,8 @@
 2. `README.md`에 프로젝트 개요와 실행 방법을 채웁니다.
 3. `MEMORY.md`에 장기 방향성과 핵심 제약을 적습니다.
 4. `docs/handoff/` 문서에 현재 iteration 목표와 구현 상태를 적습니다.
-5. checklist를 보면서 초기 세팅을 마칩니다.
+5. `docs/process/AGENT_PROFILES.md`와 `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`를 바탕으로 Agent 세트를 정합니다.
+6. checklist를 보면서 초기 세팅을 마칩니다.
 
 ## Recommended Additions
 

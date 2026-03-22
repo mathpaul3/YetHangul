@@ -41,6 +41,8 @@
 - `docs/architecture/`: 시스템 구조
 - `docs/decisions/`: 설계 결정 기록
 - `docs/process/`: 협업 규칙, 템플릿, system prompt
+- `docs/process/AGENT_PROFILES.md`: 재사용 가능한 Agent 역할 정의
+- `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`: 범용 Agent system prompt 템플릿
 
 ## Local Development
 

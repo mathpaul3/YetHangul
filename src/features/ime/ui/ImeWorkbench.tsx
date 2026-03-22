@@ -180,14 +180,6 @@ export function ImeWorkbench() {
   }
 
   function renderEditorUnit(unit: string) {
-    if (unit === '\n') {
-      return (
-        <span aria-hidden="true" className="editor-linebreak">
-          <br />
-        </span>
-      )
-    }
-
     if (renderMode === 'decomposed') {
       return <span className="editor-decomposed-unit">{Array.from(unit).join(' ')}</span>
     }
@@ -342,6 +334,35 @@ export function ImeWorkbench() {
                       index >= selectionRange.start &&
                       index < selectionRange.end
 
+                    if (unit === '\n') {
+                      return (
+                        <span
+                          className={`editor-unit editor-unit-linebreak ${isSelected ? 'editor-unit-selected' : ''}`}
+                          data-editor-unit-index={index}
+                          key={`${unit}-${index}`}
+                          onPointerDown={(event) => {
+                            event.preventDefault()
+                            handleSelectionStart(index)
+                          }}
+                          onPointerEnter={() => handleSelectionEnter(index)}
+                          onPointerMove={() => handleSelectionEnter(index)}
+                        >
+                          <span aria-hidden="true" className="editor-linebreak" />
+                          <button
+                            className="editor-boundary editor-boundary-linebreak"
+                            data-editor-boundary-index={index + 1}
+                            type="button"
+                            onClick={() => handleCaretPlacement(index + 1)}
+                            onPointerDown={(event) => event.preventDefault()}
+                          >
+                            <span
+                              className={`caret ${renderedCaretIndex === index + 1 ? 'caret-visible' : ''}`}
+                            />
+                          </button>
+                        </span>
+                      )
+                    }
+
                     return (
                       <span
                         className={`editor-unit ${unit === '\n' ? 'editor-unit-linebreak' : ''} ${isSelected ? 'editor-unit-selected' : ''}`}
@@ -378,8 +399,8 @@ export function ImeWorkbench() {
             <div className="stack">
               <div className="keyboard-heading">
                 <div>
-                  <strong>{preferredMode === 'onscreen' ? 'Mobile keyboard' : 'QWERTY layout'}</strong>
-                  <p>하드웨어와 같은 순서로 배열한 60% 기준 자판입니다.</p>
+                  <strong>Keyboard</strong>
+                  <p>QWERTY 배열 기반의 키보드입니다.</p>
                 </div>
               </div>
 

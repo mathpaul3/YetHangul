@@ -131,7 +131,8 @@ textarea {
   border-radius: 16px;
   border: 1px solid rgba(36, 27, 22, 0.1);
   background: #fffdf8;
-  font-size: 2rem;
+  font-size: 1rem;
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -144,8 +145,8 @@ textarea {
 
 .editor-placeholder {
   color: rgba(95, 71, 52, 0.72);
-  font-size: 0.48em;
-  line-height: 1.45;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .editor-unit {
@@ -158,9 +159,9 @@ textarea {
 }
 
 .editor-unit-linebreak {
-  display: inline-flex;
+  display: block;
   width: 100%;
-  min-height: 0;
+  min-height: 1.4em;
 }
 
 .editor-unit-selected {
@@ -197,8 +198,13 @@ textarea {
 
 .editor-linebreak {
   display: block;
-  width: 0;
-  white-space: pre;
+  width: 100%;
+  min-height: 1.4em;
+}
+
+.editor-boundary-linebreak {
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .editor-decomposed-unit {
@@ -494,11 +500,7 @@ textarea {
   .editor-output {
     min-height: 220px;
     padding: 14px;
-    font-size: 1.6rem;
-  }
-
-  .editor-placeholder {
-    font-size: 0.62em;
+    font-size: 1rem;
   }
 
   .keyboard-shell {
@@ -530,9 +532,6 @@ textarea {
     font-size: 0.86rem;
   }
 
-  .editor-placeholder {
-    font-size: 0.72em;
-  }
 
   .notes-grid {
     grid-template-columns: 1fr;

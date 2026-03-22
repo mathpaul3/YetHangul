@@ -62,6 +62,19 @@ describe('editorUnits', () => {
     expect(serializeUnits(units, blurredAndFocusedSelection)).toBe('가\n')
   })
 
+  it('keeps repeated copy flows stable across blur and focus transitions', () => {
+    const units = segmentTextToEditorUnits('가\n나\n다')
+    const firstSelection = createSelectionRange(0, 3)
+    const firstCopy = serializeUnits(units, firstSelection)
+
+    expect(firstCopy).toBe('가\n나')
+
+    const blurredSelection = createSelectionRange(0, 3)
+    const secondCopy = serializeUnits(units, blurredSelection)
+
+    expect(secondCopy).toBe(firstCopy)
+  })
+
   it('inserts units at a caret position', () => {
     expect(insertUnitsAt(['가', '나'], 1, ['다'])).toEqual(['가', '다', '나'])
   })

@@ -231,16 +231,20 @@
   2. 이어서 `Copy All`, `Copy Selection` 버튼도 눌러본다.
   3. selection을 복사한 뒤 blur/focus를 한 번 거치고 같은 범위를 다시 복사한다.
   4. blur/focus 사이에 같은 selection이 유지된 것처럼 보이더라도 serialization 결과가 달라지지 않아야 한다.
+  5. 같은 selection을 짧은 간격으로 여러 번 복사해도 plain text 결과가 같아야 한다.
 - 위험:
   - 세 경로의 결과가 서로 다를 수 있다.
   - native selection과 자체 selection이 분리되면 복사 범위가 엇갈릴 수 있다.
   - blur/focus 이후 stale selection이 남아 있으면 같은 범위를 다시 복사할 때 결과가 바뀔 수 있다.
+  - 반복 copy 흐름에서 selection start/end가 미세하게 달라지면 사용자에게는 같은 범위를 복사했는데 결과가 달라 보일 수 있다.
 - 대응:
   - 모든 복사 경로는 결국 같은 plain text serialization을 사용해야 한다.
   - selection 복사와 전체 복사가 같은 newline serialization 규칙을 공유해야 한다.
+  - blur/focus 이후에도 같은 selection bounds라면 serialization이 완전히 동일해야 한다.
 - 테스트:
   - selection copy / button copy 결과 일치 테스트
   - blur/focus 이후 같은 selection을 다시 복사했을 때 결과가 같은지 테스트
+  - repeated copy flow가 같은 selection serialization을 유지하는지 테스트
 
 ## 16. 입력 도중 focus 이탈
 

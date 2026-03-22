@@ -62,8 +62,8 @@ describe('keyboard mode detection', () => {
       window: undefined,
       expected: 'auto',
     },
-  {
-    name: 'prefers auto mode for touch-capable desktop environments',
+    {
+      name: 'prefers auto mode for touch-capable desktop environments',
       navigator: {
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
         maxTouchPoints: 5,
@@ -80,16 +80,16 @@ describe('keyboard mode detection', () => {
         maxTouchPoints: 5,
       },
       window: {},
-    expected: 'auto',
-  },
-  {
-    name: 'prefers auto mode for coarse-pointer environments without touch globals',
-    navigator: {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
-      maxTouchPoints: 0,
+      expected: 'auto',
     },
-    window: undefined,
-    coarsePointer: true,
+    {
+      name: 'prefers auto mode for coarse-pointer environments without touch globals',
+      navigator: {
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+        maxTouchPoints: 0,
+      },
+      window: undefined,
+      coarsePointer: true,
       expected: 'auto',
     },
     {
@@ -106,12 +106,12 @@ describe('keyboard mode detection', () => {
       name: 'prefers hardware mode for desktop user agents without touch',
       navigator: {
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
-      maxTouchPoints: 0,
+        maxTouchPoints: 0,
+      },
+      window: {},
+      expected: 'hardware',
     },
-    window: {},
-    expected: 'hardware',
-  },
-] as const
+  ] as const
 
   for (const testCase of cases) {
     it(testCase.name, () => {
@@ -134,4 +134,42 @@ describe('keyboard mode detection', () => {
       expect(detectPreferredKeyboardMode()).toBe(testCase.expected)
     })
   }
+
+  it('keeps a small desktop/tablet connected-vs-disconnected matrix stable', () => {
+    const matrix = [
+      {
+        name: 'desktop without touch signals maps to hardware',
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+          maxTouchPoints: 0,
+        },
+        window: {},
+        expected: 'hardware',
+      },
+      {
+        name: 'desktop with touch signals maps to auto',
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+          maxTouchPoints: 5,
+        },
+        window: {},
+        expected: 'auto',
+      },
+      {
+        name: 'tablet user agent stays auto regardless of keyboard attachment ambiguity',
+        navigator: {
+          userAgent: 'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15',
+          maxTouchPoints: 0,
+        },
+        window: {},
+        expected: 'auto',
+      },
+    ] as const
+
+    for (const testCase of matrix) {
+      vi.stubGlobal('navigator', testCase.navigator)
+      vi.stubGlobal('window', testCase.window)
+      expect(detectPreferredKeyboardMode(), testCase.name).toBe(testCase.expected)
+    }
+  })
 })

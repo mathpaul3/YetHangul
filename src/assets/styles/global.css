@@ -113,6 +113,12 @@ textarea {
   white-space: pre-wrap;
 }
 
+.editor-unit-linebreak {
+  display: inline-flex;
+  width: 100%;
+  min-height: 0;
+}
+
 .editor-unit-selected {
   background: rgba(177, 77, 31, 0.2);
 }
@@ -146,6 +152,8 @@ textarea {
 }
 
 .editor-linebreak {
+  display: block;
+  width: 0;
   white-space: pre;
 }
 

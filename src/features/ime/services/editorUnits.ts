@@ -112,6 +112,24 @@ export function insertUnitsAt(
   return [...units.slice(0, index), ...inserted, ...units.slice(index)]
 }
 
+export function commitCompositionUnits(
+  units: string[],
+  caretIndex: number,
+  compositionUnits: string[],
+) {
+  if (compositionUnits.length === 0) {
+    return {
+      units,
+      caretIndex,
+    }
+  }
+
+  return {
+    units: insertUnitsAt(units, caretIndex, compositionUnits),
+    caretIndex: caretIndex + compositionUnits.length,
+  }
+}
+
 export function deleteUnitRange(
   units: string[],
   start: number,
@@ -138,4 +156,15 @@ export function createSelectionRange(anchor: number, head: number): UnitSelectio
 
 export function clampCaretIndex(index: number, unitCount: number) {
   return Math.max(0, Math.min(index, unitCount))
+}
+
+export function getSelectionBounds(selectionRange: UnitSelectionRange) {
+  if (selectionRange == null) {
+    return null
+  }
+
+  return {
+    start: Math.min(selectionRange.start, selectionRange.end),
+    end: Math.max(selectionRange.start, selectionRange.end),
+  }
 }

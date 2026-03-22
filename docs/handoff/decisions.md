@@ -166,6 +166,9 @@
 - 편집기 1차 구현으로 `document units + caret index + selection range` 레이어를 입력기 위에 얹었다.
 - 현재 결과 영역은 음절 단위 caret 경계 클릭, drag selection, 선택 삭제, 좌우/Home/End 이동을 지원한다.
 - 브라우저 기본 selection은 가능한 한 배제하고, 자체 selection과 copy 버튼(`Copy All`, `Copy Selection`)을 우선한다.
+- caret/selection 동기화는 훅 내부의 ad-hoc 계산 대신 snapshot ref와 `editorUnits.ts` helper(`commitCompositionUnits`, `getSelectionBounds`)를 기준으로 맞춘다.
+- 조합 버퍼를 문서에 flush할 때는 “어느 caret 위치에, 몇 개 unit을” 넣었는지를 helper 기준으로 결정하고, 그 결과를 문서 배열과 caret state에 동시에 반영한다.
+- 줄바꿈 unit은 editor surface에서 실제 line break처럼 보이도록 별도 unit class로 렌더링한다.
 
 ## Objective Quality Criteria
 

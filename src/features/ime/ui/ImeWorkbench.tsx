@@ -175,7 +175,7 @@ export function ImeWorkbench() {
 
                   return (
                     <span
-                      className={`editor-unit ${isSelected ? 'editor-unit-selected' : ''}`}
+                      className={`editor-unit ${unit === '\n' ? 'editor-unit-linebreak' : ''} ${isSelected ? 'editor-unit-selected' : ''}`}
                       key={`${unit}-${index}`}
                       onPointerDown={(event) => {
                         event.preventDefault()
@@ -183,7 +183,7 @@ export function ImeWorkbench() {
                       }}
                       onPointerEnter={() => handleSelectionEnter(index)}
                     >
-                      {unit === '\n' ? <span className="editor-linebreak">{'\n'}</span> : unit}
+                      {unit === '\n' ? <span className="editor-linebreak" aria-hidden="true"><br /></span> : unit}
                       <button
                         className="editor-boundary"
                         type="button"

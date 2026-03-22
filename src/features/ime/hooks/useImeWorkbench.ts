@@ -24,8 +24,10 @@ import {
 import type { PressedModifierState } from '@/features/ime/services/hardwareKeyboard'
 import {
   clampCaretIndex,
+  commitCompositionUnits,
   createSelectionRange,
   deleteUnitRange,
+  getSelectionBounds,
   insertUnitsAt,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
@@ -79,6 +81,9 @@ export function useImeWorkbench() {
   const [caretIndex, setCaretIndex] = useState(0)
   const [selectionRange, setSelectionRange] = useState<SelectionRange>(null)
   const pressedModifiersRef = useRef<PressedModifierState>({})
+  const documentUnitsRef = useRef<string[]>([])
+  const caretIndexRef = useRef(0)
+  const selectionRangeRef = useRef<SelectionRange>(null)
   const compositionActiveRef = useRef(false)
   const recentImeCommitRef = useRef<string | null>(null)
   const selectionAnchorRef = useRef<number | null>(null)
@@ -100,6 +105,18 @@ export function useImeWorkbench() {
     [caretIndex, compositionUnits.length],
   )
   const renderedText = useMemo(() => renderedUnits.join(''), [renderedUnits])
+
+  useEffect(() => {
+    documentUnitsRef.current = documentUnits
+  }, [documentUnits])
+
+  useEffect(() => {
+    caretIndexRef.current = caretIndex
+  }, [caretIndex])
+
+  useEffect(() => {
+    selectionRangeRef.current = selectionRange
+  }, [selectionRange])
 
   useEffect(() => {
     if (selectionRange == null && typeof window !== 'undefined') {
@@ -136,14 +153,14 @@ export function useImeWorkbench() {
   }
 
   function handleInput(symbolId: number) {
-    if (selectionRange) {
+    if (selectionRangeRef.current) {
       deleteSelection()
     }
     dispatch({ type: 'input', symbolId })
   }
 
   function handleLiteralInput(text: string) {
-    if (selectionRange) {
+    if (selectionRangeRef.current) {
       deleteSelection()
     }
     dispatch({ type: 'literalInput', text })
@@ -161,35 +178,55 @@ export function useImeWorkbench() {
     window.getSelection()?.removeAllRanges()
   }
 
-  function commitCompositionToDocument() {
-    if (compositionUnits.length === 0) {
-      return
+  function commitCompositionToDocument(targetCaretIndex = caretIndexRef.current) {
+    const snapshotUnits = documentUnitsRef.current
+    const nextState = commitCompositionUnits(snapshotUnits, targetCaretIndex, compositionUnits)
+
+    if (nextState.units === snapshotUnits) {
+      return {
+        didCommit: false,
+        caretIndex: targetCaretIndex,
+        unitCount: snapshotUnits.length,
+      }
     }
 
-    setDocumentUnits((previous) => insertUnitsAt(previous, caretIndex, compositionUnits))
-    setCaretIndex((previous) => previous + compositionUnits.length)
+    documentUnitsRef.current = nextState.units
+    caretIndexRef.current = nextState.caretIndex
+    setDocumentUnits(nextState.units)
+    setCaretIndex(nextState.caretIndex)
     selectionAnchorRef.current = null
     clearCompositionBuffer()
+
+    return {
+      didCommit: true,
+      caretIndex: nextState.caretIndex,
+      unitCount: nextState.units.length,
+    }
   }
 
   function collapseSelectionTo(index: number) {
     selectionAnchorRef.current = null
+    selectionRangeRef.current = null
+    caretIndexRef.current = index
     setSelectionRange(null)
     setCaretIndex(index)
     clearBrowserSelection()
   }
 
   function deleteSelection() {
-    if (!selectionRange) {
+    const bounds = getSelectionBounds(selectionRangeRef.current)
+
+    if (!bounds) {
       return
     }
 
-    const start = Math.min(selectionRange.start, selectionRange.end)
-    const end = Math.max(selectionRange.start, selectionRange.end)
-
-    setDocumentUnits((previous) => deleteUnitRange(previous, start, end))
+    const nextUnits = deleteUnitRange(documentUnitsRef.current, bounds.start, bounds.end)
+    documentUnitsRef.current = nextUnits
+    selectionRangeRef.current = null
+    caretIndexRef.current = bounds.start
+    setDocumentUnits(nextUnits)
     setSelectionRange(null)
-    setCaretIndex(start)
+    setCaretIndex(bounds.start)
     selectionAnchorRef.current = null
     clearBrowserSelection()
   }
@@ -218,7 +255,7 @@ export function useImeWorkbench() {
   }
 
   function dispatchUnicodeText(text: string) {
-    if (selectionRange) {
+    if (selectionRangeRef.current) {
       deleteSelection()
     }
 
@@ -237,13 +274,12 @@ export function useImeWorkbench() {
   }
 
   function handleCopy(event: React.ClipboardEvent<HTMLElement>) {
-    if (!selectionRange) {
+    const bounds = getSelectionBounds(selectionRangeRef.current)
+
+    if (!bounds) {
       return
     }
-
-    const start = Math.min(selectionRange.start, selectionRange.end)
-    const end = Math.max(selectionRange.start, selectionRange.end)
-    const text = renderedUnits.slice(start, end).join('')
+    const text = renderedUnits.slice(bounds.start, bounds.end).join('')
 
     event.preventDefault()
     event.clipboardData.setData('text/plain', text)
@@ -254,17 +290,17 @@ export function useImeWorkbench() {
   }
 
   async function copySelectionText() {
-    if (!selectionRange) {
+    const bounds = getSelectionBounds(selectionRangeRef.current)
+
+    if (!bounds) {
       return
     }
 
-    const start = Math.min(selectionRange.start, selectionRange.end)
-    const end = Math.max(selectionRange.start, selectionRange.end)
-    await navigator.clipboard.writeText(renderedUnits.slice(start, end).join(''))
+    await navigator.clipboard.writeText(renderedUnits.slice(bounds.start, bounds.end).join(''))
   }
 
   function handleUtilityInput(utilityKey: 'space' | 'period' | 'semicolon') {
-    if (selectionRange) {
+    if (selectionRangeRef.current) {
       deleteSelection()
     }
 
@@ -314,7 +350,7 @@ export function useImeWorkbench() {
 
     if (nativeEvent.inputType === 'insertParagraph') {
       event.preventDefault()
-      dispatch({ type: 'literalInput', text: '\n' })
+      handleLiteralInput('\n')
       return
     }
 
@@ -366,42 +402,46 @@ export function useImeWorkbench() {
 
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
-      const didCommitComposition = compositionUnits.length > 0
-      const currentIndex = didCommitComposition ? renderedCaretIndex : caretIndex
-      const unitCount = didCommitComposition ? renderedUnits.length : documentUnits.length
-      commitCompositionToDocument()
+      const flushState = commitCompositionToDocument()
+      const currentIndex = flushState.caretIndex
+      const unitCount = flushState.unitCount
 
       if (event.shiftKey) {
         extendSelectionTo(clampCaretIndex(currentIndex - 1, unitCount))
         return
       }
 
-      if (selectionRange) {
-        collapseSelectionTo(Math.min(selectionRange.start, selectionRange.end))
+      const bounds = getSelectionBounds(selectionRangeRef.current)
+
+      if (bounds) {
+        collapseSelectionTo(bounds.start)
         return
       }
 
+      caretIndexRef.current = clampCaretIndex(currentIndex - 1, unitCount)
       setCaretIndex(clampCaretIndex(currentIndex - 1, unitCount))
       return
     }
 
     if (event.key === 'ArrowRight') {
       event.preventDefault()
-      const didCommitComposition = compositionUnits.length > 0
-      const currentIndex = didCommitComposition ? renderedCaretIndex : caretIndex
-      const unitCount = didCommitComposition ? renderedUnits.length : documentUnits.length
-      commitCompositionToDocument()
+      const flushState = commitCompositionToDocument()
+      const currentIndex = flushState.caretIndex
+      const unitCount = flushState.unitCount
 
       if (event.shiftKey) {
         extendSelectionTo(clampCaretIndex(currentIndex + 1, unitCount))
         return
       }
 
-      if (selectionRange) {
-        collapseSelectionTo(Math.max(selectionRange.start, selectionRange.end))
+      const bounds = getSelectionBounds(selectionRangeRef.current)
+
+      if (bounds) {
+        collapseSelectionTo(bounds.end)
         return
       }
 
+      caretIndexRef.current = clampCaretIndex(currentIndex + 1, unitCount)
       setCaretIndex(clampCaretIndex(currentIndex + 1, unitCount))
       return
     }
@@ -419,21 +459,18 @@ export function useImeWorkbench() {
 
     if (event.key === 'End') {
       event.preventDefault()
-      commitCompositionToDocument()
+      const flushState = commitCompositionToDocument()
       if (event.shiftKey) {
-        extendSelectionTo(documentUnits.length)
+        extendSelectionTo(flushState.unitCount)
       } else {
-        collapseSelectionTo(documentUnits.length)
+        collapseSelectionTo(flushState.unitCount)
       }
       return
     }
 
     if (event.key === 'Enter') {
       event.preventDefault()
-      if (selectionRange) {
-        deleteSelection()
-      }
-      dispatch({ type: 'literalInput', text: '\n' })
+      handleLiteralInput('\n')
       return
     }
 
@@ -477,7 +514,7 @@ export function useImeWorkbench() {
       return
     }
 
-    if ((symbolId === INPUT_SYMBOL_IDS.BACKSPACE || event.key === 'Delete') && selectionRange) {
+    if ((symbolId === INPUT_SYMBOL_IDS.BACKSPACE || event.key === 'Delete') && selectionRangeRef.current) {
       event.preventDefault()
       commitCompositionToDocument()
       deleteSelection()
@@ -487,20 +524,33 @@ export function useImeWorkbench() {
     if (
       symbolId === INPUT_SYMBOL_IDS.BACKSPACE &&
       compositionUnits.length === 0 &&
-      !selectionRange
+      !selectionRangeRef.current
     ) {
-      if (caretIndex > 0) {
+      if (caretIndexRef.current > 0) {
         event.preventDefault()
-        setDocumentUnits((previous) => deleteUnitRange(previous, caretIndex - 1, caretIndex))
-        setCaretIndex((previous) => previous - 1)
+        const nextUnits = deleteUnitRange(
+          documentUnitsRef.current,
+          caretIndexRef.current - 1,
+          caretIndexRef.current,
+        )
+        documentUnitsRef.current = nextUnits
+        caretIndexRef.current = caretIndexRef.current - 1
+        setDocumentUnits(nextUnits)
+        setCaretIndex(caretIndexRef.current)
       }
       return
     }
 
-    if (event.key === 'Delete' && compositionUnits.length === 0 && !selectionRange) {
-      if (caretIndex < documentUnits.length) {
+    if (event.key === 'Delete' && compositionUnits.length === 0 && !selectionRangeRef.current) {
+      if (caretIndexRef.current < documentUnitsRef.current.length) {
         event.preventDefault()
-        setDocumentUnits((previous) => deleteUnitRange(previous, caretIndex, caretIndex + 1))
+        const nextUnits = deleteUnitRange(
+          documentUnitsRef.current,
+          caretIndexRef.current,
+          caretIndexRef.current + 1,
+        )
+        documentUnitsRef.current = nextUnits
+        setDocumentUnits(nextUnits)
       }
       return
     }
@@ -552,6 +602,8 @@ export function useImeWorkbench() {
 
   function handleCaretPlacement(nextIndex: number) {
     commitCompositionToDocument()
+    selectionRangeRef.current = null
+    caretIndexRef.current = nextIndex
     setSelectionRange(null)
     setCaretIndex(nextIndex)
     selectionAnchorRef.current = null
@@ -562,6 +614,8 @@ export function useImeWorkbench() {
     commitCompositionToDocument()
     isDraggingSelectionRef.current = true
     selectionAnchorRef.current = unitIndex
+    selectionRangeRef.current = { start: unitIndex, end: unitIndex + 1 }
+    caretIndexRef.current = unitIndex + 1
     setSelectionRange({ start: unitIndex, end: unitIndex + 1 })
     setCaretIndex(unitIndex + 1)
   }
@@ -572,6 +626,10 @@ export function useImeWorkbench() {
     }
 
     const anchor = selectionAnchorRef.current
+    selectionRangeRef.current = {
+      start: Math.min(anchor, unitIndex),
+      end: Math.max(anchor + 1, unitIndex + 1),
+    }
     setSelectionRange({
       start: Math.min(anchor, unitIndex),
       end: Math.max(anchor + 1, unitIndex + 1),

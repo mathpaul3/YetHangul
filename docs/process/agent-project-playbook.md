@@ -238,6 +238,23 @@
   - desktop / tablet / mobile / small mobile 같은 surface matrix
 
 다운로드형 브라우저 자동화가 막히거나 비용이 클 때는,
+설치된 시스템 브라우저 채널을 real-browser smoke에 재사용하고, breadth는 service-level matrix로 유지하는 편이 효율적이다.
+
+### 8-7. 구현 말미에는 service shell을 하나의 묶음으로 처리하기
+
+프로젝트 구현 단계가 마무리에 접어들면 아래 항목이 산발적으로 생기기 쉽다.
+
+- top navigation
+- footer / version / legal
+- branding / logo
+- analytics scaffold
+- 외부 링크 / 문의 경로
+
+이 시점에는 이를 흩어진 미세 task로 두기보다, `service shell` 묶음으로 다루는 편이 좋다.
+
+- 실제 사용 기반 polish와 함께 묶어서 처리한다.
+- layout / copy / legal / analytics env를 한 번에 정리한다.
+- smoke test 표면도 같은 라운드에 같이 갱신한다.
 - 설치된 system browser channel을 먼저 활용하고
 - 나머지 breadth는 service-level matrix로 유지하는 방식이 실용적이다.
 

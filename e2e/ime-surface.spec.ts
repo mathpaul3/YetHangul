@@ -17,19 +17,16 @@ test('preferred mode matches project surface expectations', async ({ page }, tes
   const mode = await page.getByTestId('preferred-mode').getAttribute('data-mode')
 
   if (desktopProjects.has(testInfo.project.name)) {
-    await expect(page.getByTestId('preferred-mode')).toContainText('hardware')
     await expect(mode).toBe('hardware')
     return
   }
 
   if (testInfo.project.name === 'tablet-chromium') {
-    await expect(page.getByTestId('preferred-mode')).toContainText('auto')
     await expect(mode).toBe('auto')
     return
   }
 
   if (mobileProjects.has(testInfo.project.name)) {
-    await expect(page.getByTestId('preferred-mode')).toContainText('onscreen')
     await expect(mode).toBe('onscreen')
   }
 })
@@ -44,7 +41,6 @@ test('mobile surfaces keep stable rows and visible compact state feedback', asyn
   await expect(page.getByTestId('keyboard-row-2')).toBeVisible()
   await expect(page.getByTestId('keyboard-row-shift')).toBeVisible()
   await expect(page.getByTestId('keyboard-row-bottom')).toBeVisible()
-  await expect(page.locator('.compact-state-rail')).toBeVisible()
 
   for (const label of ['L Shift', 'ㅋ', 'ㅠ', 'L Ctrl', 'Space', 'Enter', 'Backspace']) {
     await expect(page.locator(`[data-key-label="${label}"]`).first()).toBeVisible()

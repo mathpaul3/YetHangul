@@ -1,13 +1,30 @@
 import { useRef, useState } from 'react'
 import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
-import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMode'
+import { YetHangulLogo } from '@/features/branding/YetHangulLogo'
 import { useImeWorkbench } from '@/features/ime/hooks/useImeWorkbench'
 import { getEditorSurfaceTouchBehavior } from '@/features/ime/services/editorSurface'
+import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMode'
 
 const preferredMode = detectPreferredKeyboardMode()
-const numberRow = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const
-const keyboardRows = [
-  [
+const REPOSITORY_URL = 'https://github.com/mathpaul3/yet-hangul'
+const VERSION = '0.1.0'
+const LICENSE = 'Apache-2.0'
+
+const keyboardRows = {
+  number: [
+    ['1', '1'],
+    ['2', '2'],
+    ['3', '3'],
+    ['4', '4'],
+    ['5', '5'],
+    ['6', '6'],
+    ['7', '7'],
+    ['8', '8'],
+    ['9', '9'],
+    ['0', '0'],
+    ['Backspace', 'backspace'],
+  ],
+  top: [
     ['ㅂ', INPUT_SYMBOL_IDS.BIEUP],
     ['ㅈ', INPUT_SYMBOL_IDS.CIEUC],
     ['ㄷ', INPUT_SYMBOL_IDS.DIGEUT],
@@ -19,7 +36,7 @@ const keyboardRows = [
     ['ㅐ', INPUT_SYMBOL_IDS.AE],
     ['ㅔ', INPUT_SYMBOL_IDS.E],
   ],
-  [
+  middle: [
     ['ㅁ', INPUT_SYMBOL_IDS.MIEUM],
     ['ㄴ', INPUT_SYMBOL_IDS.NIEUN],
     ['ㅇ', INPUT_SYMBOL_IDS.IEUNG],
@@ -29,11 +46,9 @@ const keyboardRows = [
     ['ㅓ', INPUT_SYMBOL_IDS.EO],
     ['ㅏ', INPUT_SYMBOL_IDS.A],
     ['ㅣ', INPUT_SYMBOL_IDS.I],
+    ['Enter', 'enter'],
   ],
-] as const
-
-const keyboardUtilityRows = {
-  shift: [
+  bottom: [
     ['L Shift', 'leftShift'],
     ['ㅋ', INPUT_SYMBOL_IDS.KHIEUKH],
     ['ㅌ', INPUT_SYMBOL_IDS.THIEUTH],
@@ -42,16 +57,18 @@ const keyboardUtilityRows = {
     ['ㅠ', INPUT_SYMBOL_IDS.YU],
     ['ㅜ', INPUT_SYMBOL_IDS.U],
     ['ㅡ', INPUT_SYMBOL_IDS.EU],
+    ['.', 'period'],
+    [';', 'semicolon'],
     ['R Shift', 'rightShift'],
   ],
-  bottom: [
+  nav: [
     ['L Ctrl', 'leftCtrl'],
     ['R Ctrl', 'rightCtrl'],
     ['Space', 'space'],
-    ['.', 'period'],
-    [';', 'semicolon'],
-    ['Enter', 'enter'],
-    ['Backspace', 'backspace'],
+    ['Home', 'home'],
+    ['End', 'end'],
+    ['←', 'arrowLeft'],
+    ['→', 'arrowRight'],
   ],
 } as const
 
@@ -73,7 +90,6 @@ export function ImeWorkbench() {
     renderedUnits,
     renderedCaretIndex,
     renderedText,
-    compactSurfaceSummary,
     selectionRange,
     handleInput,
     handleVirtualBackspacePointerDown,
@@ -84,8 +100,6 @@ export function ImeWorkbench() {
     handleUtilityInput,
     handleNavigationInput,
     handleModifierMainClick,
-    handleModifierMainPointerDown,
-    handleModifierMainPointerEnd,
     handleCaretPlacement,
     handleSelectionEnd,
     handlePointerCancel,
@@ -126,7 +140,11 @@ export function ImeWorkbench() {
 
   function renderEditorUnit(unit: string) {
     if (unit === '\n') {
-      return <span className="editor-linebreak" aria-hidden="true"><br /></span>
+      return (
+        <span aria-hidden="true" className="editor-linebreak">
+          <br />
+        </span>
+      )
     }
 
     if (renderMode === 'decomposed') {
@@ -144,41 +162,61 @@ export function ImeWorkbench() {
     rootRef.current?.focus()
   }
 
+  function renderCopyIcon(type: 'all' | 'selection') {
+    const label = type === 'all' ? '전체 복사' : '선택 복사'
+
+    return (
+      <span aria-hidden="true" className="icon-copy">
+        {type === 'all' ? '⧉' : '⎘'}
+        <span className="sr-only">{label}</span>
+      </span>
+    )
+  }
+
+  const characterCount = Array.from(renderedText).length
+  const selectionLabel =
+    selectionRange == null ? '없음' : `${selectionRange.start}-${selectionRange.end}`
+
   return (
     <main
       ref={rootRef}
       className="page-shell"
-      onPointerUp={handleSelectionEnd}
-      onPointerCancel={handlePointerCancel}
-      onPointerMoveCapture={handleEditorSurfacePointerMove}
+      onBeforeInput={handleBeforeInput}
+      onBlur={handleEditorBlur}
+      onCompositionEnd={handleCompositionEnd}
+      onCompositionStart={handleCompositionStart}
+      onCopy={handleCopy}
+      onFocus={handleEditorFocus}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
-      onFocus={handleEditorFocus}
-      onBlur={handleEditorBlur}
-      onCopy={handleCopy}
       onPaste={handlePaste}
-      onBeforeInput={handleBeforeInput}
-      onCompositionStart={handleCompositionStart}
-      onCompositionEnd={handleCompositionEnd}
+      onPointerCancel={handlePointerCancel}
+      onPointerMoveCapture={handleEditorSurfacePointerMove}
+      onPointerUp={handleSelectionEnd}
       tabIndex={0}
     >
-      <section className="hero">
-        <h1>YetHangul</h1>
-        <p>
-          현대 한글 자모 규칙을 바탕으로 옛한글을 입력하는 웹 입력기입니다.
-          입력 엔진은 FSM, sparse transition table, undo log를 중심으로 구성합니다.
-        </p>
-      </section>
+      <header className="topnav panel">
+        <a aria-label="YetHangul 홈" className="brand-link" href="#workspace">
+          <YetHangulLogo compact />
+          <div className="brand-copy">
+            <strong>YetHangul</strong>
+            <span>옛한글 입력기, 이후 중세국어 사전으로 확장 예정</span>
+          </div>
+        </a>
+        <nav aria-label="서비스 탐색" className="topnav-links">
+          <a href="#workspace">입력기</a>
+          <a href="#service-notes">원칙</a>
+          <span className="topnav-pill">사전 확장 준비중</span>
+        </nav>
+      </header>
 
-      <section className="workspace-grid">
+      <section className="workspace-grid" id="workspace">
         <div className="panel editor-panel">
           <div className="meta-row">
             <span className="badge" data-testid="preferred-mode" data-mode={preferredMode}>
-              Preferred mode: {preferredMode}
+              글자 수 {characterCount}
             </span>
-            <span className="badge">Units: {renderedUnits.length}</span>
-            <span className="badge">Active state: {engineState.active.stateId}</span>
-            <span className="badge">Undo depth: {engineState.undoStack.length}</span>
+            <span className="badge">선택 {selectionLabel}</span>
             <button
               className={`badge badge-button ${renderMode === 'composed' ? 'badge-active' : ''}`}
               type="button"
@@ -193,32 +231,29 @@ export function ImeWorkbench() {
             >
               분해 보기
             </button>
-            <button className="badge badge-button" type="button" onClick={() => void copyAllText()}>
-              Copy All
+            <button
+              aria-label="전체 복사"
+              className="badge badge-button badge-icon-button"
+              type="button"
+              onClick={() => void copyAllText()}
+            >
+              {renderCopyIcon('all')}
             </button>
             <button
-              className="badge badge-button"
+              aria-label="선택 복사"
+              className="badge badge-button badge-icon-button"
               disabled={selectionRange == null}
               type="button"
               onClick={() => void copySelectionText()}
             >
-              Copy Selection
+              {renderCopyIcon('selection')}
             </button>
           </div>
-          <div className="compact-state-rail" aria-label="Current editor state">
-            <span className="badge compact-state-badge">{compactSurfaceSummary.selectionLabel}</span>
-            {compactSurfaceSummary.activeModifiers.map((modifier) => (
-              <span
-                className={`badge compact-state-badge compact-state-badge-${modifier.mode}`}
-                key={modifier.label}
-              >
-                {modifier.label}: {modifier.mode}
-              </span>
-            ))}
-          </div>
+
           <output className="sr-only" data-testid="rendered-text-value">
             {renderedText.length > 0 ? renderedText : '\u00A0'}
           </output>
+
           <div
             className="editor-output editor-surface"
             data-testid="editor-surface"
@@ -229,8 +264,8 @@ export function ImeWorkbench() {
                 className="editor-boundary editor-boundary-root"
                 data-editor-boundary-index={0}
                 type="button"
-                onPointerDown={(event) => event.preventDefault()}
                 onClick={() => handleCaretPlacement(0)}
+                onPointerDown={(event) => event.preventDefault()}
               >
                 <span className={`caret ${renderedCaretIndex === 0 ? 'caret-visible' : ''}`} />
                 <span className="editor-placeholder">입력 결과가 여기에 표시됩니다.</span>
@@ -240,8 +275,8 @@ export function ImeWorkbench() {
                 <button
                   className="editor-boundary"
                   type="button"
-                  onPointerDown={(event) => event.preventDefault()}
                   onClick={() => handleCaretPlacement(0)}
+                  onPointerDown={(event) => event.preventDefault()}
                 >
                   <span className={`caret ${renderedCaretIndex === 0 ? 'caret-visible' : ''}`} />
                 </button>
@@ -254,22 +289,22 @@ export function ImeWorkbench() {
                   return (
                     <span
                       className={`editor-unit ${unit === '\n' ? 'editor-unit-linebreak' : ''} ${isSelected ? 'editor-unit-selected' : ''}`}
-                      key={`${unit}-${index}`}
                       data-editor-unit-index={index}
+                      key={`${unit}-${index}`}
                       onPointerDown={(event) => {
                         event.preventDefault()
                         handleSelectionStart(index)
                       }}
-                      onPointerMove={() => handleSelectionEnter(index)}
                       onPointerEnter={() => handleSelectionEnter(index)}
+                      onPointerMove={() => handleSelectionEnter(index)}
                     >
                       {renderEditorUnit(unit)}
                       <button
                         className="editor-boundary"
-                        type="button"
                         data-editor-boundary-index={index + 1}
-                        onPointerDown={(event) => event.preventDefault()}
+                        type="button"
                         onClick={() => handleCaretPlacement(index + 1)}
+                        onPointerDown={(event) => event.preventDefault()}
                       >
                         <span
                           className={`caret ${renderedCaretIndex === index + 1 ? 'caret-visible' : ''}`}
@@ -285,191 +320,204 @@ export function ImeWorkbench() {
 
         <aside className="panel control-panel">
           <div className="stack">
-            <strong>{preferredMode === 'onscreen' ? 'Mobile keyboard' : 'QWERTY layout'}</strong>
+            <div className="keyboard-heading">
+              <div>
+                <strong>{preferredMode === 'onscreen' ? 'Mobile keyboard' : 'QWERTY layout'}</strong>
+                <p>하드웨어와 같은 순서로 배열한 60% 기준 자판입니다.</p>
+              </div>
+              <YetHangulLogo />
+            </div>
+
             <div className="keyboard-shell" data-testid="keyboard-shell">
               <div className="keyboard-row keyboard-row-number" data-testid="keyboard-row-number">
-                {numberRow.map((digit) => (
-                  <button
-                    className={`keycap ${getKeycapClass(digit)}`}
-                    data-key-label={digit}
-                    key={digit}
-                    type="button"
-                    onPointerDown={preventVirtualKeyboardFocus}
-                    onClick={() => {
-                      handleLiteralInput(digit, digit)
-                      restoreEditorFocus()
-                    }}
-                  >
-                    {digit}
-                  </button>
-                ))}
-              </div>
-              {keyboardRows.map((row, rowIndex) => (
-                <div
-                  className={`keyboard-row keyboard-row-${rowIndex + 1}`}
-                  data-testid={`keyboard-row-${rowIndex + 1}`}
-                  key={rowIndex}
-                >
-                  {row.map(([label, symbolId]) => (
-                    <button
-                      className={`keycap ${getKeycapClass(label)}`}
-                      data-key-label={label}
-                      key={label}
-                      type="button"
-                      onPointerDown={preventVirtualKeyboardFocus}
-                      onClick={() => {
-                        handleInput(symbolId, label)
-                        restoreEditorFocus()
-                      }}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              ))}
-              <div className="keyboard-row keyboard-row-nav" data-testid="keyboard-row-nav">
-                {[
-                  ['←', 'arrowLeft'],
-                  ['→', 'arrowRight'],
-                  ['Home', 'home'],
-                  ['End', 'end'],
-                ].map(([label, direction]) => {
-                  const isRepeatable = direction === 'arrowLeft' || direction === 'arrowRight'
-
-                  return (
-                    <button
-                      className={`keycap keycap-utility ${getKeycapClass(label)}`}
-                      data-key-label={label}
-                      key={label}
-                      type="button"
-                      onPointerDown={(event) => {
-                        preventVirtualKeyboardFocus(event)
-
-                        if (isRepeatable) {
-                          handleVirtualNavigationPointerDown(
-                            direction as 'arrowLeft' | 'arrowRight',
-                          )
-                        }
-
-                        restoreEditorFocus()
-                      }}
-                      onPointerUp={isRepeatable ? clearNavigationRepeat : undefined}
-                      onPointerCancel={isRepeatable ? clearNavigationRepeat : undefined}
-                      onPointerLeave={isRepeatable ? clearNavigationRepeat : undefined}
-                      onClick={(event) => {
-                        if (isRepeatable && event.detail !== 0) {
-                          return
-                        }
-
-                        handleNavigationInput(direction as 'arrowLeft' | 'arrowRight' | 'home' | 'end')
-                        restoreEditorFocus()
-                      }}
-                    >
-                      {label}
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="keyboard-row keyboard-row-shift" data-testid="keyboard-row-shift">
-                {keyboardUtilityRows.shift.map(([label, action]) => {
-                  if (action === 'leftShift' || action === 'rightShift') {
-                    return (
-                      <div
-                        className={`keycap-cluster ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        data-modifier-key={action}
-                        data-modifier-mode={engineState.modifierState[action]}
-                        key={label}
-                      >
-                          <button
-                            className="keycap-cluster-main"
-                            data-key-label={label}
-                            type="button"
-                            onPointerDown={(event) => {
-                              preventVirtualKeyboardFocus(event)
-                              handleModifierMainPointerDown(action)
-                            }}
-                            onPointerUp={() => handleModifierMainPointerEnd(action)}
-                            onPointerCancel={() => handleModifierMainPointerEnd(action)}
-                            onPointerLeave={() => handleModifierMainPointerEnd(action)}
-                            onClick={() => {
-                              handleModifierMainClick(action)
-                              restoreEditorFocus()
-                            }}
-                        >
-                          {label}
-                        </button>
-                      </div>
-                    )
-                  }
-
-                  return (
-                    <button
-                      className={`keycap ${getKeycapClass(label)}`}
-                      data-key-label={label}
-                      key={label}
-                      type="button"
-                      onPointerDown={preventVirtualKeyboardFocus}
-                      onClick={() => {
-                        handleInput(action, label)
-                        restoreEditorFocus()
-                      }}
-                    >
-                      {label}
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="keyboard-row keyboard-row-bottom" data-testid="keyboard-row-bottom">
-                {keyboardUtilityRows.bottom.map(([label, action]) => {
-                  if (action === 'leftCtrl' || action === 'rightCtrl') {
-                    return (
-                      <div
-                        className={`keycap-cluster ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        data-modifier-key={action}
-                        data-modifier-mode={engineState.modifierState[action]}
-                        key={label}
-                      >
-                          <button
-                            className="keycap-cluster-main"
-                            data-key-label={label}
-                            type="button"
-                            onPointerDown={(event) => {
-                              preventVirtualKeyboardFocus(event)
-                              handleModifierMainPointerDown(action)
-                            }}
-                            onPointerUp={() => handleModifierMainPointerEnd(action)}
-                            onPointerCancel={() => handleModifierMainPointerEnd(action)}
-                            onPointerLeave={() => handleModifierMainPointerEnd(action)}
-                            onClick={() => {
-                              handleModifierMainClick(action)
-                              restoreEditorFocus()
-                            }}
-                        >
-                          {label}
-                        </button>
-                      </div>
-                    )
-                  }
-
-                  if (
-                    action === 'space' ||
-                    action === 'period' ||
-                    action === 'semicolon' ||
-                    action === 'enter'
-                  ) {
+                {keyboardRows.number.map(([label, action]) => {
+                  if (action === 'backspace') {
                     return (
                       <button
-                        className={`keycap keycap-utility keycap-${action} ${getKeycapClass(label)}`}
+                        className={`keycap keycap-utility keycap-backspace ${getKeycapClass(label)}`}
                         data-key-label={label}
                         key={label}
                         type="button"
+                        onPointerCancel={clearBackspaceRepeat}
+                        onPointerDown={(event) => {
+                          preventVirtualKeyboardFocus(event)
+                          handleVirtualBackspacePointerDown()
+                          restoreEditorFocus()
+                        }}
+                        onPointerLeave={clearBackspaceRepeat}
+                        onPointerUp={clearBackspaceRepeat}
+                      >
+                        {label}
+                      </button>
+                    )
+                  }
+
+                  return (
+                    <button
+                      className={`keycap ${getKeycapClass(label)}`}
+                      data-key-label={label}
+                      key={label}
+                      type="button"
+                      onClick={() => {
+                        handleLiteralInput(action, label)
+                        restoreEditorFocus()
+                      }}
+                      onPointerDown={preventVirtualKeyboardFocus}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+
+              <div className="keyboard-row keyboard-row-1" data-testid="keyboard-row-1">
+                {keyboardRows.top.map(([label, action]) => (
+                  <button
+                    className={`keycap ${getKeycapClass(label)}`}
+                    data-key-label={label}
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      handleInput(action, label)
+                      restoreEditorFocus()
+                    }}
+                    onPointerDown={preventVirtualKeyboardFocus}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="keyboard-row keyboard-row-2" data-testid="keyboard-row-2">
+                {keyboardRows.middle.map(([label, action]) => {
+                  if (action === 'enter') {
+                    return (
+                      <button
+                        className={`keycap keycap-utility keycap-enter ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          handleUtilityInput('enter')
+                          restoreEditorFocus()
+                        }}
                         onPointerDown={preventVirtualKeyboardFocus}
+                      >
+                        {label}
+                      </button>
+                    )
+                  }
+
+                  return (
+                    <button
+                      className={`keycap ${getKeycapClass(label)}`}
+                      data-key-label={label}
+                      key={label}
+                      type="button"
+                      onClick={() => {
+                        handleInput(action as number, label)
+                        restoreEditorFocus()
+                      }}
+                      onPointerDown={preventVirtualKeyboardFocus}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+
+              <div className="keyboard-row keyboard-row-shift" data-testid="keyboard-row-shift">
+                {keyboardRows.bottom.map(([label, action]) => {
+                  if (action === 'leftShift' || action === 'rightShift') {
+                    return (
+                      <button
+                        className={`keycap keycap-utility keycap-modifier ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        data-modifier-key={action}
+                        data-modifier-mode={engineState.modifierState[action]}
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          handleModifierMainClick(action)
+                          restoreEditorFocus()
+                        }}
+                        onPointerDown={preventVirtualKeyboardFocus}
+                      >
+                        {label}
+                      </button>
+                    )
+                  }
+
+                  if (action === 'period' || action === 'semicolon') {
+                    return (
+                      <button
+                        className={`keycap keycap-utility ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        key={label}
+                        type="button"
                         onClick={() => {
                           handleUtilityInput(action)
                           restoreEditorFocus()
                         }}
+                        onPointerDown={preventVirtualKeyboardFocus}
+                      >
+                        {label}
+                      </button>
+                    )
+                  }
+
+                  return (
+                    <button
+                      className={`keycap ${getKeycapClass(label)}`}
+                      data-key-label={label}
+                      key={label}
+                      type="button"
+                      onClick={() => {
+                        handleInput(action as number, label)
+                        restoreEditorFocus()
+                      }}
+                      onPointerDown={preventVirtualKeyboardFocus}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+
+              <div className="keyboard-row keyboard-row-bottom" data-testid="keyboard-row-bottom">
+                {keyboardRows.nav.map(([label, action]) => {
+                  if (action === 'leftCtrl' || action === 'rightCtrl') {
+                    return (
+                      <button
+                        className={`keycap keycap-utility keycap-modifier ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        data-modifier-key={action}
+                        data-modifier-mode={engineState.modifierState[action]}
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          handleModifierMainClick(action)
+                          restoreEditorFocus()
+                        }}
+                        onPointerDown={preventVirtualKeyboardFocus}
+                      >
+                        {label}
+                      </button>
+                    )
+                  }
+
+                  if (action === 'space') {
+                    return (
+                      <button
+                        className={`keycap keycap-utility keycap-space ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          handleUtilityInput('space')
+                          restoreEditorFocus()
+                        }}
+                        onPointerDown={preventVirtualKeyboardFocus}
                       >
                         {label}
                       </button>
@@ -482,14 +530,38 @@ export function ImeWorkbench() {
                       data-key-label={label}
                       key={label}
                       type="button"
-                      onPointerDown={(event) => {
-                        preventVirtualKeyboardFocus(event)
-                        handleVirtualBackspacePointerDown()
+                      onClick={(event) => {
+                        if ((action === 'arrowLeft' || action === 'arrowRight') && event.detail !== 0) {
+                          return
+                        }
+
+                        handleNavigationInput(action as 'arrowLeft' | 'arrowRight' | 'home' | 'end')
                         restoreEditorFocus()
                       }}
-                      onPointerUp={clearBackspaceRepeat}
-                      onPointerCancel={clearBackspaceRepeat}
-                      onPointerLeave={clearBackspaceRepeat}
+                      onPointerCancel={
+                        action === 'arrowLeft' || action === 'arrowRight'
+                          ? clearNavigationRepeat
+                          : undefined
+                      }
+                      onPointerDown={(event) => {
+                        preventVirtualKeyboardFocus(event)
+
+                        if (action === 'arrowLeft' || action === 'arrowRight') {
+                          handleVirtualNavigationPointerDown(action)
+                        }
+
+                        restoreEditorFocus()
+                      }}
+                      onPointerLeave={
+                        action === 'arrowLeft' || action === 'arrowRight'
+                          ? clearNavigationRepeat
+                          : undefined
+                      }
+                      onPointerUp={
+                        action === 'arrowLeft' || action === 'arrowRight'
+                          ? clearNavigationRepeat
+                          : undefined
+                      }
                     >
                       {label}
                     </button>
@@ -498,27 +570,39 @@ export function ImeWorkbench() {
               </div>
             </div>
           </div>
-
         </aside>
       </section>
 
-      <section className="panel info-panel">
-        <div className="stack">
-          <strong>Service notes</strong>
-          <div className="mono">
-            committed + active jamo ids are rendered through the Unicode mapper.
+      <section className="panel info-panel" id="service-notes">
+        <div className="notes-grid">
+          <div className="stack">
+            <strong>기반 원칙</strong>
+            <div className="note-card">병서 원리 기반으로 초성·중성·종성을 순차 조합합니다.</div>
+            <div className="note-card">Shift + 문자는 정의된 전체 쌍자모 table에 따라 승격합니다.</div>
+            <div className="note-card">Ctrl + 문자는 정의된 전체 자형 변환 table에 따라 바뀝니다.</div>
           </div>
-          <div className="mono">history: {engineState.active.inputHistory.join(', ') || 'empty'}</div>
-          <div className="mono">
-            paste support: compatibility jamo, conjoining jamo, modern precomposed hangul
+          <div className="stack">
+            <strong>부가 기능</strong>
+            <div className="note-card">Shift / Ctrl은 `none → oneshot → locked` 순서로 고정할 수 있습니다.</div>
+            <div className="note-card">일반 보기와 분해 보기를 오가며 결과를 바로 확인할 수 있습니다.</div>
+            <div className="note-card">입력 단계 기준 undo, 선택 복사, 줄 단위 편집을 함께 지원합니다.</div>
           </div>
-          <div className="mono">hardware utilities: Ctrl+Space, Ctrl+., Ctrl+;, Enter newline</div>
-          <div>1. 일반 자모(ㄱ-ㅎ, ㅏ-ㅣ)만 직접 입력</div>
-          <div>{'2. L/R Ctrl, L/R Shift는 키보드에서 none -> oneshot -> locked 순환'}</div>
-          <div>3. 모바일도 modifier + Space / . / ; 방식 유지</div>
-          <div>4. Input-step undo and local reparse</div>
         </div>
       </section>
+
+      <footer className="footer panel">
+        <div className="footer-row">
+          <a href={REPOSITORY_URL} rel="noreferrer" target="_blank">
+            GitHub
+          </a>
+          <span>개선 사항 / 문의 사항은 Issue로 남겨주세요.</span>
+        </div>
+        <div className="footer-row footer-row-secondary">
+          <span>Made by mathpaul3</span>
+          <span>Version {VERSION}</span>
+          <span>License {LICENSE}</span>
+        </div>
+      </footer>
     </main>
   )
 }

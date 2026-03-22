@@ -22,7 +22,6 @@ import {
   resolveBeforeInputInterop,
   resolveCompositionEndInterop,
 } from '@/features/ime/services/inputInterop'
-import { buildCompactSurfaceSummary } from '@/features/ime/services/interactionSummary'
 import {
   getLongPressModifierMode,
   getNextModifierMode,
@@ -141,10 +140,6 @@ export function useImeWorkbench() {
   const renderedCaretIndex = useMemo(
     () => caretIndex + compositionUnits.length,
     [caretIndex, compositionUnits.length],
-  )
-  const compactSurfaceSummary = useMemo(
-    () => buildCompactSurfaceSummary(selectionRange, engineState.modifierState),
-    [engineState.modifierState, selectionRange],
   )
   const renderedText = useMemo(() => renderedUnits.join(''), [renderedUnits])
 
@@ -609,15 +604,16 @@ export function useImeWorkbench() {
 
     flashVirtualKey(utilityLabelMap[utilityKey])
 
+    if (utilityKey === 'enter') {
+      recentImeCommitRef.current = '\n'
+      handleLiteralInput('\n')
+      return
+    }
+
     commitCompositionToDocument()
 
     if (selectionRangeRef.current) {
       deleteSelection()
-    }
-
-    if (utilityKey === 'enter') {
-      dispatch({ type: 'literalInput', text: '\n' })
-      return
     }
 
     const ctrlActive =
@@ -728,6 +724,12 @@ export function useImeWorkbench() {
 
     if (isLineBreakBeforeInput(nativeEvent.inputType, nativeEvent.data)) {
       event.preventDefault()
+
+      if (recentImeCommitRef.current === '\n') {
+        recentImeCommitRef.current = null
+        return
+      }
+
       handleLiteralInput('\n')
       return
     }
@@ -1042,7 +1044,6 @@ export function useImeWorkbench() {
     selectionRange,
     renderedUnits,
     renderedCaretIndex,
-    compactSurfaceSummary,
     engineState,
     hardwareModifierState,
     pressedVisualKeys,

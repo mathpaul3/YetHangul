@@ -60,6 +60,7 @@
 - 큰 방향 변경이나 spec 변경은 handoff 문서와 함께 고정한다.
 - 반복되는 task는 한 단계에서 멈추지 않고 더 작은 sub-task id로 계속 분해한다.
 - Atomic Queue가 소진되면 남은 Partial을 기준으로 새 smoke/proof task를 다시 만든다.
+- 구현 단계 말미의 nav / footer / legal / analytics / branding 작업은 하나의 service shell 묶음으로 다루고, 실제 사용 기반 polish와 함께 처리한다.
 
 ## Keyboard Policy
 
@@ -154,6 +155,7 @@
 - Docker 기반 배포를 사용한다.
 - GitHub Actions workflow는 `main`/`master` push와 `workflow_dispatch`를 지원한다.
 - Docker Hub push 후 NAS 서버에서 pull/run 하는 구조다.
+- Google Analytics는 `VITE_GA_TRACKING_ID`가 제공될 때만 로드하는 optional scaffold로 둔다.
 
 ## Scope Clarification
 

@@ -14,6 +14,7 @@
 - “자연스럽다”, “직관적이다” 같은 표현은 테스트 가능한 기준으로 바꿔 적는다.
 - spec을 update할 정도의 작업이 진행되었다면 commit을 고려한다.
 - 프로젝트 진행 중 범용적으로 재사용할 수 있는 개념, 운영 규칙, proof 패턴이 생기면 boilerplate/process 문서에도 함께 반영한다.
+- 구현 말미의 nav / footer / legal / analytics / branding은 흩어진 소작업보다 `service shell` 묶음으로 처리하는 쪽을 우선 검토한다.
 
 Coordinator가 있는 멀티 Agent 프로젝트라면 아래 운영 규칙도 기본값으로 두는 것을 권장한다.
 

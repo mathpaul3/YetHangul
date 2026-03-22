@@ -50,34 +50,9 @@ textarea {
 }
 
 .page-shell {
-  width: min(1120px, calc(100vw - 32px));
+  width: min(1180px, calc(100vw - 32px));
   margin: 0 auto;
-  padding: 32px 0 48px;
-}
-
-.hero {
-  display: grid;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.hero h1 {
-  margin: 0;
-  font-size: clamp(2.25rem, 5vw, 4rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-}
-
-.hero p {
-  margin: 0;
-  max-width: 720px;
-  font-size: 1.05rem;
-}
-
-.workspace-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
+  padding: 20px 0 32px;
 }
 
 .panel {
@@ -88,14 +63,97 @@ textarea {
   box-shadow: 0 18px 50px rgba(76, 54, 40, 0.08);
 }
 
-.editor-panel {
+.topnav,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+}
+
+.topnav {
+  margin-bottom: 18px;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.brand-copy strong {
+  font-size: 1.15rem;
+}
+
+.brand-copy span {
+  color: #6e5948;
+  font-size: 0.92rem;
+}
+
+.brand-mark {
+  width: 76px;
+  height: 76px;
+  flex: 0 0 auto;
+}
+
+.brand-mark-compact {
+  width: 56px;
+  height: 56px;
+}
+
+.brand-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.topnav-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.topnav-links a,
+.footer a {
+  color: #7a2f12;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.topnav-pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ede1ca;
+  color: #5f4734;
+  font-size: 0.9rem;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1.1fr;
+  gap: 20px;
+}
+
+.editor-panel,
+.control-panel,
+.info-panel {
   display: grid;
   gap: 16px;
   padding: 20px;
 }
 
 .editor-output {
-  min-height: 280px;
+  min-height: 320px;
   padding: 18px;
   border-radius: 16px;
   border: 1px solid rgba(36, 27, 22, 0.1);
@@ -107,7 +165,6 @@ textarea {
 
 .editor-surface {
   display: block;
-  gap: 0;
   letter-spacing: 0;
   user-select: none;
 }
@@ -119,7 +176,7 @@ textarea {
 .editor-unit {
   display: inline-flex;
   align-items: stretch;
-  min-height: 1.4em;
+  min-height: 1.3em;
   padding: 0;
   border-radius: 8px;
   white-space: pre-wrap;
@@ -154,7 +211,7 @@ textarea {
 
 .caret {
   width: 2px;
-  min-height: 1.35em;
+  min-height: 1.25em;
   border-radius: 999px;
   background: transparent;
 }
@@ -172,34 +229,13 @@ textarea {
 .editor-decomposed-unit {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.8em;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
 }
 
 .meta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.compact-state-rail {
-  display: none;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.compact-state-badge {
-  padding: 6px 10px;
-  font-size: 0.84rem;
-}
-
-.compact-state-badge-oneshot {
-  background: #b14d1f;
-  color: #fffaf5;
-}
-
-.compact-state-badge-locked {
-  background: #6f2c91;
-  color: #fffaf5;
 }
 
 .badge {
@@ -225,59 +261,35 @@ textarea {
   opacity: 0.5;
 }
 
-.control-panel {
+.badge-icon-button {
+  width: 42px;
+  padding-inline: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-copy {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.stack {
   display: grid;
+  gap: 12px;
+}
+
+.keyboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  padding: 20px;
 }
 
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.utility-grid {
-  display: grid;
-  grid-template-columns: 2.2fr 1fr 1fr 1.6fr;
-  gap: 10px;
-}
-
-.button-grid button {
-  border: none;
-  border-radius: 14px;
-  padding: 14px 12px;
-  background: #2f6a68;
-  color: #fffaf5;
-  cursor: pointer;
-}
-
-.utility-grid button {
-  border: none;
-  border-radius: 14px;
-  padding: 14px 12px;
-  background: #b56239;
-  color: #fffaf5;
-  cursor: pointer;
-}
-
-.button-grid button.secondary {
-  background: #b56239;
-}
-
-.button-row {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.button-row button {
-  border: none;
-  border-radius: 14px;
-  padding: 14px 12px;
-  background: #7f4f34;
-  color: #fffaf5;
-  cursor: pointer;
+.keyboard-heading p {
+  margin: 4px 0 0;
+  color: #6e5948;
+  font-size: 0.92rem;
 }
 
 .keyboard-shell {
@@ -294,48 +306,47 @@ textarea {
   gap: 8px;
 }
 
+.keyboard-row-number {
+  grid-template-columns: repeat(10, minmax(0, 1fr)) 1.5fr;
+}
+
 .keyboard-row-1 {
   grid-template-columns: repeat(10, minmax(0, 1fr));
 }
 
-.keyboard-row-number {
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-}
-
 .keyboard-row-2 {
-  grid-template-columns: repeat(9, minmax(0, 1fr));
-  padding-inline: 10px;
-}
-
-.keyboard-row-3 {
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  padding-inline: 48px;
+  grid-template-columns: repeat(9, minmax(0, 1fr)) 1.35fr;
+  padding-inline: 14px;
 }
 
 .keyboard-row-shift {
-  grid-template-columns: 1.6fr repeat(7, minmax(0, 1fr)) 1.6fr;
-}
-
-.keyboard-row-nav {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1.45fr repeat(8, minmax(0, 1fr)) 1.45fr;
 }
 
 .keyboard-row-bottom {
-  grid-template-columns: 1.2fr 1.2fr minmax(0, 3.2fr) 0.8fr 0.8fr 1.2fr 1.35fr;
+  grid-template-columns: 1.15fr 1.15fr minmax(0, 3fr) 1fr 1fr 1fr 1fr;
 }
 
 .keycap {
   min-height: 52px;
+  min-width: 0;
   border: none;
   border-radius: 14px;
   background: #7f4f34;
   color: #fffaf5;
   cursor: pointer;
-  min-width: 0;
 }
 
 .keycap-utility {
   background: #b56239;
+}
+
+.keycap-modifier.modifier-active {
+  background: #b14d1f;
+}
+
+.keycap-modifier.modifier-locked {
+  background: #6f2c91;
 }
 
 .keycap-pressed {
@@ -344,50 +355,39 @@ textarea {
   transform: translateY(1px);
 }
 
-.keycap-cluster {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  min-width: 0;
-  background: transparent;
+.keycap-space {
+  letter-spacing: 0.04em;
 }
 
-.keycap-cluster-main {
-  min-height: 52px;
-  border: none;
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.note-card {
+  padding: 12px 14px;
   border-radius: 14px;
-  padding: 10px 8px;
-  background: #2f6a68;
-  color: #fffaf5;
-  cursor: pointer;
-  text-align: left;
+  background: rgba(255, 251, 245, 0.92);
+  border: 1px solid rgba(36, 27, 22, 0.08);
 }
 
-.keycap-cluster.modifier-active {
-  background: transparent;
+.footer {
+  margin-top: 20px;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.keycap-cluster.modifier-locked {
-  background: transparent;
-}
-
-.keycap-cluster.modifier-active .keycap-cluster-main {
-  background: #b14d1f;
-  box-shadow: inset 0 0 0 2px rgba(255, 250, 245, 0.25);
-}
-
-.keycap-cluster.modifier-locked .keycap-cluster-main {
-  background: #6f2c91;
-  box-shadow: inset 0 0 0 2px rgba(255, 250, 245, 0.3);
-}
-
-.stack {
-  display: grid;
+.footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.95rem;
+.footer-row-secondary {
+  color: #6e5948;
+  font-size: 0.92rem;
 }
 
 @media (max-width: 1120px) {
@@ -397,42 +397,38 @@ textarea {
 }
 
 @media (max-width: 1024px) {
-  .page-shell {
-    width: min(100vw - 24px, 960px);
-    padding: 24px 0 40px;
-  }
-
-  .editor-output {
-    min-height: 240px;
-    font-size: 1.75rem;
-  }
   .workspace-grid {
     grid-template-columns: 1fr;
+  }
+
+  .topnav,
+  .keyboard-heading,
+  .footer-row {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 768px) {
   .page-shell {
     width: calc(100vw - 20px);
-    padding: 20px 0 28px;
+    padding: 16px 0 24px;
   }
 
   .editor-panel,
-  .control-panel {
+  .control-panel,
+  .info-panel {
     padding: 16px;
   }
 
   .editor-output {
-    min-height: 200px;
+    min-height: 220px;
     padding: 14px;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
-  .keycap,
-  .keycap-cluster-main,
-  .utility-grid button {
-    min-height: 48px;
-    font-size: 0.95rem;
+  .topnav-links {
+    justify-content: flex-start;
   }
 
   .keyboard-shell {
@@ -440,110 +436,66 @@ textarea {
     padding: 12px;
   }
 
-  .keyboard-row-2 {
-    padding-inline: 12px;
-  }
-
-  .keyboard-row-3 {
-    padding-inline: 36px;
+  .keycap {
+    min-height: 46px;
+    font-size: 0.92rem;
   }
 
   .keyboard-row-shift {
-    grid-template-columns: 1.45fr repeat(7, minmax(0, 1fr)) 1.45fr;
+    grid-template-columns: 1.3fr repeat(8, minmax(0, 1fr)) 1.3fr;
   }
-
-  .keyboard-row-nav {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .keyboard-row-bottom {
-    grid-template-columns: 1.05fr 1.05fr minmax(0, 2.6fr) 0.8fr 0.8fr 1.1fr 1.2fr;
-  }
-
 }
 
 @media (max-width: 560px) {
   .page-shell {
     width: calc(100vw - 16px);
-    padding: 16px 0 24px;
+    padding: 14px 0 20px;
   }
 
-  .hero h1 {
-    font-size: clamp(2rem, 9vw, 2.75rem);
+  .badge {
+    font-size: 0.86rem;
   }
 
-  .hero p,
-  .badge,
-  .mono {
-    font-size: 0.9rem;
-  }
-
-  .compact-state-rail {
-    display: flex;
-  }
-
-  .keyboard-row-2 {
-    padding-inline: 8px;
-  }
-
-  .keyboard-row-3 {
-    padding-inline: 24px;
-  }
-
-  .keyboard-row-shift {
-    grid-template-columns: 1.2fr repeat(7, minmax(0, 1fr)) 1.2fr;
-  }
-
-  .keyboard-row-nav {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .notes-grid {
+    grid-template-columns: 1fr;
   }
 
   .keyboard-row-bottom {
-    grid-template-columns: 1fr 1fr minmax(0, 2.2fr) 0.75fr 0.75fr 1fr 1.05fr;
+    grid-template-columns: 1fr 1fr minmax(0, 2.1fr) 0.85fr 0.85fr 0.85fr 0.85fr;
   }
 
+  .keycap {
+    min-height: 42px;
+    border-radius: 12px;
+    font-size: 0.84rem;
+  }
 }
 
 @media (max-width: 420px) {
-  .editor-panel,
-  .control-panel {
-    padding: 12px;
+  .page-shell {
+    width: calc(100vw - 12px);
   }
 
-  .keyboard-shell {
-    padding: 10px;
-    gap: 8px;
+  .brand-copy span,
+  .keyboard-heading p,
+  .footer-row-secondary {
+    font-size: 0.84rem;
   }
 
   .keyboard-row {
     gap: 6px;
   }
 
-  .keyboard-row-2 {
-    padding-inline: 4px;
-  }
-
-  .keyboard-row-3 {
-    padding-inline: 12px;
-  }
-
   .keyboard-row-shift {
-    grid-template-columns: 1.2fr repeat(7, minmax(0, 1fr)) 1.2fr;
-  }
-
-  .keyboard-row-nav {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: 1.15fr repeat(8, minmax(0, 1fr)) 1.15fr;
   }
 
   .keyboard-row-bottom {
-    grid-template-columns: 0.95fr 0.95fr minmax(0, 1.85fr) 0.72fr 0.72fr 0.95fr 1fr;
+    grid-template-columns: 0.92fr 0.92fr minmax(0, 1.9fr) 0.78fr 0.78fr 0.78fr 0.78fr;
   }
 
-  .keycap,
-  .keycap-cluster-main,
-  .utility-grid button {
-    min-height: 44px;
-    border-radius: 12px;
-    padding: 10px 8px;
+  .keycap {
+    min-height: 38px;
+    font-size: 0.76rem;
   }
 }

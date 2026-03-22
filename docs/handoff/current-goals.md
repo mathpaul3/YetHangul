@@ -20,19 +20,19 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 
 ## Current Iteration Goals
 
-현재 iteration은 종료되었고, 다음 라운드 전까지는 아래 3개만 유지한다.
+현재 iteration은 구현 마무리와 실제 사용 기반 polish 단계다.
 
-1. smoke / regression 자산의 회귀 방지
-2. 새 브라우저/기기군 추가 시 proof 확장 준비
-3. spec / handoff / boilerplate 동기화 유지
+1. 실제 사용 중 발견되는 UX 문제를 작은 묶음으로 빠르게 닫는다.
+2. service shell(nav / footer / legal / analytics / branding)을 한 번에 정리한다.
+3. smoke / regression / handoff / boilerplate를 현재 구현 상태와 계속 동기화한다.
 
 ## Immediate Queue
 
-현재 라운드의 즉시 작업은 모두 landed 되었고, 당분간은 아래만 유지한다.
+현재 라운드의 즉시 작업은 live usage polish 기준으로 아래만 유지한다.
 
-1. 새 회귀가 생기면 unit/service/e2e 중 맞는 레이어에 즉시 고정한다.
-2. 새 브라우저/기기군이 필요해지면 Playwright project를 추가한다.
-3. process/boilerplate 자산을 현재 운영 방식과 계속 동기화한다.
+1. 키보드 배열, editor surface, copy/newline 같은 실제 사용 문제를 우선 수정한다.
+2. nav / footer / logo / license / analytics scaffold를 service shell 묶음으로 유지한다.
+3. 새 회귀가 생기면 unit/service/e2e 중 맞는 레이어에 즉시 고정한다.
 
 ## Atomic Queue
 
@@ -110,3 +110,4 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
 2. `Immediate Queue`에 없는 작업은 blocker, ambiguity, 또는 major milestone이 아닌 이상 뒤로 미룬다.
 3. 문서/테스트가 없는 구현은 우선순위를 낮춘다.
 4. 장황한 탐색보다, 현재 `Partial` 항목에 대응되는 proof를 1개라도 더 닫는 작업을 우선한다.
+5. 구현 마무리 단계에서는 nav / footer / legal / analytics / branding을 흩어진 소작업으로 다루지 말고, service shell task로 묶어 처리한다.

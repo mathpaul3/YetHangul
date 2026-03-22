@@ -158,7 +158,7 @@
 - user agent 기반 선호 모드와 keyboard event adapter는 구현
 - 좌/우 Ctrl/Shift 상태는 keydown/keyup 기반으로 추적
 - blur / visibilitychange 시 stuck modifier 방지를 위한 hardware state reset을 추가함
-- touch-capable heuristic은 `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 regression test로 일부 커버하기 시작함
+- touch-capable heuristic은 `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 regression test로 일부 커버하기 시작했고, coarse-pointer-only path도 matrix에 포함함
 - 왜 Partial인지:
   - 현재 감지는 user agent와 keyboard event 기반 heuristics에 의존한다.
   - touch-capable desktop signal 자체는 일부 회귀로 잠갔지만, 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.

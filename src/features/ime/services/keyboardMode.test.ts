@@ -90,12 +90,22 @@ describe('keyboard mode detection', () => {
     },
     window: undefined,
     coarsePointer: true,
-    expected: 'auto',
-  },
-  {
-    name: 'prefers hardware mode for desktop user agents without touch',
-    navigator: {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+      expected: 'auto',
+    },
+    {
+      name: 'prefers auto mode when touch is exposed only through coarse pointer media queries',
+      navigator: {
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+        maxTouchPoints: 0,
+      },
+      window: undefined,
+      coarsePointer: true,
+      expected: 'auto',
+    },
+    {
+      name: 'prefers hardware mode for desktop user agents without touch',
+      navigator: {
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
       maxTouchPoints: 0,
     },
     window: {},

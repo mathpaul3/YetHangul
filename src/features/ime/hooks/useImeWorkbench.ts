@@ -33,6 +33,7 @@ import {
   getLineEndIndex,
   getLineStartIndex,
   insertUnitsAt,
+  normalizeSelectionRangeToDocument,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
@@ -118,6 +119,21 @@ export function useImeWorkbench() {
 
   useEffect(() => {
     documentUnitsRef.current = documentUnits
+    const nextCaretIndex = clampCaretIndex(caretIndexRef.current, documentUnits.length)
+    if (nextCaretIndex !== caretIndexRef.current) {
+      caretIndexRef.current = nextCaretIndex
+      setCaretIndex(nextCaretIndex)
+    }
+
+    const nextSelectionRange = normalizeSelectionRangeToDocument(
+      selectionRangeRef.current,
+      documentUnits.length,
+    )
+
+    if (nextSelectionRange !== selectionRangeRef.current) {
+      selectionRangeRef.current = nextSelectionRange
+      setSelectionRange(nextSelectionRange)
+    }
   }, [documentUnits])
 
   useEffect(() => {

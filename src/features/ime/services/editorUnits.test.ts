@@ -10,6 +10,7 @@ import {
   getLineStartIndex,
   getSelectionBounds,
   insertUnitsAt,
+  normalizeSelectionRangeToDocument,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
@@ -157,6 +158,15 @@ describe('editorUnits', () => {
   it('returns normalized selection bounds', () => {
     expect(getSelectionBounds({ start: 4, end: 1 })).toEqual({ start: 1, end: 4 })
     expect(getSelectionBounds(null)).toBeNull()
+  })
+
+  it('normalizes selections into the current document bounds after document shrinkage', () => {
+    expect(normalizeSelectionRangeToDocument({ start: 1, end: 4 }, 2)).toEqual({
+      start: 1,
+      end: 2,
+    })
+    expect(normalizeSelectionRangeToDocument({ start: 2, end: 2 }, 2)).toBeNull()
+    expect(normalizeSelectionRangeToDocument(null, 2)).toBeNull()
   })
 
   it('clamps caret indices into valid editor bounds', () => {

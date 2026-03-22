@@ -202,6 +202,29 @@ export function getSelectionBounds(selectionRange: UnitSelectionRange) {
   }
 }
 
+export function normalizeSelectionRangeToDocument(
+  selectionRange: UnitSelectionRange,
+  unitCount: number,
+) {
+  const bounds = getSelectionBounds(selectionRange)
+
+  if (bounds == null) {
+    return null
+  }
+
+  const start = clampCaretIndex(bounds.start, unitCount)
+  const end = clampCaretIndex(bounds.end, unitCount)
+
+  if (start === end) {
+    return null
+  }
+
+  return {
+    start,
+    end,
+  }
+}
+
 export function deleteBackwardUnit(
   units: string[],
   caretIndex: number,

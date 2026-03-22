@@ -63,13 +63,13 @@
 
 - Status: `Partial`
 - 문제:
-  - 하드웨어 `Backspace` 길게 누르기, 화살표 길게 누르기 같은 auto-repeat가 on-screen에는 없다.
+  - 하드웨어 `Backspace` 길게 누르기, 화살표 길게 누르기 같은 auto-repeat가 on-screen에는 아직 utility-row 전반으로 확장되지 않았다.
 - 현재 대응:
   - on-screen `Backspace`는 long press 시 repeat timer로 반복 삭제를 지원한다.
+  - on-screen navigation row(`←`, `→`, `Home`, `End`)가 추가되어 editor-layer caret 이동은 하드웨어 없이도 사용할 수 있다.
   - `beforeinput`의 줄바꿈/삭제 경로도 editor-layer에 연결되어 있어 기본 편집 동작과의 간극을 줄였다.
 - 남은 차이:
-  - 화살표 key 자체가 아직 on-screen에 없다.
-  - 다른 utility key의 auto-repeat는 제공하지 않는다.
+  - 다른 utility key의 auto-repeat와 long-press 계약은 아직 제공하지 않는다.
 
 ## 8. composition 이벤트 개입 차이
 
@@ -101,4 +101,4 @@
 
 1. composition 이벤트의 실제 DOM surface 회귀 테스트 확대
 2. caret/selection edge case 회귀 테스트 확대
-3. 화살표 key를 on-screen에 둘지 여부 검토
+3. navigation row와 remaining utility-key auto-repeat parity를 smoke coverage로 고정하기

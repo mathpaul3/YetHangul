@@ -70,12 +70,13 @@
 - 하드웨어 경로에서는 실제 한글 자모 key value(`ㄱ`, `ㅏ`, `ㄴ` 등)가 들어온 경우에만 엔진 조합 입력으로 본다.
 - 로마자/기타 외국어 입력은 literal text로 그대로 통과시킨다.
 - 특수 입력은 `L/R Ctrl`, `L/R Shift` 버튼 또는 물리 modifier 조합으로 접근한다.
-- 온스크린 UI는 두벌식 QWERTY 한글 배열을 그대로 따르는 일반 자모 버튼과 숫자 row, `L/R Ctrl`, `L/R Shift`, `Space`, `.`, `;`, `Backspace`를 같은 키보드 배열 안에 배치한다.
+- 온스크린 UI는 두벌식 QWERTY 한글 배열을 그대로 따르는 일반 자모 버튼과 숫자 row, `L/R Ctrl`, `L/R Shift`, `Space`, `.`, `;`, `Backspace`, navigation row(`←`, `→`, `Home`, `End`)를 같은 키보드 배열 안에 배치한다.
 - 자체 자판은 60% 키보드 느낌을 유지하고, 반응형에서도 각 줄의 QWERTY 배열 자체는 무너지지 않게 유지한다.
 - 별도 modifier 패널은 두지 않고, 키보드만 남기는 방향으로 간다.
 - `Space`는 기본적으로 일반 공백을 입력한다.
 - 채움문자와 방점은 별도 상시 버튼보다 `modifier + Space / . / ;` 방식으로 유지한다.
 - 즉 `L/R Ctrl + Space`일 때만 filler, `L/R Ctrl + .` / `L/R Ctrl + ;`일 때만 방점 입력으로 처리한다.
+- navigation row의 `←` / `→`는 long press repeat로 caret 이동을 지원한다.
 
 ## Modifier Policy
 

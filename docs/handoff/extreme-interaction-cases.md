@@ -292,6 +292,7 @@
   - 앞/뒤 고정 구간이 유지되는지 확인하는 long-document stability 테스트
   - 현재 `editorUnits.test.ts`에 long-document replacement / boundary delete / copy stability 회귀가 추가됨
   - selection replacement 뒤 enter/backspace/delete 조합 회귀가 추가됨
+  - long-document copy serialization stability 회귀가 추가됨
 
 ## 19. beforeinput/composition delete/enter after focus regain
 
@@ -332,6 +333,7 @@
   - on-screen Enter / Backspace / modifier / copy flow가 hardware와 같은 contract를 따르는지 확인하는 테스트
   - 현재 `keyboardMode.test.ts`와 `inputParity.test.ts`에 mode detection 및 hardware/onscreen parity 회귀가 추가됨
   - enter/backspace parity after a selection-like edit sequence도 테스트로 고정됨
+  - small parity matrix with filler / newline / backspace-like edits도 테스트로 고정됨
 
 ## 21. native selection / clipboard serialization 경계
 

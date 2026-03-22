@@ -136,7 +136,7 @@
 - Done 조건:
   - input-parity-checklist의 on-screen 관련 항목이 모두 Done이 되고, on-screen keyboard의 키 배치/피드백이 hardware와의 체감 차이를 더 이상 유의미하게 만들지 않을 때.
 - Next proof needed:
-  - Cross-browser smoke test showing on-screen modifier, Backspace repeat, Enter, and copy flows matching hardware parity.
+  - Cross-browser smoke test showing on-screen modifier, navigation row, Backspace repeat, Enter, and copy flows matching hardware parity.
 
 ## 17. 모바일 자체 자판
 
@@ -181,6 +181,7 @@
 - blur 시 조합 중이던 buffer를 document에 commit하고, recent IME duplicate marker를 초기화하도록 보강함
 - `Enter`는 줄바꿈 literal input으로 처리되도록 연결함
 - `beforeinput` / `composition*` 경로에 대한 회귀 테스트를 확장했고, delete/enter/focus-regain 시나리오를 QA regression으로 고정하기 시작함
+- focus regain 뒤 delete/enter 후 새 composition session을 허용하는 regression test가 추가됨
 - 왜 Partial인지:
   - `beforeinput` / `composition*` 경로는 연결했지만, 브라우저별 실제 DOM surface 차이까지 포괄하는 end-to-end 안정성은 아직 충분히 잠기지 않았다.
   - hardware key path와 system IME path를 같은 수준으로 검증하는 회귀 세트가 더 필요하다.
@@ -205,6 +206,7 @@
 - on-screen `Backspace`도 하드웨어 `Backspace`와 같은 editor-layer 삭제 경로를 타도록 수정함
 - document shrink 이후 caret/selection을 현재 문서 길이에 맞춰 재정규화하는 보강과 회귀 테스트를 추가함
 - blur/focus를 거친 뒤 반복 copy, CRLF paste 후 selection replacement/delete, newline-crossing selection replacement 회귀 테스트를 추가함
+- long-document copy serialization stability 회귀를 추가함
 - 왜 Partial인지:
   - caret/selection 핵심 흐름은 동작하지만, 장문 편집과 모바일 touch selection 같은 interaction edge case가 아직 남아 있다.
   - selection/caret 복사 경로와 브라우저 native selection을 완전히 같은 수준으로 잠그는 단계는 아직 아니다.

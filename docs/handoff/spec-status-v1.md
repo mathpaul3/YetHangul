@@ -145,7 +145,7 @@
 - `PC / Tablet / Mobile / Mobile-Small` 4단계 media query로 재정리함
 - 60% 키보드 줄 배열 자체는 유지하고, 폭/간격/패딩만 줄이는 방식으로 레이아웃 붕괴를 완화함
 - 왜 Partial인지:
-  - 레이아웃과 기본 입력은 갖췄지만, 모바일에서 조합 힌트와 active modifier feedback이 아직 충분히 선명하지 않다.
+  - 엔진/조합 규칙은 안정적이지만, 모바일 표면에서 조합 힌트와 active modifier feedback이 아직 충분히 선명하지 않다.
   - 터치 중심 환경에서의 안내와 시각 상태가 hardware/on-screen parity 수준까지 닿지 않았다.
 - Done 조건:
   - 모바일에서 현재 조합 상태, modifier 상태, 선택/삭제 결과가 명확히 보이고, 작은 화면에서도 60% 배열이 깨지지 않는 상태가 검증되면.
@@ -184,7 +184,7 @@
 - focus regain 뒤 delete/enter 후 새 composition session을 허용하는 regression test가 추가됨
 - hardware/on-screen parity regression에 key metadata(`code`, `location`)까지 포함한 작은 matrix가 추가됨
 - 왜 Partial인지:
-  - `beforeinput` / `composition*` 경로는 연결했지만, 브라우저별 실제 DOM surface 차이까지 포괄하는 end-to-end 안정성은 아직 충분히 잠기지 않았다.
+  - 엔진은 maintenance mode에 들어왔고, 남은 차이는 `beforeinput` / `composition*` / DOM surface parity 같은 브라우저 표면 차이 쪽에 있다.
   - hardware key path와 system IME path를 같은 수준으로 검증하는 회귀 세트가 더 필요하다.
 - Done 조건:
   - 주요 브라우저/OS 조합에서 `keydown`, `beforeinput`, `composition*`가 동일한 편집 결과로 수렴하고, 중복 commit/누락이 재현되지 않으면.
@@ -210,8 +210,8 @@
 - long-document copy serialization stability 회귀를 추가함
 - touch-like drag selection copy/replacement/delete-backspace와 pointer-cancel cleanup 회귀 테스트를 추가함
 - 왜 Partial인지:
-  - caret/selection 핵심 흐름은 동작하지만, 장문 편집과 모바일 touch selection 같은 interaction edge case가 아직 남아 있다.
-  - selection/caret 복사 경로와 브라우저 native selection을 완전히 같은 수준으로 잠그는 단계는 아직 아니다.
+  - engine-side document unit 모델은 안정적이지만, caret/selection을 둘러싼 표면 상호작용과 native selection interop이 아직 완전히 잠기지 않았다.
+  - 장문 편집과 모바일 touch selection 같은 surface-side edge case가 남아 있다.
 - Done 조건:
   - click/drag/replace/delete/home-end/newline/copy가 주요 브라우저에서 동일한 단위 모델로 안정화되고, 장문 및 모바일 interaction 회귀가 통과하면.
 - Next proof needed:
@@ -283,7 +283,7 @@
   - paste/composition/input 이벤트 완성도
   - `Shift + ㅁ` 같은 macro 규칙 정제
 - 왜 Partial인지:
-  - 섹션 16/17/18/19/19-1에 남아 있는 user-facing parity와 DOM/event edge case가 아직 MVP 수준의 최종 안정성에 도달하지 않았다.
+  - 남은 gap은 주로 section 17/18/19/19-1의 surface-side parity와 DOM/event edge case다.
   - 운영/배포는 준비되어 있지만, 입력기 본체의 최종 사용감과 브라우저 호환성을 더 잠가야 한다.
 - Done 조건:
   - 위 사용자-facing Partial 항목들이 모두 Done이 되고, spec의 핵심 입력/편집 경로가 주요 브라우저와 기기군에서 재현성 있게 통과하면.

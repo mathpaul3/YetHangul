@@ -36,6 +36,42 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 3. `beforeinput` / `composition*`의 focus-regain 및 delete/enter 흐름을 더 검증한다.
 4. hardware keyboard detection의 현재 heuristic을 문서와 테스트 기준으로 더 명확히 설명한다.
 
+## Atomic Queue
+
+반복 보고를 줄이기 위해, 남은 작업은 아래처럼 더 작은 task id 단위로 관리한다.
+subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id만** 잡아야 한다.
+이미 `Done` 또는 `Landed` 상태인 task는 다시 다루지 않는다.
+
+- `T17-1` `Done`
+  - touch-cancel 시 stale selection을 남기지 않도록 cleanup한다.
+- `T17-2` `Done`
+  - touch drag selection이 `pointerenter`에만 의존하지 않도록 fallback을 추가한다.
+- `T17-3` `Open`
+  - 모바일 small viewport에서 현재 modifier/selection 상태가 충분히 읽히는지 smoke proof를 만든다.
+- `T18-1` `Done`
+  - `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 heuristic regression으로 고정한다.
+- `T18-2` `Open`
+  - desktop/tablet connected vs disconnected keyboard matrix를 문서/테스트 수준으로 정리한다.
+- `T19-1` `Done`
+  - focus-regain 뒤 `deleteContentBackward`, `insertParagraph`, `insertLineBreak` 흐름을 regression으로 고정한다.
+- `T19-2` `Done`
+  - focus-regain 뒤 `insertFromComposition` recovery를 regression으로 고정한다.
+- `T19-3` `Open`
+  - cross-browser input surface 차이를 설명하는 최소 matrix나 smoke proof를 추가한다.
+- `T19-4` `Open`
+  - `insertReplacementText` / composition-end 계열을 더 넓은 표면 proof로 묶는다.
+- `T19-1E` `Done`
+  - long-document copy/replace/delete/shrink regression을 고정한다.
+- `T19-2E` `Open`
+  - 모바일 touch selection의 마지막 edge case를 하나 더 줄인다.
+
+### Queue Rules
+
+1. 같은 task id를 연속 두 라운드에서 다시 보고하지 않는다.
+2. `Open -> In Progress -> Landed -> Done` 중 하나로 상태를 갱신한다.
+3. `Landed`는 main 반영 완료를 뜻하고, `Done`은 남은 proof gap이 사실상 없을 때만 사용한다.
+4. 새 task를 추가할 때는 왜 기존 task로 표현할 수 없는지도 같이 적는다.
+
 ## Deprioritized For Now
 
 아래 항목은 지금 당장 파지 않는다.

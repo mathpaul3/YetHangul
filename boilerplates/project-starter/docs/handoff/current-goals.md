@@ -31,6 +31,25 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 2. 
 3. 
 
+## Atomic Queue
+
+반복 보고와 중복 작업을 줄이기 위해, 남은 작업을 더 작은 task id 단위로 관리한다.
+subagent는 새 라운드를 시작할 때 아래에서 정확히 1개 task id만 잡는다.
+
+- `T1` `Open`
+  - 
+- `T2` `Open`
+  - 
+- `T3` `Open`
+  - 
+
+### Queue Rules
+
+1. 같은 task id를 연속 두 라운드에서 다시 보고하지 않는다.
+2. `Open -> In Progress -> Landed -> Done` 중 하나로 상태를 갱신한다.
+3. `Landed`는 main 반영 완료를 뜻하고, `Done`은 남은 proof gap이 사실상 없을 때만 사용한다.
+4. 새 task를 추가할 때는 왜 기존 task로 표현할 수 없는지도 같이 적는다.
+
 ## Deprioritized For Now
 
 지금 당장 하지 않을 작업을 적는다.

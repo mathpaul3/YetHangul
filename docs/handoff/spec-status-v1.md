@@ -178,6 +178,7 @@
 - `beforeinput`의 `insertParagraph`도 editor-layer 줄바꿈 경로로 연결함
 - blur 시 조합 중이던 buffer를 document에 commit하고, recent IME duplicate marker를 초기화하도록 보강함
 - `Enter`는 줄바꿈 literal input으로 처리되도록 연결함
+- `beforeinput` / `composition*` 경로에 대한 회귀 테스트를 확장했고, delete/enter/focus-regain 시나리오를 QA regression으로 고정하기 시작함
 - 왜 Partial인지:
   - `beforeinput` / `composition*` 경로는 연결했지만, 브라우저별 실제 DOM surface 차이까지 포괄하는 end-to-end 안정성은 아직 충분히 잠기지 않았다.
   - hardware key path와 system IME path를 같은 수준으로 검증하는 회귀 세트가 더 필요하다.
@@ -200,6 +201,8 @@
 - unit 위 클릭은 caret 이동, drag일 때만 selection 생성으로 interaction을 보정함
 - selection replacement와 Backspace/Delete의 newline unit 처리도 helper 기반으로 정리함
 - on-screen `Backspace`도 하드웨어 `Backspace`와 같은 editor-layer 삭제 경로를 타도록 수정함
+- document shrink 이후 caret/selection을 현재 문서 길이에 맞춰 재정규화하는 보강과 회귀 테스트를 추가함
+- blur/focus를 거친 뒤 반복 copy, CRLF paste 후 selection replacement/delete, newline-crossing selection replacement 회귀 테스트를 추가함
 - 왜 Partial인지:
   - caret/selection의 핵심 편집 흐름은 동작하지만, 장문 편집과 모바일 touch selection 같은 실제 사용자 interaction edge case가 아직 남아 있다.
   - selection/caret 복사 경로와 브라우저 native selection을 완전히 동일한 수준으로 잠그는 단계는 아직 아니다.
@@ -252,7 +255,7 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 110
+- 현재 테스트 수: 117
 
 ## 24. MVP 완료 정의
 

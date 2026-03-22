@@ -53,6 +53,12 @@
 - 이 direct symbol은 기본 자판 입력용이 아니라, 목표 inventory 전체를 내부 표현/붙여넣기/렌더링 기준으로 수용하기 위한 확장 레이어다.
 - 현재는 초성/중성/종성 target inventory 전 범위를 direct inventory symbol까지 포함해 테이블상 수용한다.
 
+## Coordination Policy
+
+- Coordinator는 우선순위와 문서 동기화를 계속 책임진다.
+- subagent는 disjoint write scope 안에서만 작업한다.
+- 큰 방향 변경이나 spec 변경은 handoff 문서와 함께 고정한다.
+
 ## Keyboard Policy
 
 - 데스크톱: 하드웨어 키보드 우선

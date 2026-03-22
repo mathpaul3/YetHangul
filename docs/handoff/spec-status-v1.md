@@ -129,12 +129,12 @@
 - on-screen `Backspace`는 long press repeat를 지원해 하드웨어 auto-repeat와의 차이를 일부 줄임
 - meta-row의 modifier 상태 텍스트는 제거됨
 - 왜 Partial인지:
-  - 기능적 경로는 대부분 맞췄지만, on-screen modifier 사용감과 utility key parity가 아직 hardware parity와 완전히 일치하지 않는다.
+  - 기능은 대부분 맞췄지만, on-screen modifier 사용감과 utility key parity가 hardware parity와 아직 완전히 같지 않다.
   - `docs/handoff/input-parity-checklist.md`의 modifier 사용감 / auto-repeat / composition / caret-selection 항목이 아직 Partial이다.
 - Done 조건:
   - input-parity-checklist의 on-screen 관련 항목이 모두 Done이 되고, on-screen keyboard의 키 배치/피드백이 hardware와의 체감 차이를 더 이상 유의미하게 만들지 않을 때.
 - Next proof needed:
-  - on-screen modifier, Backspace repeat, Enter, and copy flows that match hardware parity in a cross-browser smoke test.
+  - Cross-browser smoke test showing on-screen modifier, Backspace repeat, Enter, and copy flows matching hardware parity.
 
 ## 17. 모바일 자체 자판
 
@@ -143,12 +143,12 @@
 - `PC / Tablet / Mobile / Mobile-Small` 4단계 media query로 재정리함
 - 60% 키보드 줄 배열 자체는 유지하고, 폭/간격/패딩만 줄이는 방식으로 레이아웃 붕괴를 완화함
 - 왜 Partial인지:
-  - 레이아웃과 기본 입력은 갖췄지만, 모바일에서 조합 힌트와 active modifier 피드백이 아직 충분히 명시적이지 않다.
-  - 터치 중심 환경에서의 조합 안내와 시각적 feedback이 hardware/on-screen parity 수준까지 닿지 않았다.
+  - 레이아웃과 기본 입력은 갖췄지만, 모바일에서 조합 힌트와 active modifier feedback이 아직 충분히 선명하지 않다.
+  - 터치 중심 환경에서의 안내와 시각 상태가 hardware/on-screen parity 수준까지 닿지 않았다.
 - Done 조건:
   - 모바일에서 현재 조합 상태, modifier 상태, 선택/삭제 결과가 명확히 보이고, 작은 화면에서도 60% 배열이 깨지지 않는 상태가 검증되면.
 - Next proof needed:
-  - Mobile and Mobile-Small screenshots or a smoke run that show stable rows, visible state feedback, and no layout collapse.
+  - Mobile/Mobile-Small smoke run or screenshots showing stable rows, visible state feedback, and no layout collapse.
 
 ## 18. 하드웨어 키보드 감지
 
@@ -162,7 +162,7 @@
 - Done 조건:
   - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
 - Next proof needed:
-  - A platform matrix showing the detected mode for connected and disconnected keyboard cases on desktop/tablet.
+  - A platform matrix showing detected mode for connected and disconnected keyboard cases on desktop/tablet.
 
 ## 19. 입력 이벤트 처리
 
@@ -185,7 +185,7 @@
 - Done 조건:
   - 주요 브라우저/OS 조합에서 `keydown`, `beforeinput`, `composition*`가 동일한 편집 결과로 수렴하고, 중복 commit/누락이 재현되지 않으면.
 - Next proof needed:
-  - A cross-browser input matrix covering insert, delete, enter, and composition end behavior.
+  - A cross-browser input matrix covering insert, delete, enter, and composition-end behavior.
 
 ## 19-1. 편집기 레이어
 
@@ -204,12 +204,12 @@
 - document shrink 이후 caret/selection을 현재 문서 길이에 맞춰 재정규화하는 보강과 회귀 테스트를 추가함
 - blur/focus를 거친 뒤 반복 copy, CRLF paste 후 selection replacement/delete, newline-crossing selection replacement 회귀 테스트를 추가함
 - 왜 Partial인지:
-  - caret/selection의 핵심 편집 흐름은 동작하지만, 장문 편집과 모바일 touch selection 같은 실제 사용자 interaction edge case가 아직 남아 있다.
-  - selection/caret 복사 경로와 브라우저 native selection을 완전히 동일한 수준으로 잠그는 단계는 아직 아니다.
+  - caret/selection 핵심 흐름은 동작하지만, 장문 편집과 모바일 touch selection 같은 interaction edge case가 아직 남아 있다.
+  - selection/caret 복사 경로와 브라우저 native selection을 완전히 같은 수준으로 잠그는 단계는 아직 아니다.
 - Done 조건:
   - click/drag/replace/delete/home-end/newline/copy가 주요 브라우저에서 동일한 단위 모델로 안정화되고, 장문 및 모바일 interaction 회귀가 통과하면.
 - Next proof needed:
-  - A long-document interaction run showing caret, selection, replace, delete, and copy behavior staying stable across multiple edits.
+  - A long-document interaction run showing caret, selection, replace, delete, copy, and shrink-regression stability.
 
 ## 20. 붙여넣기 정규화
 
@@ -276,7 +276,7 @@
   - paste/composition/input 이벤트 완성도
   - `Shift + ㅁ` 같은 macro 규칙 정제
 - 왜 Partial인지:
-  - 섹션 16/17/18/19/19-1에 남아 있는 사용자-facing parity와 DOM/event edge case가 아직 MVP 수준의 최종 안정성에 도달하지 않았다.
+  - 섹션 16/17/18/19/19-1에 남아 있는 user-facing parity와 DOM/event edge case가 아직 MVP 수준의 최종 안정성에 도달하지 않았다.
   - 운영/배포는 준비되어 있지만, 입력기 본체의 최종 사용감과 브라우저 호환성을 더 잠가야 한다.
 - Done 조건:
   - 위 사용자-facing Partial 항목들이 모두 Done이 되고, spec의 핵심 입력/편집 경로가 주요 브라우저와 기기군에서 재현성 있게 통과하면.

@@ -156,6 +156,7 @@
 - GitHub Actions workflow는 `main`/`master` push와 `workflow_dispatch`를 지원한다.
 - Docker Hub push 후 NAS 서버에서 pull/run 하는 구조다.
 - Google Analytics는 `VITE_GA_TRACKING_ID`가 제공될 때만 로드하는 optional scaffold로 둔다.
+- 현재 측정 ID는 `G-MPW0RV0L7Z`로 고정했고, env override가 있으면 그 값을 우선한다.
 
 ## Scope Clarification
 
@@ -191,6 +192,11 @@
 - 하드웨어와 on-screen 입력의 남은 차이는 `docs/handoff/input-parity-checklist.md`에 별도 추적한다.
 - browser-level smoke proof는 Playwright + system Chrome channel을 사용해 desktop/tablet/mobile/mobile-small surface를 검증한다.
 - browser-family 차이는 service-level matrix(chromium-like / webkit-like / gecko-like)와 real-browser smoke를 함께 유지하는 방식으로 관리한다.
+- 현재 product shell은 다음 기준으로 유지한다.
+  - topnav는 메뉴 없이 wordmark + 제목 + 한 줄 설명만 둔다.
+  - footer는 한 줄 링크 형태로 유지한다.
+  - 서비스 설명은 `기반 원칙 / 부가 기능` 두 section으로 짧게 유지한다.
+  - Shift / Ctrl 전체 규칙표는 inline 노출 대신 modal table로 보여준다.
 
 ## Objective Quality Criteria
 

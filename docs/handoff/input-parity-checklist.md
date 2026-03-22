@@ -55,6 +55,7 @@
   - 하드웨어 modifier는 “누르고 있는 동안만” 활성이고, on-screen modifier는 `off -> oneshot -> locked` 순환 토글이다.
 - 현재 대응:
   - on-screen은 spec에 맞춰 cycle 모델 유지
+  - long-press lock가 추가되어 hold-to-lock 사용감 gap은 많이 줄였다.
   - 하드웨어 눌림 상태도 on-screen 색상에 반영
 - 남은 차이:
   - on-screen에서 일시적 hold gesture를 따로 제공하지는 않음

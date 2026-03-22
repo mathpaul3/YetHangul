@@ -131,12 +131,12 @@
 - on-screen `←` / `→`도 long press repeat를 지원해 하드웨어 화살표 반복 입력과의 차이를 일부 줄임
 - meta-row의 modifier 상태 텍스트는 제거됨
 - 왜 Partial인지:
-  - 기능은 대부분 맞췄지만, on-screen modifier 사용감과 utility key parity가 hardware parity와 아직 완전히 같지 않다.
+  - modifier long-press lock로 사용감 gap은 많이 줄였지만, on-screen modifier의 hold 감각과 utility key parity가 hardware parity와 아직 완전히 같지 않다.
   - `docs/handoff/input-parity-checklist.md`의 modifier 사용감 / auto-repeat / composition / caret-selection 항목이 아직 Partial이다.
 - Done 조건:
   - input-parity-checklist의 on-screen 관련 항목이 모두 Done이 되고, on-screen keyboard의 키 배치/피드백이 hardware와의 체감 차이를 더 이상 유의미하게 만들지 않을 때.
 - Next proof needed:
-  - Cross-browser smoke test showing on-screen modifier, navigation row, Backspace repeat, Enter, and copy flows matching hardware parity.
+  - Cross-browser smoke test showing modifier long-press lock, navigation row, Backspace repeat, Enter, and copy flows matching hardware parity.
 
 ## 17. 모바일 자체 자판
 

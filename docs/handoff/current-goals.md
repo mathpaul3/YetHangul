@@ -63,8 +63,9 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - focus-regain 뒤 `insertFromComposition` recovery를 regression으로 고정한다.
 - `T19-3` `Landed`
   - `insertReplacementText`, `deleteWordBackward`, `deleteSoftLineBackward`까지 포함해 focus-regain 이후 beforeinput surface proof를 넓힌다.
-- `T19-4` `Open`
+- `T19-4` `In Progress`
   - composition-end 계열과 beforeinput 계열을 더 넓은 cross-browser surface proof로 묶는다.
+  - recovered-focus family matrix and line-break recognition are regression-locked; remaining proof gap is surface breadth across browsers.
 - `T19-1E` `Done`
   - long-document copy/replace/delete/shrink regression을 고정한다.
 - `T19-2E` `Landed`

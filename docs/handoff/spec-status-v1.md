@@ -190,6 +190,7 @@
 - focus regain 뒤 `insertReplacementText`도 같은 beforeinput contract로 dispatch되는 regression이 추가됨
 - focus regain 뒤 `deleteWordBackward` / `deleteSoftLineBackward`도 같은 beforeinput contract로 유지되는 regression이 추가됨
 - recovered-focus matrix that aligns composition-end, insertText, insertReplacementText, and duplicate insertFromComposition surfaces is now covered in `inputInterop.test.ts`
+- composition-end / beforeinput family contract matrix가 `insertText`, `insertReplacementText`, `insertFromComposition`, `insertParagraph`, `insertLineBreak`까지 함께 묶어 안정화됨
 - hardware/on-screen parity regression에 key metadata(`code`, `location`)까지 포함한 작은 matrix가 추가됨
 - 왜 Partial인지:
   - 엔진은 maintenance mode에 들어왔고, 남은 차이는 `beforeinput` / `composition*` / DOM surface parity 같은 브라우저 표면 차이 쪽에 있다.

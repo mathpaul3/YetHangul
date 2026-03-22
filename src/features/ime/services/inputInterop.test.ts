@@ -396,6 +396,80 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps a compact composition-end and beforeinput family contract stable', () => {
+    const compositionEnd = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: null,
+    })
+
+    expect(compositionEnd).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+
+    const matrix = [
+      {
+        name: 'insertText stays literal after composition-end',
+        decision: resolveBeforeInputInterop({
+          data: '간',
+          inputType: 'insertText',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: compositionEnd.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: '간',
+          nextRecentCommittedText: compositionEnd.nextRecentCommittedText,
+        },
+      },
+      {
+        name: 'insertReplacementText stays literal after composition-end',
+        decision: resolveBeforeInputInterop({
+          data: '간',
+          inputType: 'insertReplacementText',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: compositionEnd.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: '간',
+          nextRecentCommittedText: compositionEnd.nextRecentCommittedText,
+        },
+      },
+      {
+        name: 'insertFromComposition is deduped after composition-end',
+        decision: resolveBeforeInputInterop({
+          data: '간',
+          inputType: 'insertFromComposition',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: compositionEnd.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: null,
+          nextRecentCommittedText: null,
+        },
+      },
+    ] as const
+
+    for (const testCase of matrix) {
+      expect(testCase.decision, testCase.name).toEqual(testCase.expected)
+    }
+
+    expect(isLineBreakBeforeInput('insertParagraph', null)).toBe(true)
+    expect(isLineBreakBeforeInput('insertLineBreak', null)).toBe(true)
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '간',
+        recentCommittedText: matrix[2].decision.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+  })
+
   it('keeps insertReplacementText stable after focus regain in the same beforeinput contract', () => {
     const committed = resolveCompositionEndInterop({
       data: '간',

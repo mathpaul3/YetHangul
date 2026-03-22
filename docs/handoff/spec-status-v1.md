@@ -213,6 +213,7 @@
 - blur/focus를 거친 뒤 반복 copy, CRLF paste 후 selection replacement/delete, newline-crossing selection replacement 회귀 테스트를 추가함
 - long-document copy serialization stability 회귀를 추가함
 - touch-like drag selection copy/replacement/delete-backspace와 pointer-cancel cleanup 회귀 테스트를 추가함
+- touch drag selection이 `pointerenter`에만 의존하지 않도록 pointer-move fallback과 target-index helper를 추가함
 - 왜 Partial인지:
   - engine-side document unit 모델은 안정적이지만, caret/selection을 둘러싼 표면 상호작용과 native selection interop이 아직 완전히 잠기지 않았다.
   - 장문 편집과 모바일 touch selection 같은 surface-side edge case가 남아 있다.
@@ -266,7 +267,7 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 145
+- 현재 테스트 수: 147
 
 ## 24. MVP 완료 정의
 

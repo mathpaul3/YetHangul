@@ -275,7 +275,59 @@
 - 테스트:
   - 동일 sequence를 여러 문맥에서 넣어도 unit local output이 같은지 확인
 
-## 18. native selection / clipboard serialization 경계
+## 18. long-document interaction stability
+
+- 시나리오:
+  1. 여러 줄로 구성된 긴 문서에서 중간 위치를 선택한다.
+  2. selection replacement를 수행한 뒤, 즉시 backspace와 delete를 연속으로 수행한다.
+  3. 커서를 앞뒤로 움직이면서 다른 줄 경계에 다시 입력하거나 복사한다.
+- 위험:
+  - 긴 문서에서만 드러나는 unit 경계 오류가 selection replacement 이후에 누적될 수 있다.
+  - 중간 수정 후에도 문서의 앞/뒤 구간이 오염되면 long-document edit가 불안정해진다.
+- 대응:
+  - 앞/뒤 untouched prefix/suffix는 유지되고, 중간 구간만 교체되는 형태를 보장한다.
+  - newline boundary delete/backspace를 반복해도 문서 구조가 무너지지 않도록 한다.
+- 테스트:
+  - 긴 multi-line document에 대해 replacement -> backspace -> delete 연속 회귀 테스트
+  - 앞/뒤 고정 구간이 유지되는지 확인하는 long-document stability 테스트
+
+## 19. beforeinput/composition delete/enter after focus regain
+
+- 시나리오:
+  1. composition 또는 selection interaction 직후 focus가 잠깐 이탈했다가 돌아온다.
+  2. focus 복귀 직후 `beforeinput(deleteContentBackward/Forward)`가 들어온다.
+  3. 같은 시점에 `insertParagraph` 또는 `insertLineBreak`가 들어온다.
+- 위험:
+  - focus regain 이후 stale composition state가 delete/enter handling을 오염시킬 수 있다.
+  - delete 경로가 다시 interop layer로 들어오면 editor-layer source of truth가 깨질 수 있다.
+- 대응:
+  - delete beforeinput은 계속 no-op으로 유지하고 editor-layer로만 처리한다.
+  - line break beforeinput은 enter contract로 유지하고, focus regain 이후에도 독립적으로 인식한다.
+  - blur/focus recovery 뒤에도 recent composition marker가 다음 입력을 오탐으로 막지 않게 한다.
+- 테스트:
+  - focus regain 후 delete beforeinput no-op 테스트
+  - focus regain 후 insertParagraph / insertLineBreak 인식 테스트
+  - stale composition marker가 enter/delete 흐름을 막지 않는지 확인하는 회귀 테스트
+
+## 20. onscreen / hardware parity scenarios
+
+- 시나리오:
+  1. desktop에서는 hardware keyboard가 주 입력 경로다.
+  2. mobile에서는 onscreen keyboard가 기본 입력 경로다.
+  3. tablet은 auto/heuristic mode로 전환될 수 있다.
+  4. 같은 기능을 hardware와 onscreen에서 번갈아 수행한다.
+- 위험:
+  - mode detection이 잘못되면 사용자는 예상과 다른 keyboard surface를 보게 된다.
+  - hardware/on-screen에서 같은 동작이 다른 결과를 내면 parity가 무너진다.
+- 대응:
+  - mode detection을 user-agent 기준으로 최소한 안정적으로 분기한다.
+  - hardware key flow와 onscreen key flow가 가능한 한 같은 editor contract를 사용하도록 유지한다.
+- 테스트:
+  - desktop/mobile/tablet user agent별 preferred mode 테스트
+  - hardware jamo flow와 onscreen jamo flow의 parity 회귀 시나리오
+  - on-screen Enter / Backspace / modifier / copy flow가 hardware와 같은 contract를 따르는지 확인하는 테스트
+
+## 21. native selection / clipboard serialization 경계
 
 - 시나리오:
   1. 브라우저 native selection과 자체 selection이 모두 존재하는 상태에서 복사를 수행한다.

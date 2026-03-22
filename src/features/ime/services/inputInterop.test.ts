@@ -88,6 +88,39 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps enter and delete beforeinput flows stable after focus regain', () => {
+    const staleCompositionText = '가'
+
+    expect(isLineBreakBeforeInput('insertParagraph', null)).toBe(true)
+    expect(isLineBreakBeforeInput('insertLineBreak', null)).toBe(true)
+
+    expect(
+      resolveBeforeInputInterop({
+        data: null,
+        inputType: 'deleteContentBackward',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: staleCompositionText,
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: staleCompositionText,
+    })
+
+    expect(
+      resolveBeforeInputInterop({
+        data: null,
+        inputType: 'insertParagraph',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: staleCompositionText,
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: staleCompositionText,
+    })
+  })
+
   it('consumes duplicate beforeinput emitted after composition commit', () => {
     expect(
       resolveBeforeInputInterop({

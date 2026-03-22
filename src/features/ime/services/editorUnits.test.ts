@@ -76,6 +76,26 @@ describe('editorUnits', () => {
     expect(secondCopy).toBe(firstCopy)
   })
 
+  it('keeps a long multi-line document stable across replacement and boundary deletes', () => {
+    const units = segmentTextToEditorUnits(
+      '가\n나\n다\n라\n마\n바\n사\n아\n자\n차\n카\n타',
+    )
+
+    const originalPrefix = units.slice(0, 4)
+    const originalSuffix = units.slice(-4)
+
+    const replaced = replaceSelectionWithUnits(units, { start: 7, end: 13 }, ['하'])
+
+    const afterBackspace = deleteBackwardUnit(replaced.units, replaced.caretIndex)
+    const afterDelete = deleteForwardUnit(afterBackspace.units, afterBackspace.caretIndex)
+
+    expect(afterDelete.units.slice(0, 4)).toEqual(originalPrefix)
+    expect(afterDelete.units.slice(-4)).toEqual(originalSuffix)
+    expect(afterDelete.units.join('')).not.toContain('\r')
+    expect(afterDelete.units.length).toBeLessThan(units.length)
+    expect(afterDelete.units.length).toBeGreaterThan(0)
+  })
+
   it('inserts units at a caret position', () => {
     expect(insertUnitsAt(['가', '나'], 1, ['다'])).toEqual(['가', '다', '나'])
   })

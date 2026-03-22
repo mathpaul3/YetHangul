@@ -374,15 +374,18 @@ export function useImeWorkbench() {
   }
 
   function collapseSelectionTo(index: number) {
+    const nextIndex = clampCaretIndex(index, documentUnitsRef.current.length)
     selectionAnchorRef.current = null
     selectionRangeRef.current = null
-    caretIndexRef.current = index
+    caretIndexRef.current = nextIndex
     setSelectionRange(null)
-    setCaretIndex(index)
+    setCaretIndex(nextIndex)
     clearBrowserSelection()
   }
 
   function deleteSelection() {
+    commitCompositionToDocument()
+
     const bounds = getSelectionBounds(selectionRangeRef.current)
 
     if (!bounds) {
@@ -402,9 +405,10 @@ export function useImeWorkbench() {
 
   function extendSelectionTo(nextCaretIndex: number) {
     const anchor = selectionAnchorRef.current ?? caretIndexRef.current
+    const clampedCaretIndex = clampCaretIndex(nextCaretIndex, documentUnitsRef.current.length)
     selectionAnchorRef.current = anchor
-    setCaretIndex(nextCaretIndex)
-    setSelectionRange(createSelectionRange(anchor, nextCaretIndex))
+    setCaretIndex(clampedCaretIndex)
+    setSelectionRange(createSelectionRange(anchor, clampedCaretIndex))
     clearBrowserSelection()
   }
 
@@ -806,28 +810,35 @@ export function useImeWorkbench() {
 
     commitCompositionToDocument()
     resetHardwareInteractionState()
+    clearBrowserSelection()
+  }
+
+  function handleEditorFocus() {
+    clearBrowserSelection()
   }
 
   function handleCaretPlacement(nextIndex: number) {
     commitCompositionToDocument()
+    const clampedIndex = clampCaretIndex(nextIndex, documentUnitsRef.current.length)
     selectionRangeRef.current = null
-    caretIndexRef.current = nextIndex
+    caretIndexRef.current = clampedIndex
     setSelectionRange(null)
-    setCaretIndex(nextIndex)
+    setCaretIndex(clampedIndex)
     selectionAnchorRef.current = null
     clearBrowserSelection()
   }
 
   function handleSelectionStart(unitIndex: number) {
     commitCompositionToDocument()
+    const clampedIndex = clampCaretIndex(unitIndex + 1, documentUnitsRef.current.length)
     isDraggingSelectionRef.current = true
     didMoveSelectionRef.current = false
     dragStartUnitIndexRef.current = unitIndex
     selectionAnchorRef.current = unitIndex
     selectionRangeRef.current = null
-    caretIndexRef.current = unitIndex + 1
+    caretIndexRef.current = clampedIndex
     setSelectionRange(null)
-    setCaretIndex(unitIndex + 1)
+    setCaretIndex(clampedIndex)
     clearBrowserSelection()
   }
 
@@ -838,16 +849,17 @@ export function useImeWorkbench() {
 
     const anchor = selectionAnchorRef.current
     didMoveSelectionRef.current = true
+    const clampedIndex = clampCaretIndex(unitIndex + 1, documentUnitsRef.current.length)
     selectionRangeRef.current = {
       start: Math.min(anchor, unitIndex),
-      end: Math.max(anchor + 1, unitIndex + 1),
+      end: Math.max(anchor + 1, clampedIndex),
     }
-    caretIndexRef.current = unitIndex + 1
+    caretIndexRef.current = clampedIndex
     setSelectionRange({
       start: Math.min(anchor, unitIndex),
-      end: Math.max(anchor + 1, unitIndex + 1),
+      end: Math.max(anchor + 1, clampedIndex),
     })
-    setCaretIndex(unitIndex + 1)
+    setCaretIndex(clampedIndex)
     clearBrowserSelection()
   }
 
@@ -887,6 +899,7 @@ export function useImeWorkbench() {
     handleSelectionEnd,
     handleKeyDown,
     handleKeyUp,
+    handleEditorFocus,
     handleEditorBlur,
     handlePaste,
     handleCopy,

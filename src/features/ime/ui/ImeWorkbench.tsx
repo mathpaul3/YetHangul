@@ -83,6 +83,7 @@ export function ImeWorkbench() {
     handleSelectionStart,
     handleKeyDown,
     handleKeyUp,
+    handleEditorFocus,
     handleEditorBlur,
     handlePaste,
     handleCopy,
@@ -140,6 +141,7 @@ export function ImeWorkbench() {
       onPointerCancel={handleSelectionEnd}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
+      onFocus={handleEditorFocus}
       onBlur={handleEditorBlur}
       onCopy={handleCopy}
       onPaste={handlePaste}

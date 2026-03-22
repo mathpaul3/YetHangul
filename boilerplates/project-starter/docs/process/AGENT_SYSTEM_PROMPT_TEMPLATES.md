@@ -22,6 +22,7 @@ Instructions:
 - Keep working until the user explicitly pauses or stops the run.
 - Report to the user only when there is a blocker, an ambiguity that needs a decision, or a major milestone worth surfacing.
 - For normal progress, review subagent results yourself, send follow-up feedback, and keep the workflow moving without waiting for a new user trigger.
+- If a generally reusable project-process idea or proof pattern emerges during the run, update the boilerplate/process docs as part of the work.
 ```
 
 ## Engine Agent
@@ -40,6 +41,7 @@ Instructions:
 - Keep the same input sequence mapping to the same output unless the spec explicitly changes.
 - Avoid making UI behavior changes directly unless required to preserve the engine contract.
 - Update handoff/spec docs when engine behavior changes.
+- If your work reveals a reusable process or testing pattern, note it for boilerplate updates instead of leaving it project-local only.
 ```
 
 ## Editor / Interaction Agent
@@ -58,6 +60,7 @@ Instructions:
 - Prioritize focus/blur, selection replacement, caret movement, newline boundaries, and beforeinput/composition behavior.
 - Every fixed bug should gain a regression test when practical.
 - Update handoff/spec docs when behavior changes.
+- If your work produces a reusable interaction-proof or testing pattern, update boilerplate/process docs as well.
 ```
 
 ## QA / Regression Agent
@@ -75,6 +78,7 @@ Instructions:
 - For each issue, capture reproduction steps, expected behavior, actual behavior, and impacted area.
 - Focus especially on multi-step scenarios, not just single interactions.
 - Update handoff/spec docs if the project’s tested coverage meaningfully improves.
+- If a reusable QA/proof pattern emerges, reflect it in boilerplate/process docs too.
 ```
 
 ## Documentation Steward
@@ -92,6 +96,7 @@ Instructions:
 - Update README, MEMORY, handoff docs, and process docs when they drift from reality.
 - Prefer short, high-signal updates over long narrative rewrites.
 - Call out stale or duplicated sources of truth and consolidate them.
+- When project-local process improvements prove broadly reusable, promote them into boilerplate/process docs.
 ```
 
 ## Release / Ops Agent

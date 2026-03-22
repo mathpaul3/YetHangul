@@ -72,6 +72,7 @@ export function ImeWorkbench() {
     pressedVisualKeys,
     renderedUnits,
     renderedCaretIndex,
+    renderedText,
     compactSurfaceSummary,
     selectionRange,
     handleInput,
@@ -172,7 +173,9 @@ export function ImeWorkbench() {
       <section className="workspace-grid">
         <div className="panel editor-panel">
           <div className="meta-row">
-            <span className="badge">Preferred mode: {preferredMode}</span>
+            <span className="badge" data-testid="preferred-mode" data-mode={preferredMode}>
+              Preferred mode: {preferredMode}
+            </span>
             <span className="badge">Units: {renderedUnits.length}</span>
             <span className="badge">Active state: {engineState.active.stateId}</span>
             <span className="badge">Undo depth: {engineState.undoStack.length}</span>
@@ -213,10 +216,18 @@ export function ImeWorkbench() {
               </span>
             ))}
           </div>
-          <div className="editor-output editor-surface" style={editorSurfaceTouchBehavior}>
+          <output className="sr-only" data-testid="rendered-text-value">
+            {renderedText.length > 0 ? renderedText : '\u00A0'}
+          </output>
+          <div
+            className="editor-output editor-surface"
+            data-testid="editor-surface"
+            style={editorSurfaceTouchBehavior}
+          >
             {renderedUnits.length === 0 ? (
               <button
                 className="editor-boundary editor-boundary-root"
+                data-editor-boundary-index={0}
                 type="button"
                 onPointerDown={(event) => event.preventDefault()}
                 onClick={() => handleCaretPlacement(0)}
@@ -275,11 +286,12 @@ export function ImeWorkbench() {
         <aside className="panel control-panel">
           <div className="stack">
             <strong>{preferredMode === 'onscreen' ? 'Mobile keyboard' : 'QWERTY layout'}</strong>
-            <div className="keyboard-shell">
-              <div className="keyboard-row keyboard-row-number">
+            <div className="keyboard-shell" data-testid="keyboard-shell">
+              <div className="keyboard-row keyboard-row-number" data-testid="keyboard-row-number">
                 {numberRow.map((digit) => (
                   <button
                     className={`keycap ${getKeycapClass(digit)}`}
+                    data-key-label={digit}
                     key={digit}
                     type="button"
                     onPointerDown={preventVirtualKeyboardFocus}
@@ -293,10 +305,15 @@ export function ImeWorkbench() {
                 ))}
               </div>
               {keyboardRows.map((row, rowIndex) => (
-                <div className={`keyboard-row keyboard-row-${rowIndex + 1}`} key={rowIndex}>
+                <div
+                  className={`keyboard-row keyboard-row-${rowIndex + 1}`}
+                  data-testid={`keyboard-row-${rowIndex + 1}`}
+                  key={rowIndex}
+                >
                   {row.map(([label, symbolId]) => (
                     <button
                       className={`keycap ${getKeycapClass(label)}`}
+                      data-key-label={label}
                       key={label}
                       type="button"
                       onPointerDown={preventVirtualKeyboardFocus}
@@ -310,7 +327,7 @@ export function ImeWorkbench() {
                   ))}
                 </div>
               ))}
-              <div className="keyboard-row keyboard-row-nav">
+              <div className="keyboard-row keyboard-row-nav" data-testid="keyboard-row-nav">
                 {[
                   ['←', 'arrowLeft'],
                   ['→', 'arrowRight'],
@@ -322,6 +339,7 @@ export function ImeWorkbench() {
                   return (
                     <button
                       className={`keycap keycap-utility ${getKeycapClass(label)}`}
+                      data-key-label={label}
                       key={label}
                       type="button"
                       onPointerDown={(event) => {
@@ -352,16 +370,20 @@ export function ImeWorkbench() {
                   )
                 })}
               </div>
-              <div className="keyboard-row keyboard-row-shift">
+              <div className="keyboard-row keyboard-row-shift" data-testid="keyboard-row-shift">
                 {keyboardUtilityRows.shift.map(([label, action]) => {
                   if (action === 'leftShift' || action === 'rightShift') {
                     return (
                       <div
                         className={`keycap-cluster ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        data-modifier-key={action}
+                        data-modifier-mode={engineState.modifierState[action]}
                         key={label}
                       >
                           <button
                             className="keycap-cluster-main"
+                            data-key-label={label}
                             type="button"
                             onPointerDown={(event) => {
                               preventVirtualKeyboardFocus(event)
@@ -384,6 +406,7 @@ export function ImeWorkbench() {
                   return (
                     <button
                       className={`keycap ${getKeycapClass(label)}`}
+                      data-key-label={label}
                       key={label}
                       type="button"
                       onPointerDown={preventVirtualKeyboardFocus}
@@ -397,16 +420,20 @@ export function ImeWorkbench() {
                   )
                 })}
               </div>
-              <div className="keyboard-row keyboard-row-bottom">
+              <div className="keyboard-row keyboard-row-bottom" data-testid="keyboard-row-bottom">
                 {keyboardUtilityRows.bottom.map(([label, action]) => {
                   if (action === 'leftCtrl' || action === 'rightCtrl') {
                     return (
                       <div
                         className={`keycap-cluster ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
+                        data-key-label={label}
+                        data-modifier-key={action}
+                        data-modifier-mode={engineState.modifierState[action]}
                         key={label}
                       >
                           <button
                             className="keycap-cluster-main"
+                            data-key-label={label}
                             type="button"
                             onPointerDown={(event) => {
                               preventVirtualKeyboardFocus(event)
@@ -435,6 +462,7 @@ export function ImeWorkbench() {
                     return (
                       <button
                         className={`keycap keycap-utility keycap-${action} ${getKeycapClass(label)}`}
+                        data-key-label={label}
                         key={label}
                         type="button"
                         onPointerDown={preventVirtualKeyboardFocus}
@@ -451,6 +479,7 @@ export function ImeWorkbench() {
                   return (
                     <button
                       className={`keycap keycap-utility ${getKeycapClass(label)}`}
+                      data-key-label={label}
                       key={label}
                       type="button"
                       onPointerDown={(event) => {

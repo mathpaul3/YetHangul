@@ -298,9 +298,8 @@ export function useImeWorkbench() {
       }
     }
 
-    commitCompositionToDocument()
-
     if (selectionRangeRef.current) {
+      commitCompositionToDocument()
       deleteSelection()
     }
     dispatch({ type: 'input', symbolId })
@@ -399,19 +398,6 @@ export function useImeWorkbench() {
     })
   }
 
-  function handleLiteralInput(text: string, visualKeyLabel?: string) {
-    if (visualKeyLabel) {
-      flashVirtualKey(visualKeyLabel)
-    }
-
-    commitCompositionToDocument()
-
-    if (selectionRangeRef.current) {
-      deleteSelection()
-    }
-    dispatch({ type: 'literalInput', text })
-  }
-
   function clearCompositionBuffer() {
     dispatch({ type: 'resetBuffer' })
   }
@@ -448,6 +434,38 @@ export function useImeWorkbench() {
       caretIndex: nextState.caretIndex,
       unitCount: nextState.units.length,
     }
+  }
+
+  function insertLiteralTextIntoDocument(text: string) {
+    const insertedUnits = segmentTextToEditorUnits(text)
+    const nextUnits = insertUnitsAt(
+      documentUnitsRef.current,
+      caretIndexRef.current,
+      insertedUnits,
+    )
+
+    documentUnitsRef.current = nextUnits
+    caretIndexRef.current += insertedUnits.length
+    selectionRangeRef.current = null
+    selectionAnchorRef.current = null
+    setDocumentUnits(nextUnits)
+    setCaretIndex(caretIndexRef.current)
+    setSelectionRange(null)
+    clearBrowserSelection()
+  }
+
+  function handleLiteralInput(text: string, visualKeyLabel?: string) {
+    if (visualKeyLabel) {
+      flashVirtualKey(visualKeyLabel)
+    }
+
+    commitCompositionToDocument()
+
+    if (selectionRangeRef.current) {
+      deleteSelection()
+    }
+
+    insertLiteralTextIntoDocument(text)
   }
 
   function collapseSelectionTo(index: number) {
@@ -551,7 +569,7 @@ export function useImeWorkbench() {
         continue
       }
 
-      dispatch({ type: 'literalInput', text: char })
+      insertLiteralTextIntoDocument(char)
     }
   }
 
@@ -837,7 +855,7 @@ export function useImeWorkbench() {
         event.key.length === 1
       ) {
         event.preventDefault()
-        dispatch({ type: 'literalInput', text: event.key })
+        handleLiteralInput(event.key)
       }
       return
     }

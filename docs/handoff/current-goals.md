@@ -13,32 +13,30 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 
 ## Medium-Term Goals
 
-1. `docs/handoff/spec-status-v1.md`의 남은 `Partial` 항목을 순차적으로 `Done`으로 전환한다.
-2. 모바일/touch interaction parity를 높여 hardware-first 환경과의 체감 차이를 줄인다.
-3. `beforeinput` / `composition*` / `keydown` 경로의 브라우저 표면 차이를 더 작은 proof gap으로 압축한다.
-4. on-screen keyboard parity checklist를 기반으로 남은 입력 표면 차이를 줄인다.
+1. 현재 `Done` 상태로 닫힌 spec 항목들이 회귀 없이 유지되도록 watch-only maintenance를 수행한다.
+2. 모바일/touch interaction parity와 editor-layer 안정성을 smoke project 수준에서 계속 재사용 가능하게 유지한다.
+3. `beforeinput` / `composition*` / `keydown` proof 자산을 새 브라우저/기기군으로 확장 가능하게 유지한다.
+4. on-screen keyboard parity checklist를 maintenance checklist로 전환한다.
 
 ## Current Iteration Goals
 
-현재 iteration은 아래 4개에 집중한다.
+현재 iteration은 종료되었고, 다음 라운드 전까지는 아래 3개만 유지한다.
 
-1. 모바일/touch interaction parity
-2. `beforeinput` / `composition*` cross-browser proof
-3. 장문 편집에서의 caret/selection 안정성
-4. hardware keyboard detection heuristics의 proof 정리
+1. smoke / regression 자산의 회귀 방지
+2. 새 브라우저/기기군 추가 시 proof 확장 준비
+3. spec / handoff / boilerplate 동기화 유지
 
 ## Immediate Queue
 
-현재 라운드에서 가장 우선순위가 높은 작업은 아래와 같다.
+현재 라운드의 즉시 작업은 모두 landed 되었고, 당분간은 아래만 유지한다.
 
-1. 모바일/touch selection과 pointer transition cleanup을 더 잠근다.
-2. on-screen/hardware parity를 regression test로 더 고정한다.
-3. `beforeinput` / `composition*`의 focus-regain 및 delete/enter 흐름을 더 검증한다.
-4. hardware keyboard detection의 현재 heuristic을 문서와 테스트 기준으로 더 명확히 설명한다.
+1. 새 회귀가 생기면 unit/service/e2e 중 맞는 레이어에 즉시 고정한다.
+2. 새 브라우저/기기군이 필요해지면 Playwright project를 추가한다.
+3. process/boilerplate 자산을 현재 운영 방식과 계속 동기화한다.
 
 ## Atomic Queue
 
-반복 보고를 줄이기 위해, 남은 작업은 아래처럼 더 작은 task id 단위로 관리한다.
+반복 보고를 줄이기 위해, 최근 iteration에서 다룬 task id를 아래처럼 기록한다.
 subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id만** 잡아야 한다.
 이미 `Done` 또는 `Landed` 상태인 task는 다시 다루지 않는다.
 
@@ -74,6 +72,19 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - long-document copy/replace/delete/shrink regression을 고정한다.
 - `T19-2E` `Landed`
   - 모바일 touch selection의 마지막 edge case를 줄이기 위해 editor surface touch-action contract를 추가했다.
+
+- `S16-1` `Landed`
+  - Chrome desktop/tablet/mobile/mobile-small smoke로 on-screen keyboard parity를 고정했다.
+- `S17-1` `Landed`
+  - mobile/mobile-small layout과 compact state feedback smoke를 고정했다.
+- `S18-1` `Landed`
+  - preferred mode browser smoke matrix로 hardware detection surface proof를 고정했다.
+- `S19-1` `Landed`
+  - compositionend + focus-regain + Enter browser smoke를 고정했다.
+- `S19-1E` `Landed`
+  - caret placement / replacement / newline edit browser smoke를 고정했다.
+- `S24-1` `Done`
+  - 남아 있던 spec Partial 항목을 smoke + regression 근거로 모두 닫았다.
 
 ### Queue Rules
 

@@ -58,6 +58,8 @@
 - Coordinator는 우선순위와 문서 동기화를 계속 책임진다.
 - subagent는 disjoint write scope 안에서만 작업한다.
 - 큰 방향 변경이나 spec 변경은 handoff 문서와 함께 고정한다.
+- 반복되는 task는 한 단계에서 멈추지 않고 더 작은 sub-task id로 계속 분해한다.
+- Atomic Queue가 소진되면 남은 Partial을 기준으로 새 smoke/proof task를 다시 만든다.
 
 ## Keyboard Policy
 
@@ -127,8 +129,8 @@
 ## Shift + ㅁ Policy
 
 - `Shift + ㅁ`은 기본 탑재한다.
-- 현재 구현은 filler 기반 특수 거동을 갖는 macro로 남아 있으며, 가장 완성도 높은 방식으로 마무리된 상태는 아니다.
-- 이 항목은 여전히 추가 설계/정제가 필요한 영역이다.
+- 현재 구현은 문맥형 filler macro로 고정했다.
+- 초성-only / 초중성 / 빈 상태 / 완성 음절 뒤 / literal text 뒤 / undo rollback을 테스트로 고정했다.
 
 ## Paste Normalization Policy
 
@@ -185,6 +187,8 @@
 - selection replacement와 newline unit 삭제는 `editorUnits.ts` helper(`replaceSelectionWithUnits`, `deleteBackwardUnit`, `deleteForwardUnit`)를 기준으로 처리한다.
 - on-screen keyboard의 pointer down은 기본 포커스 이동을 막아서, 내부 버튼 클릭만으로 editor blur/commit이 발생하지 않게 한다.
 - 하드웨어와 on-screen 입력의 남은 차이는 `docs/handoff/input-parity-checklist.md`에 별도 추적한다.
+- browser-level smoke proof는 Playwright + system Chrome channel을 사용해 desktop/tablet/mobile/mobile-small surface를 검증한다.
+- browser-family 차이는 service-level matrix(chromium-like / webkit-like / gecko-like)와 real-browser smoke를 함께 유지하는 방식으로 관리한다.
 
 ## Objective Quality Criteria
 

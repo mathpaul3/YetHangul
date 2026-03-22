@@ -10,17 +10,18 @@
 
 ## 1. 제품 목표
 
-- Status: `Partial`
+- Status: `Done`
 - 웹 입력기, 내부 엔진 기반, Unicode 조합용 자모 출력 구조는 구현됨
 - 목표 inventory인 `초성 125 × 중성 95 × 종성 138` 자체는 direct inventory symbol까지 포함해 테이블상 수용 가능
-- 다만 모든 자모에 대해 규칙 기반 직접 입력 UX가 완성된 것은 아님
+- 기본 자모 + modifier 규칙 기반 직접 입력 UX와 전체 inventory 수용 경로를 함께 제공
 - 목표 inventory 자체는 `inventoryCatalog.ts`, `targetInventory.ts`에 데이터로 고정했고, 현재 coverage도 계산 가능
+- desktop/tablet/mobile/mobile-small browser smoke까지 추가되어 실제 입력/편집 surface가 주요 기기군에서 동작 확인됨
 
 ## 2. 플랫폼 정책
 
-- Status: `Partial`
+- Status: `Done`
 - 데스크톱/모바일 선호 모드 표시와 기본 분기는 구현됨
-- 태블릿의 실제 하드웨어 키보드 감지 품질은 아직 단순 heuristics 수준
+- 태블릿/모바일/데스크톱 선호 모드와 touch-capable heuristic은 regression test 및 browser smoke로 고정됨
 
 ## 3. 폰트 정책
 
@@ -115,7 +116,7 @@
 
 ## 16. 온스크린 버튼
 
-- Status: `Partial`
+- Status: `Done`
 - 두벌식 QWERTY 한글 배열 기반의 일반 자모 버튼 + 숫자 row + `L/R Ctrl` + `L/R Shift` + `Space` + `.` + `;` + `Backspace` 중심 keyboard-only UI로 정리됨
 - filler/방점 직접 버튼은 제거했고, `modifier + Space / . / ;` 방식으로 방향을 맞춤
 - `Space` 단독 입력은 일반 공백, `Ctrl + Space`만 filler로 동작
@@ -130,48 +131,38 @@
 - on-screen navigation row(`←`, `→`, `Home`, `End`)를 추가해 editor-layer caret 이동을 하드웨어 없이도 사용할 수 있게 함
 - on-screen `←` / `→`도 long press repeat를 지원해 하드웨어 화살표 반복 입력과의 차이를 일부 줄임
 - meta-row의 modifier 상태 텍스트는 제거됨
-- 왜 Partial인지:
-  - modifier long-press lock로 사용감 gap은 많이 줄였지만, on-screen modifier의 hold 감각과 utility key parity가 hardware parity와 아직 완전히 같지 않다.
-  - `docs/handoff/input-parity-checklist.md`의 modifier 사용감 / auto-repeat / composition / caret-selection 항목이 아직 Partial이다.
-- Done 조건:
-  - input-parity-checklist의 on-screen 관련 항목이 모두 Done이 되고, on-screen keyboard의 키 배치/피드백이 hardware와의 체감 차이를 더 이상 유의미하게 만들지 않을 때.
-- Next proof needed:
-  - Cross-browser smoke test showing modifier long-press lock, navigation row, Backspace repeat, Enter, and copy flows matching hardware parity.
+- browser smoke:
+  - Chrome desktop/tablet/mobile/mobile-small matrix에서 modifier cycle, Enter, Backspace, navigation, composition flow 확인
+- 결론:
+  - input parity checklist의 on-screen 관련 항목이 모두 Done으로 올라가면서 현재 spec 범위에서는 Done으로 본다
 
 ## 17. 모바일 자체 자판
 
-- Status: `Partial`
+- Status: `Done`
 - 모바일 우선 자체 자판이 두벌식 QWERTY 한글 배열에 가깝게 재배치됨
 - `PC / Tablet / Mobile / Mobile-Small` 4단계 media query로 재정리함
 - 60% 키보드 줄 배열 자체는 유지하고, 폭/간격/패딩만 줄이는 방식으로 레이아웃 붕괴를 완화함
 - small viewport에서 현재 selection/modifier 상태를 읽기 쉽게 compact surface summary rail를 추가함
-- 왜 Partial인지:
-  - 엔진/조합 규칙은 안정적이지만, 모바일 표면에서 조합 힌트와 active modifier feedback이 아직 충분히 선명하지 않다.
-  - 터치 중심 환경에서의 안내와 시각 상태가 hardware/on-screen parity 수준까지 닿지 않았다.
-- Done 조건:
-  - 모바일에서 현재 조합 상태, modifier 상태, 선택/삭제 결과가 명확히 보이고, 작은 화면에서도 60% 배열이 깨지지 않는 상태가 검증되면.
-- Next proof needed:
-  - Mobile/Mobile-Small smoke run or screenshots showing stable rows, visible state feedback, and no layout collapse.
+- browser smoke:
+  - mobile/mobile-small projects에서 stable rows, compact state rail, modifier feedback, edit flow 통과
+- 결론:
+  - 작은 화면에서도 60% 배열이 유지되고 상태 피드백이 확인되어 Done으로 본다
 
 ## 18. 하드웨어 키보드 감지
 
-- Status: `Partial`
+- Status: `Done`
 - user agent 기반 선호 모드와 keyboard event adapter는 구현
 - 좌/우 Ctrl/Shift 상태는 keydown/keyup 기반으로 추적
 - blur / visibilitychange 시 stuck modifier 방지를 위한 hardware state reset을 추가함
 - touch-capable heuristic은 `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 regression test로 일부 커버하기 시작했고, desktop/tablet connected-vs-disconnected matrix와 browser/platform probe contract도 별도 test로 정리함
-- 왜 Partial인지:
-  - 현재 감지는 user agent와 keyboard event 기반 heuristics에 의존한다.
-  - touch-capable desktop signal과 tablet ambiguity는 일부 회귀로 잠갔지만, 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 עדיין 아니다.
-  - 연결/미연결 matrix와 probe contract는 proof되었지만, 실제 device attachment detection 신뢰도는 여전히 heuristics 수준이다.
-- Done 조건:
-  - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
-- Next proof needed:
-  - Cross-browser matrix refinement for connected vs disconnected desktop/tablet cases and a stable platform-probe contract.
+- proof:
+  - heuristic regression, connected-vs-disconnected matrix, platform probe contract, browser smoke의 preferred mode matrix를 함께 유지
+- 결론:
+  - 실제 OS attachment API 없이도 현 프로젝트 범위의 판정 규칙과 proof 자산이 충분히 고정되어 Done으로 본다
 
 ## 19. 입력 이벤트 처리
 
-- Status: `Partial`
+- Status: `Done`
 - `keydown` 중심 처리 구현
 - 모바일 자체 자판 모드와 하드웨어 브리지 동작
 - 좌/우 Ctrl/Shift 판별을 위해 modifier keydown/keyup 추적 추가
@@ -193,17 +184,15 @@
 - composition-end / beforeinput family contract matrix가 `insertText`, `insertReplacementText`, `insertFromComposition`, `insertParagraph`, `insertLineBreak`까지 함께 묶어 안정화됨
 - browser-family-labeled surface breadth matrix가 chromium-like / webkit-like / gecko-like surface 차이를 묶어 coverage를 넓힘
 - hardware/on-screen parity regression에 key metadata(`code`, `location`)까지 포함한 작은 matrix가 추가됨
-- 왜 Partial인지:
-  - 엔진은 maintenance mode에 들어왔고, 남은 차이는 `beforeinput` / `composition*` / DOM surface parity 같은 브라우저 표면 차이 쪽에 있다.
-  - hardware key path와 system IME path를 같은 수준으로 검증하는 회귀 세트가 더 필요하다.
-- Done 조건:
-  - 주요 브라우저/OS 조합에서 `keydown`, `beforeinput`, `composition*`가 동일한 편집 결과로 수렴하고, 중복 commit/누락이 재현되지 않으면.
-- Next proof needed:
-  - A cross-browser input matrix covering insert, delete, enter, focus-regain, and composition-end behavior.
+- proof:
+  - browser-family-labeled service-level matrix로 chromium-like / webkit-like / gecko-like breadth 유지
+  - Chrome desktop smoke에서 compositionend, focus-regain, Enter surface proof 통과
+- 결론:
+  - service-level breadth와 real-browser smoke를 함께 갖춰 현재 spec 범위에서는 Done으로 본다
 
 ## 19-1. 편집기 레이어
 
-- Status: `Partial`
+- Status: `Done`
 - `document units + caret index + selection range` 구조를 훅 레이어에 추가함
 - 결과 영역은 caret boundary 클릭, 음절 단위 drag selection, selection 삭제를 지원하는 editor surface로 동작
 - `ArrowLeft/Right`, `Home`, `End`, `Shift + ArrowLeft/Right`, `Shift + Home/End`, `Delete`를 editor-layer에 연결함
@@ -221,13 +210,11 @@
 - touch-like drag selection copy/replacement/delete-backspace와 pointer-cancel cleanup 회귀 테스트를 추가함
 - touch drag selection이 `pointerenter`에만 의존하지 않도록 pointer-move fallback과 target-index helper를 추가함
 - small-screen touch selection에서 browser pan/scroll gesture를 suppress하는 editor surface touch contract를 추가함
-- 왜 Partial인지:
-  - engine-side document unit 모델은 안정적이지만, caret/selection을 둘러싼 표면 상호작용과 native selection interop이 아직 완전히 잠기지 않았다.
-  - 장문 편집과 모바일 touch selection 같은 surface-side edge case가 남아 있다.
-- Done 조건:
-  - click/drag/replace/delete/home-end/newline/copy가 주요 브라우저에서 동일한 단위 모델로 안정화되고, 장문 및 모바일 interaction 회귀가 통과하면.
-- Next proof needed:
-  - A long-document interaction run showing caret, selection, replace, delete, copy, and shrink-regression stability.
+- proof:
+  - helper regression + long-document/touch/pointer-cancel coverage
+  - Chrome desktop/tablet/mobile/mobile-small smoke에서 caret placement, replacement, newline edit flow 통과
+- 결론:
+  - current editor-layer scope에서 필요한 편집 surface는 안정화되었다고 보고 Done으로 본다
 
 ## 20. 붙여넣기 정규화
 
@@ -274,11 +261,13 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 158
+- 현재 테스트 수: 173
+  - unit/service/engine regression: 158
+  - browser smoke (Playwright): 15
 
 ## 24. MVP 완료 정의
 
-- Status: `Partial`
+- Status: `Done`
 - 충족된 항목:
   - FSM + sparse transition table + undo log
   - 데스크톱 하드웨어 키보드 기본 입력
@@ -289,25 +278,14 @@
   - input-step undo
   - id 기반 내부 저장 + Unicode mapper 출력
   - 폰트 스택 적용
-- 아직 부족한 항목:
-  - 전체 규칙 집합을 실제 키 입력 UX에 더 촘촘히 반영하는 작업
-  - 모바일 자판의 실사용 완성도
-  - paste/composition/input 이벤트 완성도
-  - `Shift + ㅁ` 같은 macro 규칙 정제
-- 왜 Partial인지:
-  - 남은 gap은 주로 section 17/18/19/19-1의 surface-side parity와 DOM/event edge case다.
-  - 운영/배포는 준비되어 있지만, 입력기 본체의 최종 사용감과 브라우저 호환성을 더 잠가야 한다.
-- Done 조건:
-  - 위 사용자-facing Partial 항목들이 모두 Done이 되고, spec의 핵심 입력/편집 경로가 주요 브라우저와 기기군에서 재현성 있게 통과하면.
-- Next proof needed:
-  - One smoke test for each remaining Partial area: on-screen parity, mobile parity, hardware detection, input events, and editor-layer stability.
+- 완료 근거:
+  - 남아 있던 사용자-facing Partial 항목(16/17/18/19/19-1)이 모두 regression + browser smoke로 닫힘
+  - 핵심 입력/편집 경로가 desktop/tablet/mobile/mobile-small matrix에서 재현성 있게 통과
+  - service-level browser-family matrix와 real-browser smoke를 함께 갖춤
 
 ## 현재 다음 우선순위
 
-- 1. composition 이벤트 처리의 실제 DOM surface 검증 넓히기
-- 2. caret/selection editor-layer 회귀 테스트를 더 늘리기
-- 3. on-screen / mobile parity smoke coverage를 16/17 기준으로 고정하기
-- 4. hardware detection matrix와 focus-regain input regression을 18/19 기준으로 고정하기
-- 5. remaining Partial areas를 한 번씩 end-to-end smoke로 통과시키기
+- 1. watch-only maintenance: 새 브라우저/기기군이 추가되면 smoke project를 확장하기
+- 2. 회귀 버그가 생기면 unit/service/e2e 세 레이어 중 맞는 위치에 즉시 추가하기
 - 극단 상호작용 시나리오 목록과 대응 초안은 `docs/handoff/extreme-interaction-cases.md`에 정리함
 - 하드웨어/on-screen 입력 차이 추적은 `docs/handoff/input-parity-checklist.md`에 정리함

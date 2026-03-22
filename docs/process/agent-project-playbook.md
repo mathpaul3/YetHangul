@@ -225,7 +225,23 @@
 
 이렇게 나누면 Agent를 여러 개 써도 충돌이 줄어든다.
 
-### 8-6. 수익화/운영 확장을 일찍 메모하기
+### 8-6. service-level proof와 real-browser smoke를 분리하기
+
+브라우저 입력이나 editor interaction처럼 surface 차이가 큰 문제는 증명 층을 나눠두는 편이 좋다.
+
+- service-level matrix
+  - browser family 차이(chromium-like / webkit-like / gecko-like)
+  - input event contract
+  - helper / adapter 회귀
+- real-browser smoke
+  - 실제 브라우저에서 주요 사용자 흐름이 통과하는지
+  - desktop / tablet / mobile / small mobile 같은 surface matrix
+
+다운로드형 브라우저 자동화가 막히거나 비용이 클 때는,
+- 설치된 system browser channel을 먼저 활용하고
+- 나머지 breadth는 service-level matrix로 유지하는 방식이 실용적이다.
+
+### 8-7. 수익화/운영 확장을 일찍 메모하기
 
 기능 구현과 별개로 운영 단계에서 바로 필요해질 수 있다.
 

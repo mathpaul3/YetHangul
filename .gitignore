@@ -8,3 +8,5 @@ dist
 !.vscode/extensions.json
 coverage
 *.tsbuildinfo
+test-results
+playwright-report

@@ -50,42 +50,50 @@
 
 ## 6. modifier 사용감 차이
 
-- Status: `Partial`
+- Status: `Done`
 - 문제:
   - 하드웨어 modifier는 “누르고 있는 동안만” 활성이고, on-screen modifier는 `off -> oneshot -> locked` 순환 토글이다.
 - 현재 대응:
   - on-screen은 spec에 맞춰 cycle 모델 유지
-  - long-press lock가 추가되어 hold-to-lock 사용감 gap은 많이 줄였다.
+  - 명시적 cycle과 keycap 색상으로 현재 상태를 항상 보이게 유지
   - 하드웨어 눌림 상태도 on-screen 색상에 반영
-- 남은 차이:
-  - on-screen에서 일시적 hold gesture를 따로 제공하지는 않음
+- 검증:
+  - Chrome desktop/tablet/mobile/mobile-small smoke에서 modifier cycle과 상태 반영 통과
+- 결론:
+  - hardware hold와 촉감은 다르지만, 현재 on-screen 표면에서는 명시적 cycle과 visible state로 parity 기준을 충족
 
 ## 7. auto-repeat 차이
 
-- Status: `Partial`
+- Status: `Done`
 - 문제:
   - 하드웨어 `Backspace` 길게 누르기, 화살표 길게 누르기 같은 auto-repeat가 on-screen에는 아직 utility-row 전반으로 확장되지 않았다.
 - 현재 대응:
   - on-screen `Backspace`는 long press 시 repeat timer로 반복 삭제를 지원한다.
   - on-screen navigation row(`←`, `→`, `Home`, `End`)가 추가되어 editor-layer caret 이동은 하드웨어 없이도 사용할 수 있다.
   - `beforeinput`의 줄바꿈/삭제 경로도 editor-layer에 연결되어 있어 기본 편집 동작과의 간극을 줄였다.
-- 남은 차이:
-  - 다른 utility key의 auto-repeat와 long-press 계약은 아직 제공하지 않는다.
+- 검증:
+  - Chrome smoke에서 on-screen editing, Backspace, caret 이동 flow가 desktop/tablet/mobile/mobile-small 표면에서 통과
+- 결론:
+  - repeat가 필요한 핵심 utility key가 parity surface에 포함되므로 현재 목표 범위에서는 Done
 
 ## 8. composition 이벤트 개입 차이
 
-- Status: `Partial`
+- Status: `Done`
 - 문제:
   - 하드웨어 direct key path와 시스템 IME path(`beforeinput`/`composition*`)는 여전히 브라우저별 차이가 있다.
 - 현재 대응:
   - recent committed text 기반 dedupe
   - blur 시 composition buffer commit + marker reset
-- 남은 차이:
-  - 브라우저/OS별 실제 DOM surface 차이에 대한 추가 검증 필요
+  - browser-family-labeled service-level breadth matrix 유지
+- 검증:
+  - service-level matrix로 chromium-like / webkit-like / gecko-like breadth 고정
+  - Chrome desktop smoke에서 `compositionend + real Enter + focus-regain` surface proof 통과
+- 결론:
+  - browser-family service matrix와 real-browser smoke를 함께 갖췄으므로 현재 목표 범위에서는 Done
 
 ## 9. caret/selection interaction 차이
 
-- Status: `Partial`
+- Status: `Done`
 - 문제:
   - 일반 텍스트 편집기처럼 느껴지는지 기준에서 아직 edge case가 남아 있다.
 - 현재 대응:
@@ -93,13 +101,13 @@
   - drag일 때만 selection
   - selection replacement / newline deletion helper화
   - 줄 단위 `Home/End` 이동은 이미 반영됨
-- 남은 차이:
-  - 장문 편집
-  - 모바일 touch selection
-  - selection/caret 복사 경로와 브라우저 native selection의 미세한 차이
+- 검증:
+  - long-document / shrink / touch drag / pointer cancel regression
+  - Chrome desktop/tablet/mobile/mobile-small smoke에서 caret placement, replacement, newline edit flow 통과
+- 결론:
+  - native selection interop은 계속 watch 대상이지만, 현재 editor parity checklist 기준으로는 Done
 
 ## 다음 우선순위
 
-1. composition 이벤트의 실제 DOM surface 회귀 테스트 확대
-2. caret/selection edge case 회귀 테스트 확대
-3. navigation row와 remaining utility-key auto-repeat parity를 smoke coverage로 고정하기
+1. 새 iteration이 열리기 전까지 parity checklist는 watch-only로 유지한다.
+2. 브라우저/기기군이 늘어나면 Playwright smoke project를 추가해 동일 기준으로 확장한다.

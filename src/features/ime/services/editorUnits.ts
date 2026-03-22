@@ -222,3 +222,33 @@ export function deleteForwardUnit(
     caretIndex,
   }
 }
+
+export function getLineStartIndex(
+  units: string[],
+  caretIndex: number,
+) {
+  const clampedCaretIndex = clampCaretIndex(caretIndex, units.length)
+
+  for (let index = clampedCaretIndex - 1; index >= 0; index -= 1) {
+    if (units[index] === '\n') {
+      return index + 1
+    }
+  }
+
+  return 0
+}
+
+export function getLineEndIndex(
+  units: string[],
+  caretIndex: number,
+) {
+  const clampedCaretIndex = clampCaretIndex(caretIndex, units.length)
+
+  for (let index = clampedCaretIndex; index < units.length; index += 1) {
+    if (units[index] === '\n') {
+      return index
+    }
+  }
+
+  return units.length
+}

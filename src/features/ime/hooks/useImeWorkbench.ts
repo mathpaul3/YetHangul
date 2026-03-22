@@ -29,6 +29,8 @@ import {
   deleteBackwardUnit,
   deleteForwardUnit,
   getSelectionBounds,
+  getLineEndIndex,
+  getLineStartIndex,
   insertUnitsAt,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
@@ -608,11 +610,12 @@ export function useImeWorkbench() {
 
     if (event.key === 'Home') {
       event.preventDefault()
-      commitCompositionToDocument()
+      const flushState = commitCompositionToDocument()
+      const targetIndex = getLineStartIndex(documentUnitsRef.current, flushState.caretIndex)
       if (event.shiftKey) {
-        extendSelectionTo(0)
+        extendSelectionTo(targetIndex)
       } else {
-        collapseSelectionTo(0)
+        collapseSelectionTo(targetIndex)
       }
       return
     }
@@ -620,10 +623,11 @@ export function useImeWorkbench() {
     if (event.key === 'End') {
       event.preventDefault()
       const flushState = commitCompositionToDocument()
+      const targetIndex = getLineEndIndex(documentUnitsRef.current, flushState.caretIndex)
       if (event.shiftKey) {
-        extendSelectionTo(flushState.unitCount)
+        extendSelectionTo(targetIndex)
       } else {
-        collapseSelectionTo(flushState.unitCount)
+        collapseSelectionTo(targetIndex)
       }
       return
     }

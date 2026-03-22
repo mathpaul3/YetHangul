@@ -6,6 +6,8 @@ import {
   deleteBackwardUnit,
   deleteForwardUnit,
   deleteUnitRange,
+  getLineEndIndex,
+  getLineStartIndex,
   getSelectionBounds,
   insertUnitsAt,
   replaceSelectionWithUnits,
@@ -69,5 +71,19 @@ describe('editorUnits', () => {
       units: ['가', '나'],
       caretIndex: 1,
     })
+  })
+
+  it('finds the current line start from the caret position', () => {
+    expect(getLineStartIndex(['가', '\n', '나', '다'], 0)).toBe(0)
+    expect(getLineStartIndex(['가', '\n', '나', '다'], 1)).toBe(0)
+    expect(getLineStartIndex(['가', '\n', '나', '다'], 2)).toBe(2)
+    expect(getLineStartIndex(['가', '\n', '나', '다'], 4)).toBe(2)
+  })
+
+  it('finds the current line end from the caret position', () => {
+    expect(getLineEndIndex(['가', '\n', '나', '다'], 0)).toBe(1)
+    expect(getLineEndIndex(['가', '\n', '나', '다'], 1)).toBe(1)
+    expect(getLineEndIndex(['가', '\n', '나', '다'], 2)).toBe(4)
+    expect(getLineEndIndex(['가', '\n', '나', '다'], 4)).toBe(4)
   })
 })

@@ -4,6 +4,8 @@
 
 옛한글 웹 입력기 MVP를 구현한다.
 
+현재 장/단기 목표와 coordinator 기준 우선순위는 `docs/handoff/current-goals.md`를 source of truth로 사용한다.
+
 ## Confirmed Decisions
 
 - Engine architecture: FSM + sparse transition table + undo log

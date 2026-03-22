@@ -16,15 +16,20 @@
 - 현재도 유효한 핵심 결정
 - 프로젝트의 설계 의도
 
-3. [docs/handoff/decisions.md](docs/handoff/decisions.md)
+3. [docs/handoff/current-goals.md](docs/handoff/current-goals.md)
+- 장기 목표
+- 이번 iteration의 단기 목표
+- coordinator의 즉시 우선순위
+
+4. [docs/handoff/decisions.md](docs/handoff/decisions.md)
 - 다음 Agent가 바로 이어받아야 하는 핵심 정책
 - 최근 결정 사항
 
-4. [docs/handoff/spec-status-v1.md](docs/handoff/spec-status-v1.md)
+5. [docs/handoff/spec-status-v1.md](docs/handoff/spec-status-v1.md)
 - spec 기준 구현 완료/부분완료 상태
 - 현재 우선순위
 
-5. 필요 시 세부 문서
+6. 필요 시 세부 문서
 - [docs/architecture/engine.md](docs/architecture/engine.md): 엔진 구조
 - [docs/decisions/0001-engine-architecture.md](docs/decisions/0001-engine-architecture.md): 주요 설계 결정
 - [docs/input-rules/keymap.md](docs/input-rules/keymap.md): 입력 규칙
@@ -61,6 +66,10 @@
 - `MEMORY.md`
   - 장기 기억
   - 제품 방향성과 핵심 설계 의도
+
+- `docs/handoff/current-goals.md`
+  - 장기 목표와 단기 목표
+  - coordinator의 현재 iteration 우선순위
 
 - `CHANGELOG.md`
   - 사용자 관점 변경 내역

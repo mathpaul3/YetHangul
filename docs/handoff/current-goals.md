@@ -1,0 +1,54 @@
+# YetHangul Current Goals
+
+이 문서는 현재 YetHangul 프로젝트의 장기 목표와 단기 목표를 짧고 실행 가능한 형태로 정리한 문서다.
+Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의 `Current Iteration Goals`와 `Immediate Queue`를 먼저 확인한다.
+
+## Long-Term Goals
+
+1. 어떤 OS/브라우저에서도 옛한글을 입력할 수 있는 웹 입력기를 완성한다.
+2. 기본 한글 자모(`ㄱ-ㅎ`, `ㅏ-ㅣ`)와 modifier 규칙만으로 옛한글 입력 경험을 최대한 일관되게 만든다.
+3. 하드웨어 키보드, on-screen 키보드, 시스템 IME 입력이 가능한 한 같은 편집 결과로 수렴하도록 만든다.
+4. 입력기 위에 실사용 가능한 편집기 레이어를 얹어 caret, selection, copy/paste, multiline editing까지 안정적으로 지원한다.
+5. handoff/spec/tests가 항상 현재 코드 상태를 설명하도록 유지해서 agent 교체 비용을 낮춘다.
+
+## Medium-Term Goals
+
+1. `docs/handoff/spec-status-v1.md`의 남은 `Partial` 항목을 순차적으로 `Done`으로 전환한다.
+2. 모바일/touch interaction parity를 높여 hardware-first 환경과의 체감 차이를 줄인다.
+3. `beforeinput` / `composition*` / `keydown` 경로의 브라우저 표면 차이를 더 작은 proof gap으로 압축한다.
+4. on-screen keyboard parity checklist를 기반으로 남은 입력 표면 차이를 줄인다.
+
+## Current Iteration Goals
+
+현재 iteration은 아래 4개에 집중한다.
+
+1. 모바일/touch interaction parity
+2. `beforeinput` / `composition*` cross-browser proof
+3. 장문 편집에서의 caret/selection 안정성
+4. hardware keyboard detection heuristics의 proof 정리
+
+## Immediate Queue
+
+현재 라운드에서 가장 우선순위가 높은 작업은 아래와 같다.
+
+1. 모바일/touch selection과 pointer transition cleanup을 더 잠근다.
+2. on-screen/hardware parity를 regression test로 더 고정한다.
+3. `beforeinput` / `composition*`의 focus-regain 및 delete/enter 흐름을 더 검증한다.
+4. hardware keyboard detection의 현재 heuristic을 문서와 테스트 기준으로 더 명확히 설명한다.
+
+## Deprioritized For Now
+
+아래 항목은 지금 당장 파지 않는다.
+
+1. engine 로직의 대규모 확장
+2. 새로운 UI 실험이나 시각 polish 위주의 변경
+3. 새로운 기능 축 추가
+
+이 항목들은 blocker가 되거나 현재 `Partial` 항목을 직접 줄일 수 있을 때만 다시 끌어올린다.
+
+## Coordination Rules
+
+1. 새 작업은 가능하면 `Current Iteration Goals` 중 하나를 직접 줄이는 경우에만 시작한다.
+2. `Immediate Queue`에 없는 작업은 blocker, ambiguity, 또는 major milestone이 아닌 이상 뒤로 미룬다.
+3. 문서/테스트가 없는 구현은 우선순위를 낮춘다.
+4. 장황한 탐색보다, 현재 `Partial` 항목에 대응되는 proof를 1개라도 더 닫는 작업을 우선한다.

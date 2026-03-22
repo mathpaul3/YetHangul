@@ -8,9 +8,10 @@
 
 1. `README.md`
 2. `MEMORY.md`
-3. `docs/handoff/decisions.md`
-4. `docs/handoff/spec-status-v1.md`
-5. 필요한 세부 문서
+3. `docs/handoff/current-goals.md`
+4. `docs/handoff/decisions.md`
+5. `docs/handoff/spec-status-v1.md`
+6. 필요한 세부 문서
 
 작업 원칙:
 
@@ -38,6 +39,7 @@
 - `MEMORY.md`: 장기 방향성과 핵심 설계 의도
 - `CHANGELOG.md`: 사용자 관점 변경 내역
 - `docs/handoff/`: 단기 인수인계 문서
+- `docs/handoff/current-goals.md`: 장기/단기 목표와 coordinator의 즉시 우선순위
 - `docs/architecture/`: 시스템 구조
 - `docs/decisions/`: 설계 결정 기록
 - `docs/process/`: 협업 규칙, 템플릿, system prompt

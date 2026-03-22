@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
 import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMode'
 import { useImeWorkbench } from '@/features/ime/hooks/useImeWorkbench'
@@ -63,6 +63,7 @@ const modifierLabels = {
 
 export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
+  const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
   const {
     engineState,
     hardwareModifierState,
@@ -111,6 +112,18 @@ export function ImeWorkbench() {
     return pressedVisualKeys[label] ? 'keycap-pressed' : ''
   }
 
+  function renderEditorUnit(unit: string) {
+    if (unit === '\n') {
+      return <span className="editor-linebreak" aria-hidden="true"><br /></span>
+    }
+
+    if (renderMode === 'decomposed') {
+      return <span className="editor-decomposed-unit">{Array.from(unit).join(' ')}</span>
+    }
+
+    return unit
+  }
+
   function preventVirtualKeyboardFocus(event: React.PointerEvent<HTMLElement>) {
     event.preventDefault()
   }
@@ -150,6 +163,20 @@ export function ImeWorkbench() {
             <span className="badge">Units: {renderedUnits.length}</span>
             <span className="badge">Active state: {engineState.active.stateId}</span>
             <span className="badge">Undo depth: {engineState.undoStack.length}</span>
+            <button
+              className={`badge badge-button ${renderMode === 'composed' ? 'badge-active' : ''}`}
+              type="button"
+              onClick={() => setRenderMode('composed')}
+            >
+              일반 보기
+            </button>
+            <button
+              className={`badge badge-button ${renderMode === 'decomposed' ? 'badge-active' : ''}`}
+              type="button"
+              onClick={() => setRenderMode('decomposed')}
+            >
+              분해 보기
+            </button>
             <button className="badge badge-button" type="button" onClick={() => void copyAllText()}>
               Copy All
             </button>
@@ -199,7 +226,7 @@ export function ImeWorkbench() {
                       }}
                       onPointerEnter={() => handleSelectionEnter(index)}
                     >
-                      {unit === '\n' ? <span className="editor-linebreak" aria-hidden="true"><br /></span> : unit}
+                      {renderEditorUnit(unit)}
                       <button
                         className="editor-boundary"
                         type="button"

@@ -157,6 +157,12 @@ textarea {
   white-space: pre;
 }
 
+.editor-decomposed-unit {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+}
+
 .meta-row {
   display: flex;
   flex-wrap: wrap;

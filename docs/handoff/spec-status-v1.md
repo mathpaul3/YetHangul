@@ -77,17 +77,16 @@
 
 ## 11. Ctrl 규칙
 
-- Status: `Partial`
+- Status: `Done`
 - `Ctrl + ㅇ`, `LCtrl/RCtrl + ㅅ`, `LCtrl/RCtrl + ㅈ`, `LCtrl/RCtrl + ㅊ`, `Ctrl + ㅎ`, `Ctrl + ㅏ`, 방점 등 핵심 예시 구현
 - `Ctrl + ㅇ`은 문맥에 따라 초성 `ᅌ` 또는 종성 `ᇰ`으로 분기하도록 구현 및 테스트 완료
 - 하드웨어 키보드에서는 좌/우 Ctrl keydown/keyup 추적 로직 추가
 - `Ctrl + Shift + ㅎ -> ꥼ`, `Ctrl + Shift + ㅏ -> ᆢ` 구현 및 테스트 완료
-- 핵심 명세 항목을 엔진 테스트로 묶어 전수에 가깝게 검증하기 시작함
-- UI/하드웨어 양쪽의 완전한 end-to-end 검증은 여전히 더 필요함
+- 핵심 명세 항목은 엔진 테스트와 하드웨어 입력 흐름 테스트로 고정됨
 
 ## 12. Shift 규칙
 
-- Status: `Partial`
+- Status: `Done`
 - 쌍기역, 쌍디귿, 쌍비읍, 쌍시옷, 쌍자모, `Shift + ㅊ -> ᅀ`, `Shift + ㅗ/ㅜ/ㅡ/ㅣ`, `Shift + ᆞ -> ᆢ` 흐름 구현
 - 내부 modifier state는 `L/R Shift` 분리 상태로 갱신됨
 - `Shift + ㅁ`은 현재 음절 상태를 보고 최소 filler만 보충하는 문맥형 macro로 구현됨
@@ -185,9 +184,9 @@
 
 ## 21. 렌더링 모드
 
-- Status: `Partial`
+- Status: `Done`
 - 일반 보기 구현
-- 분해 보기 전용 모드는 아직 미구현
+- 분해 보기 토글 구현
 
 ## 22. 오류 처리
 

@@ -166,7 +166,8 @@
 - 결과 영역은 caret boundary 클릭, 음절 단위 drag selection, selection 삭제를 지원하는 editor surface로 동작
 - `ArrowLeft/Right`, `Home`, `End`, `Shift + ArrowLeft/Right`, `Shift + Home/End`, `Delete`를 editor-layer에 연결함
 - `Home/End`는 문서 전체가 아니라 현재 줄 기준으로 이동하도록 보강함
-- `Copy All`, `Copy Selection` 버튼을 추가했고, 브라우저 기본 selection은 가능한 한 차단하는 방향으로 정리 중
+- `Copy All`, `Copy Selection` 버튼을 추가했고, plain text serialization을 기준으로 복사 경로를 통일함
+- 브라우저 기본 selection은 가능한 한 차단하고, 자체 selection을 source of truth로 유지하는 방향으로 정리 중
 - 조합 버퍼 flush와 selection bounds 계산을 `editorUnits.ts` helper로 분리했고, 훅은 snapshot ref 기준으로 caret/document 동기화를 맞추도록 보강함
 - 줄바꿈 unit을 editor surface에서 실제 line break처럼 보이도록 렌더링 보강함
 - unit 위 클릭은 caret 이동, drag일 때만 selection 생성으로 interaction을 보정함

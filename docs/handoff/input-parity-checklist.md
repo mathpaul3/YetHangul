@@ -90,10 +90,11 @@
   - click는 caret 이동
   - drag일 때만 selection
   - selection replacement / newline deletion helper화
+  - 줄 단위 `Home/End` 이동은 이미 반영됨
 - 남은 차이:
-  - 줄 단위 `Home/End`
   - 장문 편집
   - 모바일 touch selection
+  - selection/caret 복사 경로와 브라우저 native selection의 미세한 차이
 
 ## 다음 우선순위
 

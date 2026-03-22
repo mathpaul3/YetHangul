@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_TRACKING_ID ?? 'G-MPW0RV0L7Z'
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_TRACKING_ID
 
 export function GoogleAnalytics() {
   useEffect(() => {

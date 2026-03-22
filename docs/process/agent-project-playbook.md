@@ -281,6 +281,15 @@
 
 즉 현재 iteration에 구현하지 않더라도, Long Term Memory에는 남겨두는 편이 좋다.
 
+### 8-10. public config와 true secret을 구분하기
+
+운영 중에는 env 값이 많아지면서, public identifier와 실제 secret이 섞여 혼동되기 쉽다.
+
+- client-side에서 노출될 수밖에 없는 값은 public config로 본다.
+- API key, signing key, private token, DB credential처럼 재발급/폐기가 필요한 값만 true secret으로 분류한다.
+- public config라도 hardcode보다 deploy-time env 주입이 운영상 깔끔하면 env를 선호한다.
+- 보안 판단은 “노출되면 위험한가”와 “운영상 분리하는 편이 좋은가”를 구분해서 기록한다.
+
 ## 9. 멀티 Agent 사용 시 권장 구조
 
 - Planner Agent

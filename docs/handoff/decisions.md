@@ -156,7 +156,7 @@
 - GitHub Actions workflow는 `main`/`master` push와 `workflow_dispatch`를 지원한다.
 - Docker Hub push 후 NAS 서버에서 pull/run 하는 구조다.
 - Google Analytics는 `VITE_GA_TRACKING_ID`가 제공될 때만 로드하는 optional scaffold로 둔다.
-- 현재 측정 ID는 `G-MPW0RV0L7Z`로 고정했고, env override가 있으면 그 값을 우선한다.
+- GA4 측정 ID는 client-side에 노출되는 public identifier이지만, 운영상은 hardcode하지 않고 deploy-time env로만 주입한다.
 
 ## Scope Clarification
 

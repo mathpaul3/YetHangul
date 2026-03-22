@@ -50,8 +50,12 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - 모바일 small viewport에서 현재 modifier/selection 상태가 충분히 읽히도록 compact surface summary rail를 추가하고 smoke proof를 만든다.
 - `T18-1` `Done`
   - `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 heuristic regression으로 고정한다.
-- `T18-2` `Open`
+- `T18-2` `In Progress`
   - desktop/tablet connected vs disconnected keyboard matrix를 문서/테스트 수준으로 정리한다.
+  - `T18-2a` `Landed`
+    - desktop without touch, desktop with touch signals, tablet ambiguity에 대한 기본 matrix proof를 regression test로 고정한다.
+  - `T18-2b` `Open`
+    - 연결/미연결 matrix 위에 browser/platform probe contract를 더 좁게 정의하고, 남은 heuristic gap을 문서/테스트 수준으로 한 번 더 압축한다.
 - `T19-1` `Done`
   - focus-regain 뒤 `deleteContentBackward`, `insertParagraph`, `insertLineBreak` 흐름을 regression으로 고정한다.
 - `T19-2` `Done`
@@ -71,6 +75,7 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
 2. `Open -> In Progress -> Landed -> Done` 중 하나로 상태를 갱신한다.
 3. `Landed`는 main 반영 완료를 뜻하고, `Done`은 남은 proof gap이 사실상 없을 때만 사용한다.
 4. 새 task를 추가할 때는 왜 기존 task로 표현할 수 없는지도 같이 적는다.
+5. 특정 task가 두 라운드 이상 반복되면, 더 작은 sub-task id로 분해한 뒤 그중 정확히 1개만 잡는다.
 
 ## Deprioritized For Now
 

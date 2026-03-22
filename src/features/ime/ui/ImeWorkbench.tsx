@@ -347,6 +347,9 @@ export function ImeWorkbench() {
                           onPointerEnter={() => handleSelectionEnter(index)}
                           onPointerMove={() => handleSelectionEnter(index)}
                         >
+                          <span aria-hidden="true" className="editor-linebreak">
+                            <br />
+                          </span>
                           <button
                             className="editor-boundary editor-boundary-linebreak"
                             data-editor-boundary-index={index + 1}

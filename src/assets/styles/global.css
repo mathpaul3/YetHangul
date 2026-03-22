@@ -159,9 +159,9 @@ textarea {
 }
 
 .editor-unit-linebreak {
-  display: block;
-  width: 100%;
-  min-height: 1.4em;
+  display: inline;
+  width: auto;
+  min-height: 0;
 }
 
 .editor-unit-selected {
@@ -196,11 +196,15 @@ textarea {
   background: #b14d1f;
 }
 
+.editor-linebreak {
+  display: inline;
+}
+
 .editor-boundary-linebreak {
   align-items: flex-start;
   justify-content: flex-start;
-  width: 100%;
-  min-height: 1.4em;
+  width: 4px;
+  min-height: 1.25em;
 }
 
 .editor-decomposed-unit {

@@ -60,6 +60,34 @@ describe('input interop', () => {
     expect(isLineBreakBeforeInput('deleteContentBackward', null)).toBe(false)
   })
 
+  it('ignores beforeinput delete commands so editor-layer deletion remains the source of truth', () => {
+    expect(
+      resolveBeforeInputInterop({
+        data: null,
+        inputType: 'deleteContentBackward',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: '가',
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: '가',
+    })
+
+    expect(
+      resolveBeforeInputInterop({
+        data: null,
+        inputType: 'deleteContentForward',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: null,
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: null,
+    })
+  })
+
   it('consumes duplicate beforeinput emitted after composition commit', () => {
     expect(
       resolveBeforeInputInterop({

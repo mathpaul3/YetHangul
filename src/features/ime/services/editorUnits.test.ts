@@ -23,6 +23,24 @@ describe('editorUnits', () => {
     expect(segmentTextToEditorUnits('A\r\nB\rC')).toEqual(['A', '\n', 'B', '\n', 'C'])
   })
 
+  it('keeps pasted CRLF text stable across selection replacement and follow-up deletion', () => {
+    const units = segmentTextToEditorUnits('가\r\n나')
+
+    expect(units).toEqual(['가', '\n', '나'])
+
+    const replaced = replaceSelectionWithUnits(units, { start: 0, end: 2 }, ['하'])
+
+    expect(replaced).toEqual({
+      units: ['하', '나'],
+      caretIndex: 1,
+    })
+
+    expect(deleteForwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['하'],
+      caretIndex: 1,
+    })
+  })
+
   it('inserts units at a caret position', () => {
     expect(insertUnitsAt(['가', '나'], 1, ['다'])).toEqual(['가', '다', '나'])
   })

@@ -227,25 +227,33 @@
 - 시나리오:
   1. selection이 있는 상태에서 `Cmd/Ctrl + C`를 누른다.
   2. 이어서 `Copy All`, `Copy Selection` 버튼도 눌러본다.
+  3. selection을 복사한 뒤 blur/focus를 한 번 거치고 같은 범위를 다시 복사한다.
 - 위험:
   - 세 경로의 결과가 서로 다를 수 있다.
+  - native selection과 자체 selection이 분리되면 복사 범위가 엇갈릴 수 있다.
 - 대응:
   - 모든 복사 경로는 결국 같은 plain text serialization을 사용해야 한다.
+  - selection 복사와 전체 복사가 같은 newline serialization 규칙을 공유해야 한다.
 - 테스트:
   - selection copy / button copy 결과 일치 테스트
+  - blur/focus 이후 같은 selection을 다시 복사했을 때 결과가 같은지 테스트
 
 ## 16. 입력 도중 focus 이탈
 
 - 시나리오:
   1. 조합 중 혹은 selection 상태에서 다른 버튼이나 브라우저 UI로 focus가 나간다.
   2. 다시 돌아와 입력을 이어간다.
+  3. focus 복귀 직후 `beforeinput(deleteContentBackward/Forward)` 또는 selection replacement가 들어온다.
 - 위험:
   - active composition과 selection이 반쯤 남아 잘못된 위치에 이어 입력될 수 있다.
+  - blur 이후 stale native selection이 남아 있으면 다음 delete/replace가 예상 밖 범위에 작동할 수 있다.
 - 대응:
   - blur 시 “selection은 유지, hardware modifier는 해제, composition은 commit 또는 reset” 중 어떤 정책이 맞는지 정해야 한다.
   - 현재는 hardware modifier reset을 먼저 우선 고려하는 것이 안전하다.
+  - focus 복귀 뒤의 deletion은 editor-layer 선택/삭제 경로로만 처리한다.
 - 테스트:
   - blur/focus recovery 테스트
+  - blur 직후 beforeinput delete가 들어와도 editor-layer contract가 유지되는지 테스트
 
 ## 17. 같은 key sequence의 결정성 붕괴
 
@@ -258,6 +266,21 @@
   - editor-level에서는 “삽입 위치”만 다르고 조합 결과 자체는 같아야 한다.
 - 테스트:
   - 동일 sequence를 여러 문맥에서 넣어도 unit local output이 같은지 확인
+
+## 18. native selection / clipboard serialization 경계
+
+- 시나리오:
+  1. 브라우저 native selection과 자체 selection이 모두 존재하는 상태에서 복사를 수행한다.
+  2. CRLF가 포함된 외부 텍스트를 붙여넣은 뒤 selection replacement와 delete/backspace를 연속으로 수행한다.
+- 위험:
+  - 복사/붙여넣기 serialization 규칙이 selection replacement와 엇갈릴 수 있다.
+  - beforeinput delete 경로가 editor-layer와 중복 반영되면 같은 unit이 두 번 삭제될 수 있다.
+- 대응:
+  - clipboard serialization은 newline 정규화 규칙을 단일 source of truth로 유지한다.
+  - delete/backspace는 editor-layer helper가 최종 권한을 갖도록 유지한다.
+- 테스트:
+  - CRLF paste -> selection replacement -> delete/backspace 연속 회귀 테스트
+  - deleteContentBackward / deleteContentForward beforeinput이 interop layer에서 no-op인지 확인하는 테스트
 
 ## 우선순위 제안
 

@@ -42,6 +42,7 @@ import {
   moveCaretBackwardUnit,
   moveCaretForwardUnit,
   normalizeSelectionRangeToDocument,
+  resolveEditorUnitIndexFromPointerTarget,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
@@ -973,6 +974,20 @@ export function useImeWorkbench() {
     clearBrowserSelection()
   }
 
+  function handleEditorSurfacePointerMove(event: React.PointerEvent<HTMLElement>) {
+    if (!isDraggingSelectionRef.current) {
+      return
+    }
+
+    const unitIndex = resolveEditorUnitIndexFromPointerTarget(event.target)
+
+    if (unitIndex == null) {
+      return
+    }
+
+    handleSelectionEnter(unitIndex)
+  }
+
   function handleSelectionEnd() {
     if (!isDraggingSelectionRef.current) {
       return
@@ -1024,6 +1039,7 @@ export function useImeWorkbench() {
     handleSelectionEnter,
     handleSelectionEnd,
     handlePointerCancel,
+    handleEditorSurfacePointerMove,
     handleKeyDown,
     handleKeyUp,
     handleEditorFocus,

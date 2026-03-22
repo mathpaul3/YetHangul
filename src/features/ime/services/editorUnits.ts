@@ -205,6 +205,42 @@ export function createDragSelectionRange(
   }
 }
 
+type PointerTargetLike = {
+  closest?: (selector: string) => {
+    getAttribute?: (name: string) => string | null
+  } | null
+}
+
+export function resolveEditorUnitIndexFromPointerTarget(target: unknown) {
+  const pointerTarget = target as PointerTargetLike | null
+
+  if (!pointerTarget || typeof pointerTarget.closest !== 'function') {
+    return null
+  }
+
+  const unitElement = pointerTarget.closest('[data-editor-unit-index]')
+  if (unitElement?.getAttribute) {
+    const rawUnitIndex = unitElement.getAttribute('data-editor-unit-index')
+    const unitIndex = Number(rawUnitIndex)
+
+    if (Number.isInteger(unitIndex)) {
+      return unitIndex
+    }
+  }
+
+  const boundaryElement = pointerTarget.closest('[data-editor-boundary-index]')
+  if (boundaryElement?.getAttribute) {
+    const rawBoundaryIndex = boundaryElement.getAttribute('data-editor-boundary-index')
+    const boundaryIndex = Number(rawBoundaryIndex)
+
+    if (Number.isInteger(boundaryIndex)) {
+      return boundaryIndex
+    }
+  }
+
+  return null
+}
+
 export function clampCaretIndex(index: number, unitCount: number) {
   return Math.max(0, Math.min(index, unitCount))
 }

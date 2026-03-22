@@ -15,6 +15,7 @@ import {
   normalizeSelectionRangeToDocument,
   moveCaretBackwardUnit,
   moveCaretForwardUnit,
+  resolveEditorUnitIndexFromPointerTarget,
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
@@ -309,6 +310,41 @@ describe('editorUnits', () => {
     expect(createDragSelectionRange(5, 1, 10)).toEqual({ start: 1, end: 6 })
     expect(createDragSelectionRange(9, 14, 10)).toEqual({ start: 9, end: 10 })
     expect(createDragSelectionRange(3, 3, 10)).toBeNull()
+  })
+
+  it('resolves pointer targets to editor unit indexes for touch drag fallback', () => {
+    expect(
+      resolveEditorUnitIndexFromPointerTarget({
+        closest: (selector: string) => {
+          if (selector !== '[data-editor-unit-index]') {
+            return null
+          }
+
+          return {
+            getAttribute: (name: string) => (name === 'data-editor-unit-index' ? '4' : null),
+          }
+        },
+      }),
+    ).toBe(4)
+
+    expect(
+      resolveEditorUnitIndexFromPointerTarget({
+        closest: (selector: string) => {
+          if (selector !== '[data-editor-unit-index]' && selector !== '[data-editor-boundary-index]') {
+            return null
+          }
+
+          return selector === '[data-editor-boundary-index]'
+            ? {
+                getAttribute: (name: string) =>
+                  name === 'data-editor-boundary-index' ? '7' : null,
+              }
+            : null
+        },
+      }),
+    ).toBe(7)
+
+    expect(resolveEditorUnitIndexFromPointerTarget(null)).toBeNull()
   })
 
   it('returns normalized selection bounds', () => {

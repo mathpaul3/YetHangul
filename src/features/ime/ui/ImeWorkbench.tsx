@@ -87,6 +87,7 @@ export function ImeWorkbench() {
     handlePointerCancel,
     handleSelectionEnter,
     handleSelectionStart,
+    handleEditorSurfacePointerMove,
     handleKeyDown,
     handleKeyUp,
     handleEditorFocus,
@@ -145,6 +146,7 @@ export function ImeWorkbench() {
       className="page-shell"
       onPointerUp={handleSelectionEnd}
       onPointerCancel={handlePointerCancel}
+      onPointerMoveCapture={handleEditorSurfacePointerMove}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       onFocus={handleEditorFocus}
@@ -228,6 +230,7 @@ export function ImeWorkbench() {
                     <span
                       className={`editor-unit ${unit === '\n' ? 'editor-unit-linebreak' : ''} ${isSelected ? 'editor-unit-selected' : ''}`}
                       key={`${unit}-${index}`}
+                      data-editor-unit-index={index}
                       onPointerDown={(event) => {
                         event.preventDefault()
                         handleSelectionStart(index)
@@ -239,6 +242,7 @@ export function ImeWorkbench() {
                       <button
                         className="editor-boundary"
                         type="button"
+                        data-editor-boundary-index={index + 1}
                         onPointerDown={(event) => event.preventDefault()}
                         onClick={() => handleCaretPlacement(index + 1)}
                       >

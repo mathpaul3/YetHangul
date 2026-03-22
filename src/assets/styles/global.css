@@ -196,15 +196,11 @@ textarea {
   background: #b14d1f;
 }
 
-.editor-linebreak {
-  display: block;
-  width: 100%;
-  min-height: 1.4em;
-}
-
 .editor-boundary-linebreak {
+  align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
+  min-height: 1.4em;
 }
 
 .editor-decomposed-unit {

@@ -171,6 +171,7 @@
   - `compositionActive`가 남아 있을 때의 `beforeinput(insertFromComposition)` 무시 테스트
   - duplicate marker가 cleared 된 뒤 같은 text의 새 composition session이 다시 허용되는지 테스트
   - composition-end / beforeinput family contract matrix가 `insertText`, `insertReplacementText`, `insertFromComposition`, `insertParagraph`, `insertLineBreak`까지 묶어서 안정적인지 테스트
+  - chromium-like / webkit-like / gecko-like browser-surface labels로 family breadth가 안정적인지 테스트
 
 ## 11. 하드웨어 modifier stuck state
 

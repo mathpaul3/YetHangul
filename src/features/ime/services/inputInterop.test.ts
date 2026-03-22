@@ -470,6 +470,70 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps a compact browser-surface breadth matrix stable', () => {
+    const compositionEnd = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: null,
+    })
+
+    expect(compositionEnd).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+
+    const matrix = [
+      {
+        browser: 'chromium-like',
+        decision: resolveBeforeInputInterop({
+          data: '간',
+          inputType: 'insertFromComposition',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: compositionEnd.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: null,
+          nextRecentCommittedText: null,
+        },
+      },
+      {
+        browser: 'webkit-like',
+        decision: resolveBeforeInputInterop({
+          data: '간',
+          inputType: 'insertText',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: compositionEnd.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: '간',
+          nextRecentCommittedText: compositionEnd.nextRecentCommittedText,
+        },
+      },
+      {
+        browser: 'gecko-like',
+        decision: resolveBeforeInputInterop({
+          data: '간',
+          inputType: 'insertReplacementText',
+          isComposing: false,
+          compositionActive: false,
+          recentCommittedText: compositionEnd.nextRecentCommittedText,
+        }),
+        expected: {
+          dispatchText: '간',
+          nextRecentCommittedText: compositionEnd.nextRecentCommittedText,
+        },
+      },
+    ] as const
+
+    for (const testCase of matrix) {
+      expect(testCase.decision, testCase.browser).toEqual(testCase.expected)
+    }
+
+    expect(isLineBreakBeforeInput('insertParagraph', null)).toBe(true)
+    expect(isLineBreakBeforeInput('insertLineBreak', null)).toBe(true)
+  })
+
   it('keeps insertReplacementText stable after focus regain in the same beforeinput contract', () => {
     const committed = resolveCompositionEndInterop({
       data: '간',

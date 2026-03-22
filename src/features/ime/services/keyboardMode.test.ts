@@ -6,6 +6,21 @@ describe('keyboard mode detection', () => {
     vi.unstubAllGlobals()
   })
 
+  function stubMatchMedia(matches: boolean) {
+    vi.stubGlobal('window', {
+      matchMedia: () => ({
+        matches,
+        media: '(pointer: coarse)',
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        onchange: null,
+        dispatchEvent: () => false,
+      }),
+    })
+  }
+
   const cases = [
     {
       name: 'defaults to hardware mode when navigator is unavailable',
@@ -47,8 +62,8 @@ describe('keyboard mode detection', () => {
       window: undefined,
       expected: 'auto',
     },
-    {
-      name: 'prefers auto mode for touch-capable desktop environments',
+  {
+    name: 'prefers auto mode for touch-capable desktop environments',
       navigator: {
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
         maxTouchPoints: 5,
@@ -65,18 +80,28 @@ describe('keyboard mode detection', () => {
         maxTouchPoints: 5,
       },
       window: {},
-      expected: 'auto',
+    expected: 'auto',
+  },
+  {
+    name: 'prefers auto mode for coarse-pointer environments without touch globals',
+    navigator: {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+      maxTouchPoints: 0,
     },
-    {
-      name: 'prefers hardware mode for desktop user agents without touch',
-      navigator: {
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
-        maxTouchPoints: 0,
-      },
-      window: {},
-      expected: 'hardware',
+    window: undefined,
+    coarsePointer: true,
+    expected: 'auto',
+  },
+  {
+    name: 'prefers hardware mode for desktop user agents without touch',
+    navigator: {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+      maxTouchPoints: 0,
     },
-  ] as const
+    window: {},
+    expected: 'hardware',
+  },
+] as const
 
   for (const testCase of cases) {
     it(testCase.name, () => {
@@ -88,6 +113,12 @@ describe('keyboard mode detection', () => {
 
       if (testCase.window !== undefined) {
         vi.stubGlobal('window', testCase.window)
+      }
+
+      if ('coarsePointer' in testCase && testCase.coarsePointer) {
+        stubMatchMedia(true)
+      } else if ('coarsePointer' in testCase && !testCase.coarsePointer) {
+        stubMatchMedia(false)
       }
 
       expect(detectPreferredKeyboardMode()).toBe(testCase.expected)

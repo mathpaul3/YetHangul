@@ -182,6 +182,7 @@
 - `Enter`는 줄바꿈 literal input으로 처리되도록 연결함
 - `beforeinput` / `composition*` 경로에 대한 회귀 테스트를 확장했고, delete/enter/focus-regain 시나리오를 QA regression으로 고정하기 시작함
 - focus regain 뒤 delete/enter 후 새 composition session을 허용하는 regression test가 추가됨
+- focus regain 뒤 `insertLineBreak`도 같은 beforeinput contract로 유지되는 regression이 추가됨
 - hardware/on-screen parity regression에 key metadata(`code`, `location`)까지 포함한 작은 matrix가 추가됨
 - 왜 Partial인지:
   - 엔진은 maintenance mode에 들어왔고, 남은 차이는 `beforeinput` / `composition*` / DOM surface parity 같은 브라우저 표면 차이 쪽에 있다.

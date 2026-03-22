@@ -266,6 +266,7 @@
   - blur/focus recovery 테스트
   - blur 직후 beforeinput delete가 들어와도 editor-layer contract가 유지되는지 테스트
   - composition/delete/enter focus-regain sequence를 service layer에서 고정하는 regression도 `inputInterop.test.ts`에 추가됨
+  - insertLineBreak도 focus-regain 뒤 같은 beforeinput contract로 유지되는 regression이 `inputInterop.test.ts`에 추가됨
 
 ## 17. 같은 key sequence의 결정성 붕괴
 

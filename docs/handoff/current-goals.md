@@ -65,7 +65,10 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - `insertReplacementText`, `deleteWordBackward`, `deleteSoftLineBackward`까지 포함해 focus-regain 이후 beforeinput surface proof를 넓힌다.
 - `T19-4` `In Progress`
   - composition-end 계열과 beforeinput 계열을 더 넓은 cross-browser surface proof로 묶는다.
-  - recovered-focus family matrix and line-break recognition are regression-locked; remaining proof gap is surface breadth across browsers.
+  - `T19-4a` `Landed`
+    - recovered-focus family matrix, line-break recognition, replacement-text, and delete-surface 계열을 하나의 service-level proof로 묶는다.
+  - `T19-4b` `Open`
+    - service-level proof를 넘어 browser surface breadth를 더 설명하는 최소 matrix 또는 smoke proof를 추가한다.
 - `T19-1E` `Done`
   - long-document copy/replace/delete/shrink regression을 고정한다.
 - `T19-2E` `Landed`

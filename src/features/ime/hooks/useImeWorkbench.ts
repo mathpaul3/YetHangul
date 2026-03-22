@@ -30,6 +30,7 @@ import type { PressedModifierState } from '@/features/ime/services/hardwareKeybo
 import {
   clampCaretIndex,
   commitCompositionUnits,
+  cancelSelectionGesture,
   createSelectionRange,
   deleteBackwardUnit,
   deleteForwardUnit,
@@ -989,6 +990,12 @@ export function useImeWorkbench() {
 
   function handlePointerCancel() {
     handleSelectionEnd()
+    const nextState = cancelSelectionGesture(caretIndexRef.current, documentUnitsRef.current.length)
+    caretIndexRef.current = nextState.caretIndex
+    selectionRangeRef.current = nextState.selectionRange
+    setCaretIndex(nextState.caretIndex)
+    setSelectionRange(nextState.selectionRange)
+    clearBrowserSelection()
     clearNavigationRepeat()
   }
 

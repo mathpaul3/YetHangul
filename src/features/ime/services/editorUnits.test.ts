@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   clampCaretIndex,
   commitCompositionUnits,
+  cancelSelectionGesture,
   createSelectionRange,
   deleteBackwardUnit,
   deleteForwardUnit,
@@ -315,6 +316,17 @@ describe('editorUnits', () => {
     })
     expect(normalizeSelectionRangeToDocument({ start: 2, end: 2 }, 2)).toBeNull()
     expect(normalizeSelectionRangeToDocument(null, 2)).toBeNull()
+  })
+
+  it('cancels a selection gesture by collapsing back to the current caret', () => {
+    expect(cancelSelectionGesture(4, 5)).toEqual({
+      selectionRange: null,
+      caretIndex: 4,
+    })
+    expect(cancelSelectionGesture(9, 5)).toEqual({
+      selectionRange: null,
+      caretIndex: 5,
+    })
   })
 
   it('clamps caret indices into valid editor bounds', () => {

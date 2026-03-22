@@ -225,6 +225,13 @@ export function normalizeSelectionRangeToDocument(
   }
 }
 
+export function cancelSelectionGesture(caretIndex: number, unitCount: number) {
+  return {
+    selectionRange: null as UnitSelectionRange,
+    caretIndex: clampCaretIndex(caretIndex, unitCount),
+  }
+}
+
 export function deleteBackwardUnit(
   units: string[],
   caretIndex: number,

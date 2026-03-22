@@ -14,6 +14,16 @@ import {
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
 
+function serializeUnits(units: string[], selectionRange: { start: number; end: number } | null) {
+  const bounds = getSelectionBounds(selectionRange)
+
+  if (!bounds) {
+    return ''
+  }
+
+  return units.slice(bounds.start, bounds.end).join('')
+}
+
 describe('editorUnits', () => {
   it('segments jamo text into syllable-like editor units', () => {
     expect(segmentTextToEditorUnits('간ᅟᅡ\nA')).toEqual(['간', 'ᅟᅡ', '\n', 'A'])
@@ -39,6 +49,17 @@ describe('editorUnits', () => {
       units: ['하'],
       caretIndex: 1,
     })
+  })
+
+  it('serializes the same selection consistently before and after a blur/focus round trip', () => {
+    const units = segmentTextToEditorUnits('가\n나')
+    const selection = createSelectionRange(0, 2)
+
+    expect(serializeUnits(units, selection)).toBe('가\n')
+
+    const blurredAndFocusedSelection = createSelectionRange(0, 2)
+
+    expect(serializeUnits(units, blurredAndFocusedSelection)).toBe('가\n')
   })
 
   it('inserts units at a caret position', () => {
@@ -89,6 +110,29 @@ describe('editorUnits', () => {
     expect(deleteBackwardUnit(replaced.units, replaced.caretIndex)).toEqual({
       units: ['가', '다'],
       caretIndex: 1,
+    })
+  })
+
+  it('replaces a newline-crossing selection and immediately supports backspace and delete', () => {
+    const replaced = replaceSelectionWithUnits(
+      ['가', '\n', '나', '다'],
+      { start: 1, end: 4 },
+      ['하'],
+    )
+
+    expect(replaced).toEqual({
+      units: ['가', '하'],
+      caretIndex: 2,
+    })
+
+    expect(deleteBackwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가'],
+      caretIndex: 1,
+    })
+
+    expect(deleteForwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가', '하'],
+      caretIndex: 2,
     })
   })
 

@@ -32,16 +32,18 @@
   1. 여러 음절을 drag로 선택한다.
   2. 바로 자모를 입력하거나 paste한다.
   3. 선택을 지운 직후 backspace/delete/arrow 이동을 연속으로 수행한다.
+  4. 선택 범위가 newline을 가로지르는 경우 즉시 backspace/delete를 반복한다.
 - 위험:
   - 선택 범위가 안 지워진 채 새 조합이 append될 수 있다.
   - selection이 비워졌는데 브라우저 native selection이 남아 복사/붙여넣기 동작이 엇갈릴 수 있다.
   - selection replacement 직후 caret가 예상 밖 위치로 남아 다음 삭제가 엉뚱한 unit에 작동할 수 있다.
+  - newline을 포함하는 선택 범위가 치환된 뒤 곧바로 delete/backspace가 들어오면 caret가 잘못된 unit을 가리킬 수 있다.
 - 대응:
   - 입력 시작 전 selection이 있으면 항상 먼저 selection delete를 수행한다.
   - native selection은 최대한 제거하고, 자체 selection만 source of truth로 유지한다.
   - selection replacement 이후에는 caret index를 replacement 끝점에 다시 고정한다.
 - 테스트:
-  - “선택 -> 입력”, “선택 -> 붙여넣기”, “선택 -> 줄바꿈 입력”, “선택 -> delete/backspace 연속” 회귀 테스트
+  - “선택 -> 입력”, “선택 -> 붙여넣기”, “선택 -> 줄바꿈 입력”, “선택 -> delete/backspace 연속”, “newline-crossing selection replacement -> immediate delete/backspace” 회귀 테스트
 
 ## 3. 클릭과 drag의 경계
 
@@ -228,9 +230,11 @@
   1. selection이 있는 상태에서 `Cmd/Ctrl + C`를 누른다.
   2. 이어서 `Copy All`, `Copy Selection` 버튼도 눌러본다.
   3. selection을 복사한 뒤 blur/focus를 한 번 거치고 같은 범위를 다시 복사한다.
+  4. blur/focus 사이에 같은 selection이 유지된 것처럼 보이더라도 serialization 결과가 달라지지 않아야 한다.
 - 위험:
   - 세 경로의 결과가 서로 다를 수 있다.
   - native selection과 자체 selection이 분리되면 복사 범위가 엇갈릴 수 있다.
+  - blur/focus 이후 stale selection이 남아 있으면 같은 범위를 다시 복사할 때 결과가 바뀔 수 있다.
 - 대응:
   - 모든 복사 경로는 결국 같은 plain text serialization을 사용해야 한다.
   - selection 복사와 전체 복사가 같은 newline serialization 규칙을 공유해야 한다.

@@ -401,10 +401,11 @@ export function useImeWorkbench() {
   }
 
   function extendSelectionTo(nextCaretIndex: number) {
-    const anchor = selectionAnchorRef.current ?? caretIndex
+    const anchor = selectionAnchorRef.current ?? caretIndexRef.current
     selectionAnchorRef.current = anchor
     setCaretIndex(nextCaretIndex)
     setSelectionRange(createSelectionRange(anchor, nextCaretIndex))
+    clearBrowserSelection()
   }
 
   function handleModifierMainClick(modifierKey: ModifierKey) {
@@ -847,6 +848,7 @@ export function useImeWorkbench() {
       end: Math.max(anchor + 1, unitIndex + 1),
     })
     setCaretIndex(unitIndex + 1)
+    clearBrowserSelection()
   }
 
   function handleSelectionEnd() {

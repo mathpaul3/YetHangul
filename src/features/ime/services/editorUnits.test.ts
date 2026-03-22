@@ -122,6 +122,15 @@ describe('editorUnits', () => {
     })
   })
 
+  it('removes newline-adjacent selections without leaving stray units behind', () => {
+    expect(
+      replaceSelectionWithUnits(['가', '\n', '나', '\n', '다'], { start: 1, end: 4 }, []),
+    ).toEqual({
+      units: ['가', '다'],
+      caretIndex: 1,
+    })
+  })
+
   it('finds the current line start from the caret position', () => {
     expect(getLineStartIndex(['가', '\n', '나', '다'], 0)).toBe(0)
     expect(getLineStartIndex(['가', '\n', '나', '다'], 1)).toBe(0)

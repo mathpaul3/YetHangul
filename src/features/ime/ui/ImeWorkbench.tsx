@@ -77,6 +77,7 @@ export function ImeWorkbench() {
     handleSelectionStart,
     handleKeyDown,
     handleKeyUp,
+    handleEditorBlur,
     handlePaste,
     handleCopy,
     copyAllText,
@@ -112,6 +113,7 @@ export function ImeWorkbench() {
       onPointerCancel={handleSelectionEnd}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
+      onBlur={handleEditorBlur}
       onCopy={handleCopy}
       onPaste={handlePaste}
       onBeforeInput={handleBeforeInput}

@@ -137,6 +137,7 @@
 - Status: `Partial`
 - user agent 기반 선호 모드와 keyboard event adapter는 구현
 - 좌/우 Ctrl/Shift 상태는 keydown/keyup 기반으로 추적
+- blur / visibilitychange 시 stuck modifier 방지를 위한 hardware state reset을 추가함
 - 실제 연결 감지와 환경별 신뢰도 높은 판정은 미완료
 
 ## 19. 입력 이벤트 처리
@@ -236,3 +237,4 @@
 - 3. 실제 사용자 interaction 기준 회귀 테스트를 더 늘리기
 - 4. 모바일 자체 자판의 조합 힌트와 시각 피드백 강화
 - 5. 태블릿/하드웨어 키보드 감지 품질 보강
+- 극단 상호작용 시나리오 목록과 대응 초안은 `docs/handoff/extreme-interaction-cases.md`에 정리함

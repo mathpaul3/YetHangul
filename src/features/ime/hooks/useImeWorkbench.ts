@@ -126,6 +126,33 @@ export function useImeWorkbench() {
     }
   }, [selectionRange])
 
+  function resetHardwareInteractionState() {
+    pressedModifiersRef.current = {}
+    setHardwareModifierState({})
+    setPressedVisualKeys({})
+    isDraggingSelectionRef.current = false
+    didMoveSelectionRef.current = false
+    dragStartUnitIndexRef.current = null
+  }
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState !== 'visible') {
+        resetHardwareInteractionState()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [])
+
   function setHardwareModifier(modifierKey: ModifierKey, pressed: boolean) {
     pressedModifiersRef.current[modifierKey] = pressed
 
@@ -602,6 +629,10 @@ export function useImeWorkbench() {
     }
   }
 
+  function handleEditorBlur() {
+    resetHardwareInteractionState()
+  }
+
   function handleCaretPlacement(nextIndex: number) {
     commitCompositionToDocument()
     selectionRangeRef.current = null
@@ -678,6 +709,7 @@ export function useImeWorkbench() {
     handleSelectionEnd,
     handleKeyDown,
     handleKeyUp,
+    handleEditorBlur,
     handlePaste,
     handleCopy,
     copyAllText,

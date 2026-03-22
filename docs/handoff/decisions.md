@@ -170,6 +170,8 @@
 - 조합 버퍼를 문서에 flush할 때는 “어느 caret 위치에, 몇 개 unit을” 넣었는지를 helper 기준으로 결정하고, 그 결과를 문서 배열과 caret state에 동시에 반영한다.
 - 줄바꿈 unit은 editor surface에서 실제 line break처럼 보이도록 별도 unit class로 렌더링한다.
 - unit 위의 짧은 클릭은 selection을 남기지 않고 caret 이동으로 처리하고, 실제 drag가 일어났을 때만 selection을 만든다.
+- 극단적 상호작용 시나리오와 대응 전략은 `docs/handoff/extreme-interaction-cases.md`에 별도 정리한다.
+- focus 이탈이나 `visibilitychange`가 발생하면 hardware modifier state, pressed key highlight, drag-in-progress 상태를 초기화한다.
 
 ## Objective Quality Criteria
 

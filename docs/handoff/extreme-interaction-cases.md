@@ -269,6 +269,7 @@
   - insertLineBreak도 focus-regain 뒤 같은 beforeinput contract로 유지되는 regression이 `inputInterop.test.ts`에 추가됨
   - focus-regain 뒤 duplicate marker가 cleared 되면 `insertFromComposition`이 다시 허용되는 regression도 `inputInterop.test.ts`에 추가됨
   - focus-regain 뒤 `insertReplacementText`도 same beforeinput contract로 dispatch되는 regression이 `inputInterop.test.ts`에 추가됨
+  - focus-regain 뒤 `deleteWordBackward` / `deleteSoftLineBackward`도 같은 beforeinput contract로 유지되는 regression이 `inputInterop.test.ts`에 추가됨
 
 ## 17. 같은 key sequence의 결정성 붕괴
 

@@ -357,6 +357,54 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps deleteWordBackward and deleteSoftLineBackward stable after focus regain in the same beforeinput contract', () => {
+    const committed = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: null,
+    })
+
+    expect(committed).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+
+    expect(
+      resolveBeforeInputInterop({
+        data: null,
+        inputType: 'deleteWordBackward',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: committed.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: committed.nextRecentCommittedText,
+    })
+
+    expect(
+      resolveBeforeInputInterop({
+        data: null,
+        inputType: 'deleteSoftLineBackward',
+        isComposing: false,
+        compositionActive: false,
+        recentCommittedText: committed.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: committed.nextRecentCommittedText,
+    })
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '나',
+        recentCommittedText: committed.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '나',
+      nextRecentCommittedText: '나',
+    })
+  })
+
   it('consumes duplicate beforeinput emitted after composition commit', () => {
     expect(
       resolveBeforeInputInterop({

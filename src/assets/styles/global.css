@@ -144,6 +144,8 @@ textarea {
 
 .editor-placeholder {
   color: rgba(95, 71, 52, 0.72);
+  font-size: 0.48em;
+  line-height: 1.45;
 }
 
 .editor-unit {
@@ -401,6 +403,7 @@ textarea {
   max-height: min(78vh, 760px);
   overflow: hidden;
   display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
   gap: 12px;
   padding: 18px;
   border-radius: 20px;
@@ -424,7 +427,14 @@ textarea {
   cursor: pointer;
 }
 
+.rule-modal-description {
+  margin: 0;
+  color: #6e5948;
+  font-size: 0.94rem;
+}
+
 .rule-table-wrap {
+  min-height: 0;
   overflow: auto;
 }
 
@@ -487,6 +497,10 @@ textarea {
     font-size: 1.6rem;
   }
 
+  .editor-placeholder {
+    font-size: 0.62em;
+  }
+
   .keyboard-shell {
     gap: 8px;
     padding: 12px;
@@ -514,6 +528,10 @@ textarea {
 
   .badge {
     font-size: 0.86rem;
+  }
+
+  .editor-placeholder {
+    font-size: 0.72em;
   }
 
   .notes-grid {

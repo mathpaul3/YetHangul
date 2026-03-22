@@ -8,7 +8,6 @@ const preferredMode = detectPreferredKeyboardMode()
 const REPOSITORY_URL = 'https://github.com/mathpaul3/yet-hangul'
 const AUTHOR_URL = 'https://github.com/mathpaul3'
 const SHIFT_RULES = [
-  ['Shift + 자음/모음', '⇨', '쌍자음/쌍모음'],
   ['Shift + ㄱ', 'ᄁ', '쌍기역'],
   ['Shift + ㄴ', 'ᄔ', '쌍니은'],
   ['Shift + ㄷ', 'ᄄ', '쌍디귿'],
@@ -29,19 +28,18 @@ const SHIFT_RULES = [
 ] as const
 
 const CTRL_RULES = [
-  ['Ctrl + 자음/모음', '⇨', '자형 변환 (반치음ᅀ 예외)'],
-  ['LCtrl + ㅅ', 'ᄼ', '치두음 시옷'],
-  ['RCtrl + ㅅ', 'ᄾ', '정치음 시옷'],
-  ['LCtrl + ㅆ', 'ᄽ', '치두음 쌍시옷'],
-  ['RCtrl + ㅆ', 'ᄿ', '정치음 쌍시옷'],
+  ['L Ctrl + ㅅ', 'ᄼ', '치두음 시옷'],
+  ['R Ctrl + ㅅ', 'ᄾ', '정치음 시옷'],
+  ['L Ctrl + ㅆ', 'ᄽ', '치두음 쌍시옷'],
+  ['R Ctrl + ㅆ', 'ᄿ', '정치음 쌍시옷'],
   ['Ctrl + ㅇ', 'ᅌ', '옛이응'],
-  ['LCtrl + ㅈ', 'ᅎ', '치두음 지읒'],
-  ['RCtrl + ㅈ', 'ᅐ', '정치음 지읒'],
-  ['LCtrl + ㅉ', 'ᅏ', '치두음 쌍지읒'],
-  ['RCtrl + ㅉ', 'ᅑ', '정치음 쌍지읒'],
+  ['L Ctrl + ㅈ', 'ᅎ', '치두음 지읒'],
+  ['R Ctrl + ㅈ', 'ᅐ', '정치음 지읒'],
+  ['L Ctrl + ㅉ', 'ᅏ', '치두음 쌍지읒'],
+  ['R Ctrl + ㅉ', 'ᅑ', '정치음 쌍지읒'],
   ['Shift + ㅊ', 'ᅀ', '반치음'],
-  ['LCtrl + ㅊ', 'ᅔ', '치두음 치읓'],
-  ['RCtrl + ㅊ', 'ᅕ', '정치음 치읓'],
+  ['L Ctrl + ㅊ', 'ᅔ', '치두음 치읓'],
+  ['R Ctrl + ㅊ', 'ᅕ', '정치음 치읓'],
   ['Ctrl + ㅎ', 'ᅙ', '여린 히읗'],
   ['Ctrl + ㅏ', 'ᆞ', '아래아'],
   ['Ctrl + Space(초성)', 'ᅟ', '한글초성채움문자'],
@@ -222,10 +220,6 @@ export function ImeWorkbench() {
       Enter: '↵',
       'L Shift': '⇧',
       'R Shift': '⇧',
-      'L Ctrl': '⌃',
-      'R Ctrl': '⌃',
-      Home: '⇱',
-      End: '⇲',
     }
 
     return iconMap[label] ?? label
@@ -238,6 +232,10 @@ export function ImeWorkbench() {
 
   const modalTitle = ruleModal === 'shift' ? 'Shift 규칙 전체' : 'Ctrl 규칙 전체'
   const modalRows = ruleModal === 'shift' ? SHIFT_RULES : CTRL_RULES
+  const modalDescription =
+    ruleModal === 'shift'
+      ? 'Shift + 자음/모음 ⇨ 쌍자음/쌍모음'
+      : 'Ctrl + 자음/모음 ⇨ 자형 변환 (반치음ᅀ 예외)'
 
   return (
     <>
@@ -708,6 +706,7 @@ export function ImeWorkbench() {
                 닫기
               </button>
             </div>
+            <p className="rule-modal-description">{modalDescription}</p>
             <div className="rule-table-wrap">
               <table className="rule-table">
                 <thead>

@@ -645,6 +645,11 @@ export function useImeWorkbench() {
     })
   }
 
+  function handleLineBreakInput() {
+    recentImeCommitRef.current = '\n'
+    handleLiteralInput('\n')
+  }
+
   function isShiftActive() {
     return (
       engineState.modifierState.leftShift !== 'off' ||
@@ -818,7 +823,7 @@ export function useImeWorkbench() {
 
     if (event.key === 'Enter') {
       event.preventDefault()
-      handleLiteralInput('\n')
+      handleLineBreakInput()
       return
     }
 

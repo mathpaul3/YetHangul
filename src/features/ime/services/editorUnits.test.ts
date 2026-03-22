@@ -105,6 +105,30 @@ describe('editorUnits', () => {
     })
   })
 
+  it('keeps a compact touch-style selection stable across replacement and boundary deletes', () => {
+    const units = segmentTextToEditorUnits('가\n나\n다')
+    const draggedSelection = createSelectionRange(4, 1)
+
+    expect(serializeUnits(units, draggedSelection)).toBe('\n나\n')
+
+    const replaced = replaceSelectionWithUnits(units, draggedSelection, ['하'])
+
+    expect(replaced).toEqual({
+      units: ['가', '하', '다'],
+      caretIndex: 2,
+    })
+
+    expect(deleteBackwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가', '다'],
+      caretIndex: 1,
+    })
+
+    expect(deleteForwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가', '하'],
+      caretIndex: 2,
+    })
+  })
+
   it('keeps a long multi-line document stable across replacement and boundary deletes', () => {
     const units = segmentTextToEditorUnits(
       '가\n나\n다\n라\n마\n바\n사\n아\n자\n차\n카\n타',

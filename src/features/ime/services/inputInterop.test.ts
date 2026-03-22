@@ -197,6 +197,56 @@ describe('input interop', () => {
     })
   })
 
+  it('keeps a single focus-regain composition/delete/enter sequence aligned through the service layer', () => {
+    const firstComposition = resolveCompositionEndInterop({
+      data: '간',
+      recentCommittedText: null,
+    })
+
+    expect(firstComposition).toEqual({
+      dispatchText: '간',
+      nextRecentCommittedText: '간',
+    })
+
+    const afterDelete = resolveBeforeInputInterop({
+      data: null,
+      inputType: 'deleteContentBackward',
+      isComposing: false,
+      compositionActive: false,
+      recentCommittedText: firstComposition.nextRecentCommittedText,
+    })
+
+    expect(afterDelete).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: firstComposition.nextRecentCommittedText,
+    })
+
+    const afterEnter = resolveBeforeInputInterop({
+      data: null,
+      inputType: 'insertParagraph',
+      isComposing: false,
+      compositionActive: false,
+      recentCommittedText: afterDelete.nextRecentCommittedText,
+    })
+
+    expect(afterEnter).toEqual({
+      dispatchText: null,
+      nextRecentCommittedText: afterDelete.nextRecentCommittedText,
+    })
+
+    expect(isLineBreakBeforeInput('insertText', '\n')).toBe(true)
+
+    expect(
+      resolveCompositionEndInterop({
+        data: '나',
+        recentCommittedText: afterEnter.nextRecentCommittedText,
+      }),
+    ).toEqual({
+      dispatchText: '나',
+      nextRecentCommittedText: '나',
+    })
+  })
+
   it('consumes duplicate beforeinput emitted after composition commit', () => {
     expect(
       resolveBeforeInputInterop({

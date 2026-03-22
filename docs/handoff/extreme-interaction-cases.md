@@ -211,6 +211,7 @@
 - 테스트:
   - viewport 기준으로 interaction policy를 분기하는 경우 E2E 수준 테스트 필요
   - 현재 `editorUnits.test.ts`에 touch-like drag selection을 copy/replacement/delete 흐름으로 고정하는 regression이 추가됨
+  - compact touch-style selection replacement / boundary delete regression도 `editorUnits.test.ts`에 추가됨
 
 ## 14. 붙여넣기 문자열에 줄바꿈/조합용 자모/완성형이 섞인 경우
 
@@ -264,6 +265,7 @@
 - 테스트:
   - blur/focus recovery 테스트
   - blur 직후 beforeinput delete가 들어와도 editor-layer contract가 유지되는지 테스트
+  - composition/delete/enter focus-regain sequence를 service layer에서 고정하는 regression도 `inputInterop.test.ts`에 추가됨
 
 ## 17. 같은 key sequence의 결정성 붕괴
 
@@ -337,6 +339,7 @@
   - enter/backspace parity after a selection-like edit sequence도 테스트로 고정됨
   - small parity matrix with filler / newline / backspace-like edits도 테스트로 고정됨
   - cross-browser surface metadata가 달라져도 같은 editing sequence가 같은 output으로 수렴하는 regression이 `inputParity.test.ts`에 추가됨
+  - detection-mode matrix now covers iPhone, Android phone, iPad, Android tablet, touch-capable desktop, and non-touch desktop cases
 
 ## 21. native selection / clipboard serialization 경계
 

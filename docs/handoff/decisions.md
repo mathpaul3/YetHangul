@@ -191,6 +191,7 @@
 - on-screen keyboard의 pointer down은 기본 포커스 이동을 막아서, 내부 버튼 클릭만으로 editor blur/commit이 발생하지 않게 한다.
 - 하드웨어와 on-screen 입력의 남은 차이는 `docs/handoff/input-parity-checklist.md`에 별도 추적한다.
 - browser-level smoke proof는 Playwright + system Chrome channel을 사용해 desktop/tablet/mobile/mobile-small surface를 검증한다.
+- mixed paste에서 literal text와 normalize 대상 문자가 섞여 있을 때도, canonical Unicode 문자열로 먼저 정규화한 뒤 document에 삽입해 원래 순서를 보존한다.
 - browser-family 차이는 service-level matrix(chromium-like / webkit-like / gecko-like)와 real-browser smoke를 함께 유지하는 방식으로 관리한다.
 - 현재 product shell은 다음 기준으로 유지한다.
   - topnav는 메뉴 없이 PNG 로고 + 제목 + 한 줄 설명만 둔다.

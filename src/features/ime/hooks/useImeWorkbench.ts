@@ -554,18 +554,22 @@ export function useImeWorkbench() {
       deleteSelection()
     }
 
+    let normalizedTextState = createInitialEngineState()
+
     for (const char of text) {
       const symbols = normalizeUnicodeToInputSymbols(char)
 
       if (symbols.length > 0) {
         for (const symbolId of symbols) {
-          dispatch({ type: 'input', symbolId })
+          normalizedTextState = applyInput(normalizedTextState, symbolId)
         }
         continue
       }
 
-      insertLiteralTextIntoDocument(char)
+      normalizedTextState = applyLiteralInput(normalizedTextState, char)
     }
+
+    insertLiteralTextIntoDocument(jamoIdsToUnicode(getRenderedJamoIds(normalizedTextState)))
   }
 
   function handleCopy(event: React.ClipboardEvent<HTMLElement>) {

@@ -129,3 +129,26 @@ test('editor surface keeps caret placement, replacement, and newline edits stabl
 
   await expectRenderedText(page, '2\n나')
 })
+
+test('mixed paste keeps literal and supported text in original order', async ({ page }) => {
+  await page.goto('/')
+
+  await page.locator('main').focus()
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    const data = new DataTransfer()
+    data.setData('text/plain', 'A간B')
+    root.dispatchEvent(
+      new ClipboardEvent('paste', {
+        bubbles: true,
+        clipboardData: data,
+      }),
+    )
+  })
+
+  await expectRenderedText(page, 'A간B')
+})

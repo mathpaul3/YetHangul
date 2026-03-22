@@ -159,11 +159,11 @@
 - user agent 기반 선호 모드와 keyboard event adapter는 구현
 - 좌/우 Ctrl/Shift 상태는 keydown/keyup 기반으로 추적
 - blur / visibilitychange 시 stuck modifier 방지를 위한 hardware state reset을 추가함
-- touch-capable heuristic은 `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 regression test로 일부 커버하기 시작했고, desktop/tablet connected-vs-disconnected matrix도 별도 test로 정리함
+- touch-capable heuristic은 `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 regression test로 일부 커버하기 시작했고, desktop/tablet connected-vs-disconnected matrix와 browser/platform probe contract도 별도 test로 정리함
 - 왜 Partial인지:
   - 현재 감지는 user agent와 keyboard event 기반 heuristics에 의존한다.
-  - touch-capable desktop signal과 tablet ambiguity는 일부 회귀로 잠갔지만, 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 아직 아니다.
-  - 연결/미연결 matrix는 proof되었지만, 실제 device attachment detection 신뢰도는 여전히 heuristics 수준이다.
+  - touch-capable desktop signal과 tablet ambiguity는 일부 회귀로 잠갔지만, 실제 하드웨어 키보드 연결 여부를 플랫폼/브라우저별로 신뢰도 높게 판정하는 단계는 עדיין 아니다.
+  - 연결/미연결 matrix와 probe contract는 proof되었지만, 실제 device attachment detection 신뢰도는 여전히 heuristics 수준이다.
 - Done 조건:
   - desktop/tablet 주요 조합에서 hardware 연결 여부 판정이 일관되고, 오탐/미탐이 충분히 낮은 수준으로 검증되면.
 - Next proof needed:

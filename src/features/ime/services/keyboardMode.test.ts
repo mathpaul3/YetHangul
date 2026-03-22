@@ -135,6 +135,58 @@ describe('keyboard mode detection', () => {
     })
   }
 
+  it('keeps a small browser/platform probe contract stable', () => {
+    const contract = [
+      {
+        name: 'mobile user agents stay onscreen even with touch evidence',
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15',
+          maxTouchPoints: 5,
+        },
+        window: {
+          ontouchstart: true,
+        },
+        expected: 'onscreen',
+      },
+      {
+        name: 'tablet user agents stay auto without needing touch evidence',
+        navigator: {
+          userAgent: 'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15',
+          maxTouchPoints: 0,
+        },
+        window: {},
+        expected: 'auto',
+      },
+      {
+        name: 'touch-capable desktop environments stay auto',
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+          maxTouchPoints: 5,
+        },
+        window: {
+          ontouchstart: true,
+        },
+        expected: 'auto',
+      },
+      {
+        name: 'desktop user agents without touch evidence stay hardware',
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15',
+          maxTouchPoints: 0,
+        },
+        window: {},
+        expected: 'hardware',
+      },
+    ] as const
+
+    for (const testCase of contract) {
+      vi.stubGlobal('navigator', testCase.navigator)
+      vi.stubGlobal('window', testCase.window)
+      expect(detectPreferredKeyboardMode(), testCase.name).toBe(testCase.expected)
+    }
+  })
+
   it('keeps a small desktop/tablet connected-vs-disconnected matrix stable', () => {
     const matrix = [
       {

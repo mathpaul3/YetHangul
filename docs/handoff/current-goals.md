@@ -54,8 +54,9 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - desktop/tablet connected vs disconnected keyboard matrix를 문서/테스트 수준으로 정리한다.
   - `T18-2a` `Landed`
     - desktop without touch, desktop with touch signals, tablet ambiguity에 대한 기본 matrix proof를 regression test로 고정한다.
-  - `T18-2b` `Open`
+- `T18-2b` `In Progress`
     - 연결/미연결 matrix 위에 browser/platform probe contract를 더 좁게 정의하고, 남은 heuristic gap을 문서/테스트 수준으로 한 번 더 압축한다.
+    - mobile UA > tablet UA > touch-capable desktop > hardware fallback 순서의 probe contract를 regression test로 고정한다.
 - `T19-1` `Done`
   - focus-regain 뒤 `deleteContentBackward`, `insertParagraph`, `insertLineBreak` 흐름을 regression으로 고정한다.
 - `T19-2` `Done`

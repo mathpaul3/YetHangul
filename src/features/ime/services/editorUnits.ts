@@ -187,6 +187,24 @@ export function createSelectionRange(anchor: number, head: number): UnitSelectio
   }
 }
 
+export function createDragSelectionRange(
+  anchor: number,
+  head: number,
+  unitCount: number,
+) {
+  const clampedAnchor = clampCaretIndex(anchor, unitCount)
+  const clampedHead = clampCaretIndex(head, unitCount)
+
+  if (clampedAnchor === clampedHead) {
+    return null
+  }
+
+  return {
+    start: Math.min(clampedAnchor, clampedHead),
+    end: Math.min(Math.max(clampedAnchor, clampedHead) + 1, unitCount),
+  }
+}
+
 export function clampCaretIndex(index: number, unitCount: number) {
   return Math.max(0, Math.min(index, unitCount))
 }

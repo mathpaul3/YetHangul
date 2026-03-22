@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   clampCaretIndex,
   commitCompositionUnits,
+  createDragSelectionRange,
   cancelSelectionGesture,
   createSelectionRange,
   deleteBackwardUnit,
@@ -302,6 +303,12 @@ describe('editorUnits', () => {
   it('creates normalized selection ranges', () => {
     expect(createSelectionRange(4, 1)).toEqual({ start: 1, end: 4 })
     expect(createSelectionRange(2, 2)).toBeNull()
+  })
+
+  it('creates drag selection ranges that clamp to current bounds', () => {
+    expect(createDragSelectionRange(5, 1, 10)).toEqual({ start: 1, end: 6 })
+    expect(createDragSelectionRange(9, 14, 10)).toEqual({ start: 9, end: 10 })
+    expect(createDragSelectionRange(3, 3, 10)).toBeNull()
   })
 
   it('returns normalized selection bounds', () => {

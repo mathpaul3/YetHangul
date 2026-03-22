@@ -31,6 +31,7 @@ import {
   clampCaretIndex,
   commitCompositionUnits,
   cancelSelectionGesture,
+  createDragSelectionRange,
   createSelectionRange,
   deleteBackwardUnit,
   deleteForwardUnit,
@@ -960,15 +961,14 @@ export function useImeWorkbench() {
     const anchor = selectionAnchorRef.current
     didMoveSelectionRef.current = true
     const clampedIndex = clampCaretIndex(unitIndex + 1, documentUnitsRef.current.length)
-    selectionRangeRef.current = {
-      start: Math.min(anchor, unitIndex),
-      end: Math.max(anchor + 1, clampedIndex),
-    }
+    const nextSelectionRange = createDragSelectionRange(
+      anchor,
+      unitIndex,
+      documentUnitsRef.current.length,
+    )
+    selectionRangeRef.current = nextSelectionRange
     caretIndexRef.current = clampedIndex
-    setSelectionRange({
-      start: Math.min(anchor, unitIndex),
-      end: Math.max(anchor + 1, clampedIndex),
-    })
+    setSelectionRange(nextSelectionRange)
     setCaretIndex(clampedIndex)
     clearBrowserSelection()
   }

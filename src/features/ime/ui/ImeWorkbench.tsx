@@ -232,6 +232,7 @@ export function ImeWorkbench() {
                         event.preventDefault()
                         handleSelectionStart(index)
                       }}
+                      onPointerMove={() => handleSelectionEnter(index)}
                       onPointerEnter={() => handleSelectionEnter(index)}
                     >
                       {renderEditorUnit(unit)}

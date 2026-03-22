@@ -218,6 +218,7 @@
 - long-document copy serialization stability 회귀를 추가함
 - touch-like drag selection copy/replacement/delete-backspace와 pointer-cancel cleanup 회귀 테스트를 추가함
 - touch drag selection이 `pointerenter`에만 의존하지 않도록 pointer-move fallback과 target-index helper를 추가함
+- small-screen touch selection에서 browser pan/scroll gesture를 suppress하는 editor surface touch contract를 추가함
 - 왜 Partial인지:
   - engine-side document unit 모델은 안정적이지만, caret/selection을 둘러싼 표면 상호작용과 native selection interop이 아직 완전히 잠기지 않았다.
   - 장문 편집과 모바일 touch selection 같은 surface-side edge case가 남아 있다.

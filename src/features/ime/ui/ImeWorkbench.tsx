@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
 import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMode'
 import { useImeWorkbench } from '@/features/ime/hooks/useImeWorkbench'
+import { getEditorSurfaceTouchBehavior } from '@/features/ime/services/editorSurface'
 
 const preferredMode = detectPreferredKeyboardMode()
 const numberRow = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const
@@ -64,6 +65,7 @@ const modifierLabels = {
 export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
   const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
+  const editorSurfaceTouchBehavior = getEditorSurfaceTouchBehavior()
   const {
     engineState,
     hardwareModifierState,
@@ -211,7 +213,7 @@ export function ImeWorkbench() {
               </span>
             ))}
           </div>
-          <div className="editor-output editor-surface">
+          <div className="editor-output editor-surface" style={editorSurfaceTouchBehavior}>
             {renderedUnits.length === 0 ? (
               <button
                 className="editor-boundary editor-boundary-root"

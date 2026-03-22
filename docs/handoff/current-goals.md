@@ -62,8 +62,8 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - composition-end 계열과 beforeinput 계열을 더 넓은 cross-browser surface proof로 묶는다.
 - `T19-1E` `Done`
   - long-document copy/replace/delete/shrink regression을 고정한다.
-- `T19-2E` `Open`
-  - 모바일 touch selection의 마지막 edge case를 하나 더 줄인다.
+- `T19-2E` `Landed`
+  - 모바일 touch selection의 마지막 edge case를 줄이기 위해 editor surface touch-action contract를 추가했다.
 
 ### Queue Rules
 

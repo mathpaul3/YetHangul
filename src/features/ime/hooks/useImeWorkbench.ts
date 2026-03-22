@@ -240,6 +240,8 @@ export function useImeWorkbench() {
       }
     }
 
+    commitCompositionToDocument()
+
     if (selectionRangeRef.current) {
       deleteSelection()
     }
@@ -248,6 +250,7 @@ export function useImeWorkbench() {
 
   function handleEditorBackspace() {
     if (selectionRangeRef.current) {
+      commitCompositionToDocument()
       deleteSelection()
       return true
     }
@@ -272,6 +275,7 @@ export function useImeWorkbench() {
 
   function handleEditorDelete() {
     if (selectionRangeRef.current) {
+      commitCompositionToDocument()
       deleteSelection()
       return
     }
@@ -322,6 +326,8 @@ export function useImeWorkbench() {
     if (visualKeyLabel) {
       flashVirtualKey(visualKeyLabel)
     }
+
+    commitCompositionToDocument()
 
     if (selectionRangeRef.current) {
       deleteSelection()
@@ -427,6 +433,8 @@ export function useImeWorkbench() {
   }
 
   function dispatchUnicodeText(text: string) {
+    commitCompositionToDocument()
+
     if (selectionRangeRef.current) {
       deleteSelection()
     }
@@ -480,6 +488,8 @@ export function useImeWorkbench() {
     } as const
 
     flashVirtualKey(utilityLabelMap[utilityKey])
+
+    commitCompositionToDocument()
 
     if (selectionRangeRef.current) {
       deleteSelection()

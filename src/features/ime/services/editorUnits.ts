@@ -48,7 +48,20 @@ export function segmentTextToEditorUnits(text: string) {
     }
   }
 
-  for (const char of text) {
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index]
+
+    if (char === '\r') {
+      flush()
+      units.push('\n')
+
+      if (text[index + 1] === '\n') {
+        index += 1
+      }
+
+      continue
+    }
+
     if (isStandaloneUnit(char)) {
       flush()
       units.push(char)

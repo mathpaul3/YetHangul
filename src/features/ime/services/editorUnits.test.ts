@@ -19,6 +19,10 @@ describe('editorUnits', () => {
     expect(segmentTextToEditorUnits('간ᅟᅡ\nA')).toEqual(['간', 'ᅟᅡ', '\n', 'A'])
   })
 
+  it('normalizes CRLF and lone carriage returns into newline editor units', () => {
+    expect(segmentTextToEditorUnits('A\r\nB\rC')).toEqual(['A', '\n', 'B', '\n', 'C'])
+  })
+
   it('inserts units at a caret position', () => {
     expect(insertUnitsAt(['가', '나'], 1, ['다'])).toEqual(['가', '다', '나'])
   })
@@ -39,6 +43,33 @@ describe('editorUnits', () => {
       replaceSelectionWithUnits(['가', '\n', '나'], { start: 0, end: 2 }, ['다']),
     ).toEqual({
       units: ['다', '나'],
+      caretIndex: 1,
+    })
+  })
+
+  it('replaces selections that cross a newline boundary without breaking unit order', () => {
+    expect(
+      replaceSelectionWithUnits(['가', '\n', '나', '다'], { start: 1, end: 3 }, ['하']),
+    ).toEqual({
+      units: ['가', '하', '다'],
+      caretIndex: 2,
+    })
+  })
+
+  it('replaces a selection across a newline and keeps follow-up caret movement stable', () => {
+    const replaced = replaceSelectionWithUnits(
+      ['가', '\n', '나', '다'],
+      { start: 1, end: 3 },
+      ['마'],
+    )
+
+    expect(replaced).toEqual({
+      units: ['가', '마', '다'],
+      caretIndex: 2,
+    })
+
+    expect(deleteBackwardUnit(replaced.units, replaced.caretIndex)).toEqual({
+      units: ['가', '다'],
       caretIndex: 1,
     })
   })
@@ -73,6 +104,24 @@ describe('editorUnits', () => {
     })
   })
 
+  it('moves through a newline boundary with backspace and delete in sequence', () => {
+    const lineStart = getLineStartIndex(['가', '\n', '나'], 2)
+
+    expect(lineStart).toBe(2)
+
+    const afterBackspace = deleteBackwardUnit(['가', '\n', '나'], lineStart)
+
+    expect(afterBackspace).toEqual({
+      units: ['가', '나'],
+      caretIndex: 1,
+    })
+
+    expect(deleteForwardUnit(afterBackspace.units, afterBackspace.caretIndex)).toEqual({
+      units: ['가'],
+      caretIndex: 1,
+    })
+  })
+
   it('finds the current line start from the caret position', () => {
     expect(getLineStartIndex(['가', '\n', '나', '다'], 0)).toBe(0)
     expect(getLineStartIndex(['가', '\n', '나', '다'], 1)).toBe(0)
@@ -85,5 +134,11 @@ describe('editorUnits', () => {
     expect(getLineEndIndex(['가', '\n', '나', '다'], 1)).toBe(1)
     expect(getLineEndIndex(['가', '\n', '나', '다'], 2)).toBe(4)
     expect(getLineEndIndex(['가', '\n', '나', '다'], 4)).toBe(4)
+  })
+
+  it('treats click-only transitions as caret moves and drag transitions as selections', () => {
+    expect(createSelectionRange(2, 2)).toBeNull()
+    expect(createSelectionRange(2, 4)).toEqual({ start: 2, end: 4 })
+    expect(createSelectionRange(4, 2)).toEqual({ start: 2, end: 4 })
   })
 })

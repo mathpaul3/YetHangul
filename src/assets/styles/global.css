@@ -1,0 +1,482 @@
+@font-face {
+  font-family: "NanumBarunGothic-YetHangul";
+  src: url("../fonts/NanumBarunGothic-YetHangul.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  font-family: "NanumBarunGothic-YetHangul", "Noto Sans KR", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background:
+    radial-gradient(circle at top left, rgba(243, 226, 188, 0.7), transparent 30%),
+    radial-gradient(circle at top right, rgba(180, 213, 213, 0.55), transparent 25%),
+    linear-gradient(180deg, #f7f3ea 0%, #efe8dc 100%);
+  color: #241b16;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: "NanumBarunGothic-YetHangul", "Noto Sans KR", sans-serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.page-shell {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.hero {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.hero p {
+  margin: 0;
+  max-width: 720px;
+  font-size: 1.05rem;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.panel {
+  border: 1px solid rgba(36, 27, 22, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 251, 245, 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 50px rgba(76, 54, 40, 0.08);
+}
+
+.editor-panel {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.editor-output {
+  min-height: 280px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(36, 27, 22, 0.1);
+  background: #fffdf8;
+  font-size: 2rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.editor-surface {
+  display: block;
+  gap: 0;
+  letter-spacing: 0;
+  user-select: none;
+}
+
+.editor-placeholder {
+  color: rgba(95, 71, 52, 0.72);
+}
+
+.editor-unit {
+  display: inline-flex;
+  align-items: stretch;
+  min-height: 1.4em;
+  padding: 0;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.editor-unit-selected {
+  background: rgba(177, 77, 31, 0.2);
+}
+
+.editor-boundary {
+  display: inline-flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: text;
+}
+
+.editor-boundary-root {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.caret {
+  width: 2px;
+  min-height: 1.35em;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.caret-visible {
+  background: #b14d1f;
+}
+
+.editor-linebreak {
+  white-space: pre;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ede1ca;
+  color: #5f4734;
+  font-size: 0.92rem;
+}
+
+.badge-active {
+  background: #2f6a68;
+  color: #fffaf5;
+}
+
+.badge-button {
+  border: none;
+  cursor: pointer;
+}
+
+.badge-button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.control-panel {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.utility-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 1.6fr;
+  gap: 10px;
+}
+
+.button-grid button {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 12px;
+  background: #2f6a68;
+  color: #fffaf5;
+  cursor: pointer;
+}
+
+.utility-grid button {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 12px;
+  background: #b56239;
+  color: #fffaf5;
+  cursor: pointer;
+}
+
+.button-grid button.secondary {
+  background: #b56239;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.button-row button {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 12px;
+  background: #7f4f34;
+  color: #fffaf5;
+  cursor: pointer;
+}
+
+.keyboard-shell {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(133, 99, 70, 0.12);
+  overflow-x: auto;
+}
+
+.keyboard-row {
+  display: grid;
+  gap: 8px;
+}
+
+.keyboard-row-1 {
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.keyboard-row-number {
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.keyboard-row-2 {
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  padding-inline: 10px;
+}
+
+.keyboard-row-3 {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding-inline: 48px;
+}
+
+.keyboard-row-shift {
+  grid-template-columns: 1.6fr repeat(7, minmax(0, 1fr)) 1.6fr;
+}
+
+.keyboard-row-bottom {
+  grid-template-columns: 1.35fr 1.35fr minmax(0, 3.6fr) 0.85fr 0.85fr 1.5fr;
+}
+
+.keycap {
+  min-height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: #7f4f34;
+  color: #fffaf5;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.keycap-utility {
+  background: #b56239;
+}
+
+.keycap-pressed {
+  background: #d07438;
+  box-shadow: inset 0 0 0 2px rgba(255, 250, 245, 0.34);
+  transform: translateY(1px);
+}
+
+.keycap-cluster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  background: transparent;
+}
+
+.keycap-cluster-main {
+  min-height: 52px;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 8px;
+  background: #2f6a68;
+  color: #fffaf5;
+  cursor: pointer;
+  text-align: left;
+}
+
+.keycap-cluster.modifier-active {
+  background: transparent;
+}
+
+.keycap-cluster.modifier-locked {
+  background: transparent;
+}
+
+.keycap-cluster.modifier-active .keycap-cluster-main {
+  background: #b14d1f;
+  box-shadow: inset 0 0 0 2px rgba(255, 250, 245, 0.25);
+}
+
+.keycap-cluster.modifier-locked .keycap-cluster-main {
+  background: #6f2c91;
+  box-shadow: inset 0 0 0 2px rgba(255, 250, 245, 0.3);
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 1120px) {
+  .page-shell {
+    width: min(100vw - 28px, 1080px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-shell {
+    width: min(100vw - 24px, 960px);
+    padding: 24px 0 40px;
+  }
+
+  .editor-output {
+    min-height: 240px;
+    font-size: 1.75rem;
+  }
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    width: calc(100vw - 20px);
+    padding: 20px 0 28px;
+  }
+
+  .editor-panel,
+  .control-panel {
+    padding: 16px;
+  }
+
+  .editor-output {
+    min-height: 200px;
+    padding: 14px;
+    font-size: 1.5rem;
+  }
+
+  .keycap,
+  .keycap-cluster-main,
+  .utility-grid button {
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .keyboard-shell {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .keyboard-row-2 {
+    padding-inline: 12px;
+  }
+
+  .keyboard-row-3 {
+    padding-inline: 36px;
+  }
+
+  .keyboard-row-shift {
+    grid-template-columns: 1.45fr repeat(7, minmax(0, 1fr)) 1.45fr;
+  }
+
+  .keyboard-row-bottom {
+    grid-template-columns: 1.2fr 1.2fr minmax(0, 3fr) 0.85fr 0.85fr 1.25fr;
+  }
+
+}
+
+@media (max-width: 560px) {
+  .page-shell {
+    width: calc(100vw - 16px);
+    padding: 16px 0 24px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+  }
+
+  .hero p,
+  .badge,
+  .mono {
+    font-size: 0.9rem;
+  }
+
+  .keyboard-row-2 {
+    padding-inline: 8px;
+  }
+
+  .keyboard-row-3 {
+    padding-inline: 24px;
+  }
+
+  .keyboard-row-shift {
+    grid-template-columns: 1.2fr repeat(7, minmax(0, 1fr)) 1.2fr;
+  }
+
+  .keyboard-row-bottom {
+    grid-template-columns: 1.05fr 1.05fr minmax(0, 2.4fr) 0.8fr 0.8fr 1.1fr;
+  }
+
+}
+
+@media (max-width: 420px) {
+  .editor-panel,
+  .control-panel {
+    padding: 12px;
+  }
+
+  .keyboard-shell {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .keyboard-row {
+    gap: 6px;
+  }
+
+  .keyboard-row-2 {
+    padding-inline: 4px;
+  }
+
+  .keyboard-row-3 {
+    padding-inline: 12px;
+  }
+
+  .keyboard-row-shift {
+    grid-template-columns: 1.2fr repeat(7, minmax(0, 1fr)) 1.2fr;
+  }
+
+  .keyboard-row-bottom {
+    grid-template-columns: 1fr 1fr minmax(0, 2.05fr) 0.8fr 0.8fr 1fr;
+  }
+
+  .keycap,
+  .keycap-cluster-main,
+  .utility-grid button {
+    min-height: 44px;
+    border-radius: 12px;
+    padding: 10px 8px;
+  }
+}

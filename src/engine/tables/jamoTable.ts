@@ -1,0 +1,150 @@
+import { BASE_FINAL_TARGET_CHARS, BASE_INITIAL_TARGET_CHARS, BASE_MEDIAL_TARGET_CHARS } from '@/engine/tables/baseInventoryCoverage'
+import { TARGET_INVENTORY, toInventorySymbolName } from '@/engine/tables/inventoryCatalog'
+
+const BASE_JAMO_DEFINITIONS = {
+  // 초성: 한글 순
+  CHOSEONG_GIYEOK: 'ᄀ',
+  CHOSEONG_SSANGGIYEOK: 'ᄁ',
+  CHOSEONG_NIEUN: 'ᄂ',
+  CHOSEONG_SSANGNIEUN: 'ᄔ',
+  CHOSEONG_DIGEUT: 'ᄃ',
+  CHOSEONG_SSANGDIGEUT: 'ᄄ',
+  CHOSEONG_RIEUL: 'ᄅ',
+  CHOSEONG_SSANGRIEUL: 'ᄙ',
+  CHOSEONG_MIEUM: 'ᄆ',
+  CHOSEONG_BIEUP: 'ᄇ',
+  CHOSEONG_SSANGBIEUP: 'ᄈ',
+  CHOSEONG_PIEUP_SIOS_GIYEOK: 'ᄢ',
+  CHOSEONG_SIOS: 'ᄉ',
+  CHOSEONG_SSANGSIOS: 'ᄊ',
+  CHOSEONG_CHIDUEUM_SIOS: 'ᄼ',
+  CHOSEONG_CHIDUEUM_SSANGSIOS: 'ᄽ',
+  CHOSEONG_JEONGCHIEUM_SIOS: 'ᄾ',
+  CHOSEONG_JEONGCHIEUM_SSANGSIOS: 'ᄿ',
+  CHOSEONG_IEUNG: 'ᄋ',
+  CHOSEONG_OLD_IEUNG: 'ᅌ',
+  CHOSEONG_SSANGIEUNG: 'ᅇ',
+  CHOSEONG_CIEUC: 'ᄌ',
+  CHOSEONG_SSANGCIEUC: 'ᄍ',
+  CHOSEONG_CHIDUEUM_CIEUC: 'ᅎ',
+  CHOSEONG_CHIDUEUM_SSANGCIEUC: 'ᅏ',
+  CHOSEONG_JEONGCHIEUM_CIEUC: 'ᅐ',
+  CHOSEONG_JEONGCHIEUM_SSANGCIEUC: 'ᅑ',
+  CHOSEONG_BANCHIEUM: 'ᅀ',
+  CHOSEONG_CHIEUCH: 'ᄎ',
+  CHOSEONG_CHIDUEUM_CHIEUCH: 'ᅔ',
+  CHOSEONG_JEONGCHIEUM_CHIEUCH: 'ᅕ',
+  CHOSEONG_KHIEUKH: 'ᄏ',
+  CHOSEONG_THIEUTH: 'ᄐ',
+  CHOSEONG_SSANGTHIEUTH: 'ꥹ',
+  CHOSEONG_PHIEUPH: 'ᄑ',
+  CHOSEONG_HIEUH: 'ᄒ',
+  CHOSEONG_SSANGHIEUH: 'ᅘ',
+  CHOSEONG_YEORINHIEUH: 'ᅙ',
+  CHOSEONG_SSANGYEORINHIEUH: 'ꥼ',
+  CHOSEONG_FILLER: 'ᅟ',
+
+  // 중성: 한글 순
+  JUNGSEONG_A: 'ᅡ',
+  JUNGSEONG_AE: 'ᅢ',
+  JUNGSEONG_YA: 'ᅣ',
+  JUNGSEONG_YAE: 'ᅤ',
+  JUNGSEONG_EO: 'ᅥ',
+  JUNGSEONG_E: 'ᅦ',
+  JUNGSEONG_YEO: 'ᅧ',
+  JUNGSEONG_YE: 'ᅨ',
+  JUNGSEONG_O: 'ᅩ',
+  JUNGSEONG_WA: 'ᅪ',
+  JUNGSEONG_WAE: 'ᅫ',
+  JUNGSEONG_OE: 'ᅬ',
+  JUNGSEONG_YO: 'ᅭ',
+  JUNGSEONG_U: 'ᅮ',
+  JUNGSEONG_WEO: 'ᅯ',
+  JUNGSEONG_WE: 'ᅰ',
+  JUNGSEONG_WI: 'ᅱ',
+  JUNGSEONG_YU: 'ᅲ',
+  JUNGSEONG_EU: 'ᅳ',
+  JUNGSEONG_YI: 'ᅴ',
+  JUNGSEONG_I: 'ᅵ',
+  JUNGSEONG_ARAEA: 'ᆞ',
+  JUNGSEONG_SSANGARAEA: 'ᆢ',
+  JUNGSEONG_O_O: 'ᆂ',
+  JUNGSEONG_U_U: 'ᆍ',
+  JUNGSEONG_EU_EU: 'ᆖ',
+  JUNGSEONG_I_I: 'ퟄ',
+  JUNGSEONG_YU_A: 'ᆎ',
+  JUNGSEONG_I_YA: 'ᆙ',
+  JUNGSEONG_FILLER: 'ᅠ',
+
+  // 종성: 한글 순
+  JONGSEONG_GIYEOK: 'ᆨ',
+  JONGSEONG_SSANGGIYEOK: 'ᆩ',
+  JONGSEONG_GIYEOK_SIOS: 'ᆪ',
+  JONGSEONG_NIEUN: 'ᆫ',
+  JONGSEONG_NIEUN_CIEUC: 'ᆬ',
+  JONGSEONG_NIEUN_HIEUH: 'ᆭ',
+  JONGSEONG_DIGEUT: 'ᆮ',
+  JONGSEONG_RIEUL: 'ᆯ',
+  JONGSEONG_RIEUL_GIYEOK: 'ᆰ',
+  JONGSEONG_RIEUL_MIEUM: 'ᆱ',
+  JONGSEONG_RIEUL_BIEUP: 'ᆲ',
+  JONGSEONG_RIEUL_SIOS: 'ᆳ',
+  JONGSEONG_RIEUL_THIEUTH: 'ᆴ',
+  JONGSEONG_RIEUL_PHIEUPH: 'ᆵ',
+  JONGSEONG_RIEUL_HIEUH: 'ᆶ',
+  JONGSEONG_MIEUM: 'ᆷ',
+  JONGSEONG_SSANGMIEUM: 'ퟠ',
+  JONGSEONG_BIEUP: 'ᆸ',
+  JONGSEONG_BIEUP_SIOS: 'ᆹ',
+  JONGSEONG_SIOS: 'ᆺ',
+  JONGSEONG_SSANGSIOS: 'ᆻ',
+  JONGSEONG_IEUNG: 'ᆼ',
+  JONGSEONG_CIEUC: 'ᆽ',
+  JONGSEONG_CHIEUCH: 'ᆾ',
+  JONGSEONG_KHIEUKH: 'ᆿ',
+  JONGSEONG_THIEUTH: 'ᇀ',
+  JONGSEONG_PHIEUPH: 'ᇁ',
+  JONGSEONG_HIEUH: 'ᇂ',
+
+  // 공백
+  SPACE: ' ',
+
+  // 방점
+  TONE_SINGLE: '〮',
+  TONE_DOUBLE: '〯',
+} as const
+
+const DIRECT_INITIAL_DEFINITIONS = Object.fromEntries(
+  TARGET_INVENTORY.initial
+    .filter((entry) => !BASE_INITIAL_TARGET_CHARS.includes(entry.char))
+    .map((entry) => [toInventorySymbolName(entry), entry.char]),
+)
+
+const DIRECT_MEDIAL_DEFINITIONS = Object.fromEntries(
+  TARGET_INVENTORY.medial
+    .filter((entry) => !BASE_MEDIAL_TARGET_CHARS.includes(entry.char))
+    .map((entry) => [toInventorySymbolName(entry), entry.char]),
+)
+
+const DIRECT_FINAL_DEFINITIONS = Object.fromEntries(
+  TARGET_INVENTORY.final
+    .filter((entry) => !BASE_FINAL_TARGET_CHARS.includes(entry.char))
+    .map((entry) => [toInventorySymbolName(entry), entry.char]),
+)
+
+const JAMO_DEFINITIONS = {
+  ...BASE_JAMO_DEFINITIONS,
+  ...DIRECT_INITIAL_DEFINITIONS,
+  ...DIRECT_MEDIAL_DEFINITIONS,
+  ...DIRECT_FINAL_DEFINITIONS,
+} as const
+
+type JamoName = keyof typeof JAMO_DEFINITIONS
+
+export const JAMO_UNICODE_TABLE = ['', ...Object.values(JAMO_DEFINITIONS)] as const
+
+export const JAMO_IDS = Object.freeze(
+  Object.fromEntries(
+    Object.keys(JAMO_DEFINITIONS).map((name, index) => [name, index + 1]),
+  ) as Record<JamoName, number>,
+)

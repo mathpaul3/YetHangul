@@ -290,8 +290,6 @@
 - 2. caret/selection editor-layer 회귀 테스트를 더 늘리기
 - 3. on-screen / mobile parity smoke coverage를 16/17 기준으로 고정하기
 - 4. hardware detection matrix와 focus-regain input regression을 18/19 기준으로 고정하기
-- 3. 실제 사용자 interaction 기준 회귀 테스트를 더 늘리기
-- 4. 모바일 자체 자판의 조합 힌트와 시각 피드백 강화
-- 5. 태블릿/하드웨어 키보드 감지 품질 보강
+- 5. remaining Partial areas를 한 번씩 end-to-end smoke로 통과시키기
 - 극단 상호작용 시나리오 목록과 대응 초안은 `docs/handoff/extreme-interaction-cases.md`에 정리함
 - 하드웨어/on-screen 입력 차이 추적은 `docs/handoff/input-parity-checklist.md`에 정리함

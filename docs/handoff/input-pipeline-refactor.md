@@ -182,6 +182,13 @@ Key Regression Tests:
 - 동일 기본 키에서 파생된 modifier형 후행 text duplicate 억제
 - batch adapter가 literal + Hangul mix를 canonical order로 유지하는지 확인
 
+Current Atomic Slice:
+- `R25-2a` `Landed`
+  - native text를 `NormalizedInputBatch`로 먼저 만들고, 그 batch를 canonicalize한 뒤 document에 넣는 경계를 코드로 드러냈다.
+  - mixed literal + Hangul 순서 보존을 batch 생성 / batch canonicalization / batch dispatch regression으로 고정했다.
+- `R25-2b` `Open`
+  - tone / filler / newline / selection replacement / duplicate suppression이 batch 경계에서도 shared rule을 유지하는지 추가 proof를 쌓는다.
+
 ### Phase 3. Editor Mutation Unification
 
 목표:

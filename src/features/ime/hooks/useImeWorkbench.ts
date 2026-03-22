@@ -29,7 +29,10 @@ import {
   getLongPressModifierMode,
   getNextModifierMode,
 } from '@/features/ime/services/modifierInteraction'
-import { dispatchNormalizedTextBatch } from '@/features/ime/services/nativeTextBatch'
+import {
+  createNormalizedInputBatchFromText,
+  dispatchNormalizedInputBatch,
+} from '@/features/ime/services/nativeTextBatch'
 import type { PressedModifierState } from '@/features/ime/services/hardwareKeyboard'
 import {
   clampCaretIndex,
@@ -669,11 +672,15 @@ export function useImeWorkbench() {
   }
 
   function dispatchNormalizedText(text: string) {
-    dispatchNormalizedTextBatch(text, {
-      commitCompositionToDocument,
-      hasSelection: () => selectionRangeRef.current != null,
-      deleteSelection,
-      insertLiteralTextIntoDocument,
+    dispatchNormalizedInputBatch(createNormalizedInputBatchFromText(text), {
+      shouldSuppressNormalizedEvent,
+      markRecentDirectDispatch,
+      handleInput,
+      handleLiteralInput,
+      handleModifierMainClick,
+      handleUtilityInput,
+      handleNavigationInput,
+      handleTransientSymbolInput,
     })
   }
 

@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { dispatchNormalizedInputEvent } from '@/features/ime/services/normalizedDispatcher'
+import {
+  dispatchNormalizedInputBatch,
+  dispatchNormalizedInputEvent,
+} from '@/features/ime/services/normalizedDispatcher'
 
 describe('normalized dispatcher', () => {
   it('routes transient symbol input through the transient symbol handler', () => {
@@ -82,5 +85,28 @@ describe('normalized dispatcher', () => {
     )
 
     expect(handleUtilityInput).not.toHaveBeenCalled()
+  })
+
+  it('does not suppress repeated identical events inside a normalized batch', () => {
+    const handleInput = vi.fn()
+
+    dispatchNormalizedInputBatch(
+      [
+        { type: 'symbol', symbolId: 101, directText: 'ㄱ' },
+        { type: 'symbol', symbolId: 101, directText: 'ㄱ' },
+      ],
+      {
+        shouldSuppressNormalizedEvent: vi.fn(() => true),
+        markRecentDirectDispatch: vi.fn(),
+        handleInput,
+        handleLiteralInput: vi.fn(),
+        handleModifierMainClick: vi.fn(),
+        handleUtilityInput: vi.fn(),
+        handleNavigationInput: vi.fn(),
+        handleTransientSymbolInput: vi.fn(),
+      },
+    )
+
+    expect(handleInput).toHaveBeenCalledTimes(2)
   })
 })

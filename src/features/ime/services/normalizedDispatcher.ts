@@ -1,6 +1,7 @@
 import type { ModifierKey } from '@/engine/core/types'
 import {
   getNormalizedInputEventSignature,
+  type NormalizedInputBatch,
   type NormalizedInputEvent,
   type NormalizedNavigationDirection,
   type NormalizedUtilityKey,
@@ -21,19 +22,30 @@ type NormalizedDispatcherRuntime = {
   ) => void
 }
 
-export function dispatchNormalizedInputEvent(
+type NormalizedDispatchOptions = {
+  shouldSuppress?: boolean
+  markDirectDispatch?: boolean
+}
+
+function dispatchNormalizedInputEventInternal(
   event: NormalizedInputEvent,
   runtime: NormalizedDispatcherRuntime,
+  options: NormalizedDispatchOptions,
 ) {
+  const shouldSuppress = options.shouldSuppress ?? true
+  const markDirectDispatch = options.markDirectDispatch ?? true
+
   const signature = getNormalizedInputEventSignature(event)
 
   switch (event.type) {
     case 'symbol': {
-      if (runtime.shouldSuppressNormalizedEvent(signature)) {
+      if (shouldSuppress && runtime.shouldSuppressNormalizedEvent(signature)) {
         return
       }
 
-      runtime.markRecentDirectDispatch(event.directText ?? null, event.symbolId)
+      if (markDirectDispatch) {
+        runtime.markRecentDirectDispatch(event.directText ?? null, event.symbolId)
+      }
 
       if (event.transientModifiers) {
         runtime.handleTransientSymbolInput(
@@ -49,11 +61,13 @@ export function dispatchNormalizedInputEvent(
     }
 
     case 'literal':
-      if (runtime.shouldSuppressNormalizedEvent(signature)) {
+      if (shouldSuppress && runtime.shouldSuppressNormalizedEvent(signature)) {
         return
       }
 
-      runtime.markRecentDirectDispatch(event.directText ?? event.text)
+      if (markDirectDispatch) {
+        runtime.markRecentDirectDispatch(event.directText ?? event.text)
+      }
       runtime.handleLiteralInput(event.text, event.visualKeyLabel)
       return
 
@@ -62,18 +76,39 @@ export function dispatchNormalizedInputEvent(
       return
 
     case 'utility':
-      if (runtime.shouldSuppressNormalizedEvent(signature)) {
+      if (shouldSuppress && runtime.shouldSuppressNormalizedEvent(signature)) {
         return
       }
 
-      runtime.markRecentDirectDispatch(
-        event.directText ?? (event.utilityKey === 'enter' ? '\n' : null),
-      )
+      if (markDirectDispatch) {
+        runtime.markRecentDirectDispatch(
+          event.directText ?? (event.utilityKey === 'enter' ? '\n' : null),
+        )
+      }
       runtime.handleUtilityInput(event.utilityKey)
       return
 
     case 'navigation':
       runtime.handleNavigationInput(event.direction)
       return
+  }
+}
+
+export function dispatchNormalizedInputEvent(
+  event: NormalizedInputEvent,
+  runtime: NormalizedDispatcherRuntime,
+) {
+  return dispatchNormalizedInputEventInternal(event, runtime, {})
+}
+
+export function dispatchNormalizedInputBatch(
+  batch: NormalizedInputBatch,
+  runtime: NormalizedDispatcherRuntime,
+) {
+  for (const event of batch) {
+    dispatchNormalizedInputEventInternal(event, runtime, {
+      shouldSuppress: false,
+      markDirectDispatch: false,
+    })
   }
 }

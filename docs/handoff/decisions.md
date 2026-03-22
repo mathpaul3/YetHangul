@@ -217,6 +217,9 @@
 - `beforeinput`과 `compositionend`가 같은 조합 결과를 중복 전달하는 브라우저를 대비해, 최근 commit 텍스트를 기준으로 한 dedupe 규칙을 도입했다.
 - 하드웨어 keydown, on-screen key press, native keyboard beforeinput/composition 경로는 가능한 한 `normalized input event -> single dispatcher -> engine/editor` 흐름으로 수렴시킨다.
 - direct key dispatch 직후 들어오는 동일 문자 `beforeinput` / `compositionend`는 짧은 suppression window로 억제한다.
+- native 문자열 입력은 Phase 2부터 raw text를 바로 document에 넣지 않고, 먼저 `NormalizedInputBatch`로 분해한 뒤 canonicalize / dispatch하는 경계를 사용한다.
+- 현재 batch는 `symbol` / `literal` 이벤트만 포함하며, modifier / utility / navigation은 여전히 source adapter가 직접 만든다.
+- native batch는 shared dispatcher를 재사용하되, batch 내부의 반복 문자가 direct-event duplicate suppression에 걸리지 않도록 batch 내부에서는 suppression과 recent direct marker 갱신을 건너뛴다.
 - native IME text는 raw DOM text로 바로 문서에 꽂지 않고, 가능하면 batch adapter를 거쳐 normalized boundary로 올린다.
 - 편집기 1차 구현으로 `document units + caret index + selection range` 레이어를 입력기 위에 얹었다.
 - 현재 결과 영역은 음절 단위 caret 경계 클릭, drag selection, 선택 삭제, 좌우/Home/End 이동을 지원한다.

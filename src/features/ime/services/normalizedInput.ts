@@ -43,6 +43,13 @@ export type NormalizedInputEvent =
   | NormalizedUtilityInputEvent
   | NormalizedNavigationInputEvent
 
+export type NormalizedBatchInputEvent = Extract<
+  NormalizedInputEvent,
+  { type: 'symbol' | 'literal' }
+>
+
+export type NormalizedInputBatch = readonly NormalizedBatchInputEvent[]
+
 export function getNormalizedInputEventSignature(event: NormalizedInputEvent) {
   switch (event.type) {
     case 'symbol':
@@ -56,4 +63,8 @@ export function getNormalizedInputEventSignature(event: NormalizedInputEvent) {
     case 'navigation':
       return `navigation:${event.direction}`
   }
+}
+
+export function getNormalizedInputBatchSignature(batch: NormalizedInputBatch) {
+  return batch.map((event) => getNormalizedInputEventSignature(event)).join('|')
 }

@@ -11,6 +11,7 @@
 - on-screen modifier와 하드웨어/native 입력이 섞일 때 같은 기본 키의 후행 surface를 중복 반영하지 않도록 입력 suppression 규칙 보강
 - Playwright smoke가 도움말 오버레이와 compact keyboard 기본값을 고려하도록 회귀 자산 정리
 - input pipeline refactor Phase 1로 `NormalizedInputEvent`, shared dispatcher, native text batch adapter 경계를 코드와 문서에 고정
+- input pipeline refactor Phase 2 첫 slice로 native text를 `NormalizedInputBatch`로 명시한 뒤 canonicalize / dispatch하는 경계를 추가
 
 ## [0.1.0]
 

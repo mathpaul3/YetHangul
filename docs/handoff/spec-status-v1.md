@@ -180,6 +180,7 @@
 - blur 시 조합 중이던 buffer를 document에 commit하고, recent IME duplicate marker를 초기화하도록 보강함
 - `Enter`는 줄바꿈 literal input으로 처리되도록 연결함
 - `beforeinput` / `composition*` 경로에 대한 회귀 테스트를 확장했고, delete/enter/focus-regain 시나리오를 QA regression으로 고정하기 시작함
+- input pipeline refactor Phase 2 첫 slice로 native 문자열 입력을 `NormalizedInputBatch`로 먼저 만들고, shared dispatcher/runtime을 통해 처리하는 batch boundary를 명시함
 - focus regain 뒤 delete/enter 후 새 composition session을 허용하는 regression test가 추가됨
 - focus regain 뒤 `insertLineBreak`도 같은 beforeinput contract로 유지되는 regression이 추가됨
 - focus regain 뒤 duplicate marker가 cleared 되면 `insertFromComposition`도 다시 허용되는 regression이 추가됨

@@ -22,6 +22,10 @@ import {
   resolveBeforeInputInterop,
   resolveCompositionEndInterop,
 } from '@/features/ime/services/inputInterop'
+import {
+  getLongPressModifierMode,
+  getNextModifierMode,
+} from '@/features/ime/services/modifierInteraction'
 import type { PressedModifierState } from '@/features/ime/services/hardwareKeyboard'
 import {
   clampCaretIndex,
@@ -102,6 +106,18 @@ export function useImeWorkbench() {
   const backspaceRepeatTimeoutRef = useRef<number | null>(null)
   const backspaceRepeatIntervalRef = useRef<number | null>(null)
   const navigationRepeatControllerRef = useRef<LongPressRepeatController | null>(null)
+  const modifierLongPressControllerRef = useRef<Record<ModifierKey, LongPressRepeatController | null>>({
+    leftCtrl: null,
+    rightCtrl: null,
+    leftShift: null,
+    rightShift: null,
+  })
+  const modifierLongPressConsumedRef = useRef<Record<ModifierKey, boolean>>({
+    leftCtrl: false,
+    rightCtrl: false,
+    leftShift: false,
+    rightShift: false,
+  })
   const selectionAnchorRef = useRef<number | null>(null)
   const isDraggingSelectionRef = useRef(false)
   const didMoveSelectionRef = useRef(false)
@@ -166,6 +182,12 @@ export function useImeWorkbench() {
     dragStartUnitIndexRef.current = null
     compositionActiveRef.current = false
     recentImeCommitRef.current = null
+    clearNavigationRepeat()
+    for (const key of Object.keys(modifierLongPressConsumedRef.current) as ModifierKey[]) {
+      modifierLongPressConsumedRef.current[key] = false
+      modifierLongPressControllerRef.current[key]?.cancel()
+      modifierLongPressControllerRef.current[key] = null
+    }
   }
 
   useEffect(() => {
@@ -205,6 +227,9 @@ export function useImeWorkbench() {
       }
 
       navigationRepeatControllerRef.current?.cancel()
+      for (const controller of Object.values(modifierLongPressControllerRef.current)) {
+        controller?.cancel()
+      }
     }
   }, [])
 
@@ -457,18 +482,17 @@ export function useImeWorkbench() {
   }
 
   function handleModifierMainClick(modifierKey: ModifierKey) {
+    if (modifierLongPressConsumedRef.current[modifierKey]) {
+      modifierLongPressConsumedRef.current[modifierKey] = false
+      return
+    }
+
     const currentMode = engineState.modifierState[modifierKey]
-    const nextMode =
-      currentMode === 'off'
-        ? 'oneshot'
-        : currentMode === 'oneshot'
-          ? 'locked'
-          : 'off'
 
     dispatch({
       type: 'setModifierMode',
       modifierKey,
-      mode: nextMode,
+      mode: getNextModifierMode(currentMode),
     })
 
     const labelMap: Record<ModifierKey, string> = {
@@ -479,6 +503,27 @@ export function useImeWorkbench() {
     }
 
     flashVirtualKey(labelMap[modifierKey])
+  }
+
+  function handleModifierMainPointerDown(modifierKey: ModifierKey) {
+    modifierLongPressConsumedRef.current[modifierKey] = false
+    modifierLongPressControllerRef.current[modifierKey]?.cancel()
+    modifierLongPressControllerRef.current[modifierKey] = startLongPressRepeat({
+      delayMs: 800,
+      onRepeat: () => {
+        modifierLongPressConsumedRef.current[modifierKey] = true
+        dispatch({
+          type: 'setModifierMode',
+          modifierKey,
+          mode: getLongPressModifierMode(engineState.modifierState[modifierKey]),
+        })
+      },
+    })
+  }
+
+  function handleModifierMainPointerEnd(modifierKey: ModifierKey) {
+    modifierLongPressControllerRef.current[modifierKey]?.cancel()
+    modifierLongPressControllerRef.current[modifierKey] = null
   }
 
   function dispatchUnicodeText(text: string) {
@@ -960,6 +1005,8 @@ export function useImeWorkbench() {
     handleUtilityInput,
     handleNavigationInput,
     handleModifierMainClick,
+    handleModifierMainPointerDown,
+    handleModifierMainPointerEnd,
     handleCaretPlacement,
     handleSelectionStart,
     handleSelectionEnter,

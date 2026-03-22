@@ -80,6 +80,8 @@ export function ImeWorkbench() {
     handleUtilityInput,
     handleNavigationInput,
     handleModifierMainClick,
+    handleModifierMainPointerDown,
+    handleModifierMainPointerEnd,
     handleCaretPlacement,
     handleSelectionEnd,
     handleSelectionEnter,
@@ -338,14 +340,20 @@ export function ImeWorkbench() {
                         className={`keycap-cluster ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
                         key={label}
                       >
-                        <button
-                          className="keycap-cluster-main"
-                          type="button"
-                          onPointerDown={preventVirtualKeyboardFocus}
-                          onClick={() => {
-                            handleModifierMainClick(action)
-                            restoreEditorFocus()
-                          }}
+                          <button
+                            className="keycap-cluster-main"
+                            type="button"
+                            onPointerDown={(event) => {
+                              preventVirtualKeyboardFocus(event)
+                              handleModifierMainPointerDown(action)
+                            }}
+                            onPointerUp={() => handleModifierMainPointerEnd(action)}
+                            onPointerCancel={() => handleModifierMainPointerEnd(action)}
+                            onPointerLeave={() => handleModifierMainPointerEnd(action)}
+                            onClick={() => {
+                              handleModifierMainClick(action)
+                              restoreEditorFocus()
+                            }}
                         >
                           {label}
                         </button>
@@ -377,14 +385,20 @@ export function ImeWorkbench() {
                         className={`keycap-cluster ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
                         key={label}
                       >
-                        <button
-                          className="keycap-cluster-main"
-                          type="button"
-                          onPointerDown={preventVirtualKeyboardFocus}
-                          onClick={() => {
-                            handleModifierMainClick(action)
-                            restoreEditorFocus()
-                          }}
+                          <button
+                            className="keycap-cluster-main"
+                            type="button"
+                            onPointerDown={(event) => {
+                              preventVirtualKeyboardFocus(event)
+                              handleModifierMainPointerDown(action)
+                            }}
+                            onPointerUp={() => handleModifierMainPointerEnd(action)}
+                            onPointerCancel={() => handleModifierMainPointerEnd(action)}
+                            onPointerLeave={() => handleModifierMainPointerEnd(action)}
+                            onClick={() => {
+                              handleModifierMainClick(action)
+                              restoreEditorFocus()
+                            }}
                         >
                           {label}
                         </button>

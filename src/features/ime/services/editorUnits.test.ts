@@ -123,6 +123,23 @@ describe('editorUnits', () => {
     expect(afterDelete.units.length).toBeGreaterThan(0)
   })
 
+  it('keeps long-document copy serialization stable across selection replacement and repeated reads', () => {
+    const units = segmentTextToEditorUnits(
+      '가\n나\n다\n라\n마\n바\n사\n아\n자\n차\n카\n타',
+    )
+
+    const firstSelection = createSelectionRange(2, 9)
+    const firstCopy = serializeUnits(units, firstSelection)
+
+    const replaced = replaceSelectionWithUnits(units, { start: 2, end: 9 }, ['하', '\n', '아'])
+    const secondSelection = createSelectionRange(0, 5)
+    const secondCopy = serializeUnits(replaced.units, secondSelection)
+
+    expect(firstCopy).toBe('나\n다\n라\n마')
+    expect(secondCopy).toBe('가\n하\n아')
+    expect(serializeUnits(replaced.units, secondSelection)).toBe(secondCopy)
+  })
+
   it('inserts units at a caret position', () => {
     expect(insertUnitsAt(['가', '나'], 1, ['다'])).toEqual(['가', '다', '나'])
   })

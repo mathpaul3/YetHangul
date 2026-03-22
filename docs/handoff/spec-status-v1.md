@@ -260,7 +260,7 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 128
+- 현재 테스트 수: 132
 
 ## 24. MVP 완료 정의
 

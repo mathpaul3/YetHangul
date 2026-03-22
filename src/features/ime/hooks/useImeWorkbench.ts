@@ -89,6 +89,8 @@ export function useImeWorkbench() {
   const compositionActiveRef = useRef(false)
   const recentImeCommitRef = useRef<string | null>(null)
   const virtualKeyTimeoutsRef = useRef<Record<string, number>>({})
+  const backspaceRepeatTimeoutRef = useRef<number | null>(null)
+  const backspaceRepeatIntervalRef = useRef<number | null>(null)
   const selectionAnchorRef = useRef<number | null>(null)
   const isDraggingSelectionRef = useRef(false)
   const didMoveSelectionRef = useRef(false)
@@ -166,6 +168,14 @@ export function useImeWorkbench() {
 
       for (const timeoutId of Object.values(virtualKeyTimeoutsRef.current)) {
         window.clearTimeout(timeoutId)
+      }
+
+      if (backspaceRepeatTimeoutRef.current != null) {
+        window.clearTimeout(backspaceRepeatTimeoutRef.current)
+      }
+
+      if (backspaceRepeatIntervalRef.current != null) {
+        window.clearInterval(backspaceRepeatIntervalRef.current)
       }
     }
   }, [])
@@ -247,6 +257,39 @@ export function useImeWorkbench() {
       deleteSelection()
     }
     dispatch({ type: 'input', symbolId })
+  }
+
+  function clearBackspaceRepeat() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    if (backspaceRepeatTimeoutRef.current != null) {
+      window.clearTimeout(backspaceRepeatTimeoutRef.current)
+      backspaceRepeatTimeoutRef.current = null
+    }
+
+    if (backspaceRepeatIntervalRef.current != null) {
+      window.clearInterval(backspaceRepeatIntervalRef.current)
+      backspaceRepeatIntervalRef.current = null
+    }
+  }
+
+  function handleVirtualBackspacePointerDown() {
+    if (typeof window === 'undefined') {
+      handleInput(INPUT_SYMBOL_IDS.BACKSPACE, 'Backspace')
+      return
+    }
+
+    clearBackspaceRepeat()
+    handleInput(INPUT_SYMBOL_IDS.BACKSPACE, 'Backspace')
+
+    backspaceRepeatTimeoutRef.current = window.setTimeout(() => {
+      handleInput(INPUT_SYMBOL_IDS.BACKSPACE, 'Backspace')
+      backspaceRepeatIntervalRef.current = window.setInterval(() => {
+        handleInput(INPUT_SYMBOL_IDS.BACKSPACE, 'Backspace')
+      }, 60)
+    }, 320)
   }
 
   function handleLiteralInput(text: string, visualKeyLabel?: string) {
@@ -789,6 +832,8 @@ export function useImeWorkbench() {
     pressedVisualKeys,
     renderedText,
     handleInput,
+    handleVirtualBackspacePointerDown,
+    clearBackspaceRepeat,
     handleLiteralInput,
     handleUtilityInput,
     handleModifierMainClick,

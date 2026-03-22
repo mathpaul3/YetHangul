@@ -125,6 +125,7 @@
 - on-screen key press도 짧은 pressed highlight를 직접 보여주도록 보강함
 - bottom row에 `Enter`를 추가해 하드웨어와 같은 줄바꿈 경로를 on-screen에서도 제공함
 - on-screen 입력 뒤 editor root로 focus를 되돌려 이후 하드웨어 입력이 자연스럽게 이어지도록 조정함
+- on-screen `Backspace`는 long press repeat를 지원해 하드웨어 auto-repeat와의 차이를 일부 줄임
 - meta-row의 modifier 상태 텍스트는 제거됨
 - 세부 레이아웃과 시각적 완성도는 여전히 보강 여지 있음
 

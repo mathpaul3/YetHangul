@@ -61,12 +61,14 @@
 
 ## 7. auto-repeat 차이
 
-- Status: `Open`
+- Status: `Partial`
 - 문제:
   - 하드웨어 `Backspace` 길게 누르기, 화살표 길게 누르기 같은 auto-repeat가 on-screen에는 없다.
-- 후보 대응:
-  - long press 반복 삭제
-  - 길게 누를 때 repeat timer 도입
+- 현재 대응:
+  - on-screen `Backspace`는 long press 시 repeat timer로 반복 삭제를 지원한다.
+- 남은 차이:
+  - 화살표 key 자체가 아직 on-screen에 없다.
+  - 다른 utility key의 auto-repeat는 제공하지 않는다.
 
 ## 8. composition 이벤트 개입 차이
 
@@ -95,6 +97,6 @@
 
 ## 다음 우선순위
 
-1. auto-repeat가 필요한 on-screen key(`Backspace`, 화살표가 생긴다면 화살표) 검토
-2. composition 이벤트의 실제 DOM surface 회귀 테스트 확대
-3. caret/selection edge case 회귀 테스트 확대
+1. composition 이벤트의 실제 DOM surface 회귀 테스트 확대
+2. caret/selection edge case 회귀 테스트 확대
+3. 화살표 key를 on-screen에 둘지 여부 검토

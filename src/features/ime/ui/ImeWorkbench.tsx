@@ -71,6 +71,8 @@ export function ImeWorkbench() {
     renderedCaretIndex,
     selectionRange,
     handleInput,
+    handleVirtualBackspacePointerDown,
+    clearBackspaceRepeat,
     handleLiteralInput,
     handleUtilityInput,
     handleModifierMainClick,
@@ -343,11 +345,14 @@ export function ImeWorkbench() {
                       className={`keycap keycap-utility ${getKeycapClass(label)}`}
                       key={label}
                       type="button"
-                      onPointerDown={preventVirtualKeyboardFocus}
-                      onClick={() => {
-                        handleInput(INPUT_SYMBOL_IDS.BACKSPACE, label)
+                      onPointerDown={(event) => {
+                        preventVirtualKeyboardFocus(event)
+                        handleVirtualBackspacePointerDown()
                         restoreEditorFocus()
                       }}
+                      onPointerUp={clearBackspaceRepeat}
+                      onPointerCancel={clearBackspaceRepeat}
+                      onPointerLeave={clearBackspaceRepeat}
                     >
                       {label}
                     </button>

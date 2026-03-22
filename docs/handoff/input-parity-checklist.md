@@ -66,6 +66,7 @@
   - 하드웨어 `Backspace` 길게 누르기, 화살표 길게 누르기 같은 auto-repeat가 on-screen에는 없다.
 - 현재 대응:
   - on-screen `Backspace`는 long press 시 repeat timer로 반복 삭제를 지원한다.
+  - `beforeinput`의 줄바꿈/삭제 경로도 editor-layer에 연결되어 있어 기본 편집 동작과의 간극을 줄였다.
 - 남은 차이:
   - 화살표 key 자체가 아직 on-screen에 없다.
   - 다른 utility key의 auto-repeat는 제공하지 않는다.

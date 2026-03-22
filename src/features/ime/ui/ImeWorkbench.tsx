@@ -70,6 +70,7 @@ export function ImeWorkbench() {
     pressedVisualKeys,
     renderedUnits,
     renderedCaretIndex,
+    compactSurfaceSummary,
     selectionRange,
     handleInput,
     handleVirtualBackspacePointerDown,
@@ -198,6 +199,17 @@ export function ImeWorkbench() {
             >
               Copy Selection
             </button>
+          </div>
+          <div className="compact-state-rail" aria-label="Current editor state">
+            <span className="badge compact-state-badge">{compactSurfaceSummary.selectionLabel}</span>
+            {compactSurfaceSummary.activeModifiers.map((modifier) => (
+              <span
+                className={`badge compact-state-badge compact-state-badge-${modifier.mode}`}
+                key={modifier.label}
+              >
+                {modifier.label}: {modifier.mode}
+              </span>
+            ))}
           </div>
           <div className="editor-output editor-surface">
             {renderedUnits.length === 0 ? (

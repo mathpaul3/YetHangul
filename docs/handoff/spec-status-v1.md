@@ -144,6 +144,7 @@
 - 모바일 우선 자체 자판이 두벌식 QWERTY 한글 배열에 가깝게 재배치됨
 - `PC / Tablet / Mobile / Mobile-Small` 4단계 media query로 재정리함
 - 60% 키보드 줄 배열 자체는 유지하고, 폭/간격/패딩만 줄이는 방식으로 레이아웃 붕괴를 완화함
+- small viewport에서 현재 selection/modifier 상태를 읽기 쉽게 compact surface summary rail를 추가함
 - 왜 Partial인지:
   - 엔진/조합 규칙은 안정적이지만, 모바일 표면에서 조합 힌트와 active modifier feedback이 아직 충분히 선명하지 않다.
   - 터치 중심 환경에서의 안내와 시각 상태가 hardware/on-screen parity 수준까지 닿지 않았다.

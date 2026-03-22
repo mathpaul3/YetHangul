@@ -169,6 +169,27 @@ textarea {
   gap: 8px;
 }
 
+.compact-state-rail {
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.compact-state-badge {
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+.compact-state-badge-oneshot {
+  background: #b14d1f;
+  color: #fffaf5;
+}
+
+.compact-state-badge-locked {
+  background: #6f2c91;
+  color: #fffaf5;
+}
+
 .badge {
   padding: 8px 12px;
   border-radius: 999px;
@@ -443,6 +464,10 @@ textarea {
   .badge,
   .mono {
     font-size: 0.9rem;
+  }
+
+  .compact-state-rail {
+    display: flex;
   }
 
   .keyboard-row-2 {

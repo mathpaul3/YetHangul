@@ -46,8 +46,8 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - touch-cancel 시 stale selection을 남기지 않도록 cleanup한다.
 - `T17-2` `Done`
   - touch drag selection이 `pointerenter`에만 의존하지 않도록 fallback을 추가한다.
-- `T17-3` `Open`
-  - 모바일 small viewport에서 현재 modifier/selection 상태가 충분히 읽히는지 smoke proof를 만든다.
+- `T17-3` `Landed`
+  - 모바일 small viewport에서 현재 modifier/selection 상태가 충분히 읽히도록 compact surface summary rail를 추가하고 smoke proof를 만든다.
 - `T18-1` `Done`
   - `ontouchstart`, `maxTouchPoints`, `matchMedia('(pointer: coarse)')` 신호를 heuristic regression으로 고정한다.
 - `T18-2` `Open`

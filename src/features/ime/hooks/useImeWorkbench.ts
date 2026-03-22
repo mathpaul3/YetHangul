@@ -22,6 +22,7 @@ import {
   resolveBeforeInputInterop,
   resolveCompositionEndInterop,
 } from '@/features/ime/services/inputInterop'
+import { buildCompactSurfaceSummary } from '@/features/ime/services/interactionSummary'
 import {
   getLongPressModifierMode,
   getNextModifierMode,
@@ -140,6 +141,10 @@ export function useImeWorkbench() {
   const renderedCaretIndex = useMemo(
     () => caretIndex + compositionUnits.length,
     [caretIndex, compositionUnits.length],
+  )
+  const compactSurfaceSummary = useMemo(
+    () => buildCompactSurfaceSummary(selectionRange, engineState.modifierState),
+    [engineState.modifierState, selectionRange],
   )
   const renderedText = useMemo(() => renderedUnits.join(''), [renderedUnits])
 
@@ -1019,6 +1024,7 @@ export function useImeWorkbench() {
     selectionRange,
     renderedUnits,
     renderedCaretIndex,
+    compactSurfaceSummary,
     engineState,
     hardwareModifierState,
     pressedVisualKeys,

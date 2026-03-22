@@ -262,7 +262,7 @@
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
 - 현재 테스트 수: 173
-  - unit/service/engine regression: 158
+  - unit/service/engine regression: 159
   - browser smoke (Playwright): 15
 
 ## 24. MVP 완료 정의

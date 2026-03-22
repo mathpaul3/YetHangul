@@ -141,4 +141,32 @@ describe('hardware keyboard flow', () => {
       ),
     ).toBe('ㅔ')
   })
+
+  it('resolves enter and navigation keys to visible labels', () => {
+    expect(
+      resolveVisualKeyLabelFromKeyboardEvent(
+        createKeyboardStub({ key: 'Enter', code: 'Enter' }),
+      ),
+    ).toBe('Enter')
+    expect(
+      resolveVisualKeyLabelFromKeyboardEvent(
+        createKeyboardStub({ key: 'Home', code: 'Home' }),
+      ),
+    ).toBe('Home')
+    expect(
+      resolveVisualKeyLabelFromKeyboardEvent(
+        createKeyboardStub({ key: 'End', code: 'End' }),
+      ),
+    ).toBe('End')
+    expect(
+      resolveVisualKeyLabelFromKeyboardEvent(
+        createKeyboardStub({ key: 'ArrowLeft', code: 'ArrowLeft' }),
+      ),
+    ).toBe('←')
+    expect(
+      resolveVisualKeyLabelFromKeyboardEvent(
+        createKeyboardStub({ key: 'ArrowRight', code: 'ArrowRight' }),
+      ),
+    ).toBe('→')
+  })
 })

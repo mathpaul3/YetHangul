@@ -77,6 +77,17 @@ textarea {
   gap: 4px;
 }
 
+.brand-copy-with-logo {
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.brand-copy-with-logo strong,
+.brand-copy-with-logo span {
+  grid-column: 2;
+}
+
 .brand-copy strong {
   font-size: 1.2rem;
 }
@@ -92,43 +103,12 @@ textarea {
   font-weight: 600;
 }
 
-.wordmark {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  grid-template-areas:
-    "eye-left eye-right"
-    "mouth mouth";
-  justify-content: start;
-  gap: 2px 10px;
-  margin-bottom: 4px;
-  color: #7a2f12;
-  font-size: 1.15rem;
-  line-height: 1;
-}
-
-.wordmark-eye,
-.wordmark-mouth {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.8em;
-  min-height: 1.2em;
-  border: 1px solid rgba(122, 47, 18, 0.18);
-  border-radius: 999px;
-  background: rgba(255, 251, 245, 0.85);
-  font-weight: 700;
-}
-
-.wordmark-eye:first-child {
-  grid-area: eye-left;
-}
-
-.wordmark-eye:last-child {
-  grid-area: eye-right;
-}
-
-.wordmark-mouth {
-  grid-area: mouth;
+.topnav-logo {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
 }
 
 .workspace-grid {
@@ -389,6 +369,8 @@ textarea {
   margin-top: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 4px 2px 0;
   color: #6e5948;
@@ -403,10 +385,6 @@ textarea {
 .github-mark {
   width: 18px;
   height: 18px;
-}
-
-.footer-version {
-  margin-left: auto;
 }
 
 .modal-backdrop {
@@ -475,18 +453,14 @@ textarea {
   }
 
   .footer {
-    flex-wrap: wrap;
-  }
-
-  .footer-version {
-    margin-left: 0;
+    justify-content: center;
   }
 }
 
 @media (max-width: 900px) {
   .footer {
     gap: 8px;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .footer span,
@@ -557,7 +531,7 @@ textarea {
   }
 
   .footer {
-    align-items: flex-start;
+    align-items: center;
   }
 }
 
@@ -570,6 +544,11 @@ textarea {
   .keyboard-heading p,
   .footer {
     font-size: 0.84rem;
+  }
+
+  .topnav-logo {
+    width: 44px;
+    height: 44px;
   }
 
   .keyboard-row {

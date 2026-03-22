@@ -8,6 +8,7 @@ const preferredMode = detectPreferredKeyboardMode()
 const REPOSITORY_URL = 'https://github.com/mathpaul3/yet-hangul'
 const AUTHOR_URL = 'https://github.com/mathpaul3'
 const SHIFT_RULES = [
+  ['Shift + 자음/모음', '⇨', '쌍자음/쌍모음'],
   ['Shift + ㄱ', 'ᄁ', '쌍기역'],
   ['Shift + ㄴ', 'ᄔ', '쌍니은'],
   ['Shift + ㄷ', 'ᄄ', '쌍디귿'],
@@ -19,8 +20,8 @@ const SHIFT_RULES = [
   ['Shift + ㅈ', 'ᄍ', '쌍지읒'],
   ['Shift + ㅌ', 'ꥹ', '쌍티읕'],
   ['Shift + ㅎ', 'ᅘ', '쌍히읗'],
-  ['Ctrl + Shift + ㅎ', 'ꥼ', '쌍여린히읗'],
-  ['Ctrl + Shift + ㅏ', 'ᆢ', '쌍아래아'],
+  ['Shift + ᅙ', 'ꥼ', '쌍여린히읗'],
+  ['Shift + ᆞ', 'ᆢ', '쌍아래아'],
   ['Shift + ㅗ', 'ᆂ', 'ㅗ + ㅗ'],
   ['Shift + ㅜ', 'ᆍ', 'ㅜ + ㅜ'],
   ['Shift + ㅡ', 'ᆖ', 'ㅡ + ㅡ'],
@@ -28,21 +29,23 @@ const SHIFT_RULES = [
 ] as const
 
 const CTRL_RULES = [
-  ['L Ctrl + ㅅ', 'ᄼ', '치두음 시옷'],
-  ['R Ctrl + ㅅ', 'ᄾ', '정치음 시옷'],
-  ['L Ctrl + ㅆ', 'ᄽ', '치두음 쌍시옷'],
-  ['R Ctrl + ㅆ', 'ᄿ', '정치음 쌍시옷'],
-  ['Ctrl + ㅇ', 'ᅌ / ᇰ', '옛이응 / 문맥 종성'],
-  ['L Ctrl + ㅈ', 'ᅎ', '치두음 지읒'],
-  ['R Ctrl + ㅈ', 'ᅐ', '정치음 지읒'],
-  ['L Ctrl + ㅉ', 'ᅏ', '치두음 쌍지읒'],
-  ['R Ctrl + ㅉ', 'ᅑ', '정치음 쌍지읒'],
+  ['Ctrl + 자음/모음', '⇨', '자형 변환 (반치음ᅀ 예외)'],
+  ['LCtrl + ㅅ', 'ᄼ', '치두음 시옷'],
+  ['RCtrl + ㅅ', 'ᄾ', '정치음 시옷'],
+  ['LCtrl + ㅆ', 'ᄽ', '치두음 쌍시옷'],
+  ['RCtrl + ㅆ', 'ᄿ', '정치음 쌍시옷'],
+  ['Ctrl + ㅇ', 'ᅌ', '옛이응'],
+  ['LCtrl + ㅈ', 'ᅎ', '치두음 지읒'],
+  ['RCtrl + ㅈ', 'ᅐ', '정치음 지읒'],
+  ['LCtrl + ㅉ', 'ᅏ', '치두음 쌍지읒'],
+  ['RCtrl + ㅉ', 'ᅑ', '정치음 쌍지읒'],
   ['Shift + ㅊ', 'ᅀ', '반치음'],
-  ['L Ctrl + ㅊ', 'ᅔ', '치두음 치읓'],
-  ['R Ctrl + ㅊ', 'ᅕ', '정치음 치읓'],
+  ['LCtrl + ㅊ', 'ᅔ', '치두음 치읓'],
+  ['RCtrl + ㅊ', 'ᅕ', '정치음 치읓'],
   ['Ctrl + ㅎ', 'ᅙ', '여린 히읗'],
   ['Ctrl + ㅏ', 'ᆞ', '아래아'],
-  ['Ctrl + Space', 'ᅟ / ᅠ', '문맥형 채움문자'],
+  ['Ctrl + Space(초성)', 'ᅟ', '한글초성채움문자'],
+  ['Ctrl + Space(중성)', 'ᅠ', '한글중성채움문자'],
   ['Ctrl + .', '〮', '거성'],
   ['Ctrl + ;', '〯', '상성'],
 ] as const
@@ -213,6 +216,21 @@ export function ImeWorkbench() {
     )
   }
 
+  function renderKeyLabel(label: string) {
+    const iconMap: Record<string, string> = {
+      Backspace: '⌫',
+      Enter: '↵',
+      'L Shift': '⇧',
+      'R Shift': '⇧',
+      'L Ctrl': '⌃',
+      'R Ctrl': '⌃',
+      Home: '⇱',
+      End: '⇲',
+    }
+
+    return iconMap[label] ?? label
+  }
+
   const syllableCount = renderedUnits.length
   const decomposedCount = Array.from(renderedText).length
   const selectionLabel =
@@ -241,12 +259,8 @@ export function ImeWorkbench() {
         tabIndex={0}
       >
         <header className="topnav">
-          <div className="brand-copy">
-            <div className="wordmark" aria-hidden="true">
-              <span className="wordmark-eye">옛</span>
-              <span className="wordmark-eye">한</span>
-              <span className="wordmark-mouth">글</span>
-            </div>
+          <div className="brand-copy brand-copy-with-logo">
+            <img alt="옛한글 입력기 로고" className="topnav-logo" src="/yethangul-logo.png" />
             <strong>옛한글 입력기</strong>
             <span>현대 한글 자모 입력 방식만으로 옛한글을 조합하는 웹 입력기입니다.</span>
           </div>
@@ -390,7 +404,7 @@ export function ImeWorkbench() {
                           onPointerLeave={clearBackspaceRepeat}
                           onPointerUp={clearBackspaceRepeat}
                         >
-                          {label}
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -407,7 +421,7 @@ export function ImeWorkbench() {
                         }}
                         onPointerDown={preventVirtualKeyboardFocus}
                       >
-                        {label}
+                        {renderKeyLabel(label)}
                       </button>
                     )
                   })}
@@ -428,7 +442,7 @@ export function ImeWorkbench() {
                           }}
                           onPointerDown={preventVirtualKeyboardFocus}
                         >
-                          {label}
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -445,7 +459,7 @@ export function ImeWorkbench() {
                         }}
                         onPointerDown={preventVirtualKeyboardFocus}
                       >
-                        {label}
+                        {renderKeyLabel(label)}
                       </button>
                     )
                   })}
@@ -466,7 +480,7 @@ export function ImeWorkbench() {
                           }}
                           onPointerDown={preventVirtualKeyboardFocus}
                         >
-                          {label}
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -483,7 +497,7 @@ export function ImeWorkbench() {
                         }}
                         onPointerDown={preventVirtualKeyboardFocus}
                       >
-                        {label}
+                        {renderKeyLabel(label)}
                       </button>
                     )
                   })}
@@ -506,7 +520,7 @@ export function ImeWorkbench() {
                           }}
                           onPointerDown={preventVirtualKeyboardFocus}
                         >
-                          {label}
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -522,9 +536,9 @@ export function ImeWorkbench() {
                             handleUtilityInput('period')
                             restoreEditorFocus()
                           }}
-                          onPointerDown={preventVirtualKeyboardFocus}
-                        >
-                          {label}
+                        onPointerDown={preventVirtualKeyboardFocus}
+                      >
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -541,7 +555,7 @@ export function ImeWorkbench() {
                         }}
                         onPointerDown={preventVirtualKeyboardFocus}
                       >
-                        {label}
+                        {renderKeyLabel(label)}
                       </button>
                     )
                   })}
@@ -564,7 +578,7 @@ export function ImeWorkbench() {
                           }}
                           onPointerDown={preventVirtualKeyboardFocus}
                         >
-                          {label}
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -582,7 +596,7 @@ export function ImeWorkbench() {
                           }}
                           onPointerDown={preventVirtualKeyboardFocus}
                         >
-                          {label}
+                          {renderKeyLabel(label)}
                         </button>
                       )
                     }
@@ -626,7 +640,7 @@ export function ImeWorkbench() {
                             : undefined
                         }
                       >
-                        {label}
+                        {renderKeyLabel(label)}
                       </button>
                     )
                   })}

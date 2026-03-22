@@ -45,6 +45,11 @@ const CODE_TO_VISUAL_KEY: Record<string, string> = {
   Semicolon: ';',
   Period: '.',
   Backspace: 'Backspace',
+  Enter: 'Enter',
+  Home: 'Home',
+  End: 'End',
+  ArrowLeft: '←',
+  ArrowRight: '→',
 }
 
 const BASE_KEY_TO_SYMBOL: Record<string, number> = {
@@ -118,8 +123,23 @@ export function resolveVisualKeyLabelFromKeyboardEvent(event: KeyboardEvent) {
     return 'Space'
   }
 
-  if (event.key === '.' || event.key === ';' || event.key === 'Backspace') {
-    return event.key === 'Backspace' ? 'Backspace' : event.key
+  if (
+    event.key === '.' ||
+    event.key === ';' ||
+    event.key === 'Backspace' ||
+    event.key === 'Enter' ||
+    event.key === 'Home' ||
+    event.key === 'End'
+  ) {
+    if (event.key === 'Backspace' || event.key === 'Enter' || event.key === 'Home' || event.key === 'End') {
+      return event.key
+    }
+
+    return event.key
+  }
+
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    return event.key === 'ArrowLeft' ? '←' : '→'
   }
 
   const shiftedBaseKeyMap: Record<string, string> = {

@@ -74,6 +74,8 @@ export function ImeWorkbench() {
     handleInput,
     handleVirtualBackspacePointerDown,
     clearBackspaceRepeat,
+    handleVirtualNavigationPointerDown,
+    clearNavigationRepeat,
     handleLiteralInput,
     handleUtilityInput,
     handleNavigationInput,
@@ -292,20 +294,41 @@ export function ImeWorkbench() {
                   ['→', 'arrowRight'],
                   ['Home', 'home'],
                   ['End', 'end'],
-                ].map(([label, direction]) => (
-                  <button
-                    className={`keycap keycap-utility ${getKeycapClass(label)}`}
-                    key={label}
-                    type="button"
-                    onPointerDown={preventVirtualKeyboardFocus}
-                    onClick={() => {
-                      handleNavigationInput(direction as 'arrowLeft' | 'arrowRight' | 'home' | 'end')
-                      restoreEditorFocus()
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
+                ].map(([label, direction]) => {
+                  const isRepeatable = direction === 'arrowLeft' || direction === 'arrowRight'
+
+                  return (
+                    <button
+                      className={`keycap keycap-utility ${getKeycapClass(label)}`}
+                      key={label}
+                      type="button"
+                      onPointerDown={(event) => {
+                        preventVirtualKeyboardFocus(event)
+
+                        if (isRepeatable) {
+                          handleVirtualNavigationPointerDown(
+                            direction as 'arrowLeft' | 'arrowRight',
+                          )
+                        }
+
+                        restoreEditorFocus()
+                      }}
+                      onPointerUp={isRepeatable ? clearNavigationRepeat : undefined}
+                      onPointerCancel={isRepeatable ? clearNavigationRepeat : undefined}
+                      onPointerLeave={isRepeatable ? clearNavigationRepeat : undefined}
+                      onClick={(event) => {
+                        if (isRepeatable && event.detail !== 0) {
+                          return
+                        }
+
+                        handleNavigationInput(direction as 'arrowLeft' | 'arrowRight' | 'home' | 'end')
+                        restoreEditorFocus()
+                      }}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
               </div>
               <div className="keyboard-row keyboard-row-shift">
                 {keyboardUtilityRows.shift.map(([label, action]) => {

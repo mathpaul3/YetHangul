@@ -39,6 +39,10 @@ import {
   replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
+import {
+  startLongPressRepeat,
+  type LongPressRepeatController,
+} from '@/features/ime/services/longPressRepeat'
 
 type Action =
   | { type: 'input'; symbolId: number }
@@ -97,6 +101,7 @@ export function useImeWorkbench() {
   const virtualKeyTimeoutsRef = useRef<Record<string, number>>({})
   const backspaceRepeatTimeoutRef = useRef<number | null>(null)
   const backspaceRepeatIntervalRef = useRef<number | null>(null)
+  const navigationRepeatControllerRef = useRef<LongPressRepeatController | null>(null)
   const selectionAnchorRef = useRef<number | null>(null)
   const isDraggingSelectionRef = useRef(false)
   const didMoveSelectionRef = useRef(false)
@@ -198,6 +203,8 @@ export function useImeWorkbench() {
       if (backspaceRepeatIntervalRef.current != null) {
         window.clearInterval(backspaceRepeatIntervalRef.current)
       }
+
+      navigationRepeatControllerRef.current?.cancel()
     }
   }, [])
 
@@ -323,6 +330,11 @@ export function useImeWorkbench() {
     }
   }
 
+  function clearNavigationRepeat() {
+    navigationRepeatControllerRef.current?.cancel()
+    navigationRepeatControllerRef.current = null
+  }
+
   function handleVirtualBackspacePointerDown() {
     if (typeof window === 'undefined') {
       handleInput(INPUT_SYMBOL_IDS.BACKSPACE, 'Backspace')
@@ -338,6 +350,20 @@ export function useImeWorkbench() {
         handleInput(INPUT_SYMBOL_IDS.BACKSPACE, 'Backspace')
       }, 60)
     }, 320)
+  }
+
+  function handleVirtualNavigationPointerDown(direction: 'arrowLeft' | 'arrowRight') {
+    if (typeof window === 'undefined') {
+      handleNavigationInput(direction)
+      return
+    }
+
+    clearNavigationRepeat()
+    handleNavigationInput(direction)
+
+    navigationRepeatControllerRef.current = startLongPressRepeat({
+      onRepeat: () => handleNavigationInput(direction),
+    })
   }
 
   function handleLiteralInput(text: string, visualKeyLabel?: string) {
@@ -843,11 +869,15 @@ export function useImeWorkbench() {
     }
 
     commitCompositionToDocument()
+    clearNavigationRepeat()
     resetHardwareInteractionState()
     clearBrowserSelection()
   }
 
   function handleEditorFocus() {
+    isDraggingSelectionRef.current = false
+    didMoveSelectionRef.current = false
+    dragStartUnitIndexRef.current = null
     clearBrowserSelection()
   }
 
@@ -924,6 +954,8 @@ export function useImeWorkbench() {
     handleInput,
     handleVirtualBackspacePointerDown,
     clearBackspaceRepeat,
+    handleVirtualNavigationPointerDown,
+    clearNavigationRepeat,
     handleLiteralInput,
     handleUtilityInput,
     handleNavigationInput,

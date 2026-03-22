@@ -163,6 +163,7 @@
 - 조합 버퍼 flush와 selection bounds 계산을 `editorUnits.ts` helper로 분리했고, 훅은 snapshot ref 기준으로 caret/document 동기화를 맞추도록 보강함
 - 줄바꿈 unit을 editor surface에서 실제 line break처럼 보이도록 렌더링 보강함
 - unit 위 클릭은 caret 이동, drag일 때만 selection 생성으로 interaction을 보정함
+- selection replacement와 Backspace/Delete의 newline unit 처리도 helper 기반으로 정리함
 - caret/selection 관련 실제 사용자 interaction 회귀 테스트는 아직 더 필요함
 
 ## 20. 붙여넣기 정규화
@@ -209,7 +210,7 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 85
+- 현재 테스트 수: 88
 
 ## 24. MVP 완료 정의
 

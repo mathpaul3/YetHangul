@@ -3,9 +3,12 @@ import {
   clampCaretIndex,
   commitCompositionUnits,
   createSelectionRange,
+  deleteBackwardUnit,
+  deleteForwardUnit,
   deleteUnitRange,
   getSelectionBounds,
   insertUnitsAt,
+  replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
 
@@ -29,6 +32,15 @@ describe('editorUnits', () => {
     expect(deleteUnitRange(['가', '나', '다'], 1, 2)).toEqual(['가', '다'])
   })
 
+  it('replaces the selected range with inserted units', () => {
+    expect(
+      replaceSelectionWithUnits(['가', '\n', '나'], { start: 0, end: 2 }, ['다']),
+    ).toEqual({
+      units: ['다', '나'],
+      caretIndex: 1,
+    })
+  })
+
   it('creates normalized selection ranges', () => {
     expect(createSelectionRange(4, 1)).toEqual({ start: 1, end: 4 })
     expect(createSelectionRange(2, 2)).toBeNull()
@@ -43,5 +55,19 @@ describe('editorUnits', () => {
     expect(clampCaretIndex(-1, 3)).toBe(0)
     expect(clampCaretIndex(2, 3)).toBe(2)
     expect(clampCaretIndex(9, 3)).toBe(3)
+  })
+
+  it('deletes the previous unit and moves the caret back', () => {
+    expect(deleteBackwardUnit(['가', '\n', '나'], 2)).toEqual({
+      units: ['가', '나'],
+      caretIndex: 1,
+    })
+  })
+
+  it('deletes the next unit without moving the caret', () => {
+    expect(deleteForwardUnit(['가', '\n', '나'], 1)).toEqual({
+      units: ['가', '나'],
+      caretIndex: 1,
+    })
   })
 })

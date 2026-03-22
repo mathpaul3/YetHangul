@@ -26,9 +26,11 @@ import {
   clampCaretIndex,
   commitCompositionUnits,
   createSelectionRange,
-  deleteUnitRange,
+  deleteBackwardUnit,
+  deleteForwardUnit,
   getSelectionBounds,
   insertUnitsAt,
+  replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
 
@@ -249,13 +251,13 @@ export function useImeWorkbench() {
       return
     }
 
-    const nextUnits = deleteUnitRange(documentUnitsRef.current, bounds.start, bounds.end)
-    documentUnitsRef.current = nextUnits
+    const nextState = replaceSelectionWithUnits(documentUnitsRef.current, selectionRangeRef.current, [])
+    documentUnitsRef.current = nextState.units
     selectionRangeRef.current = null
-    caretIndexRef.current = bounds.start
-    setDocumentUnits(nextUnits)
+    caretIndexRef.current = nextState.caretIndex
+    setDocumentUnits(nextState.units)
     setSelectionRange(null)
-    setCaretIndex(bounds.start)
+    setCaretIndex(nextState.caretIndex)
     selectionAnchorRef.current = null
     clearBrowserSelection()
   }
@@ -557,15 +559,11 @@ export function useImeWorkbench() {
     ) {
       if (caretIndexRef.current > 0) {
         event.preventDefault()
-        const nextUnits = deleteUnitRange(
-          documentUnitsRef.current,
-          caretIndexRef.current - 1,
-          caretIndexRef.current,
-        )
-        documentUnitsRef.current = nextUnits
-        caretIndexRef.current = caretIndexRef.current - 1
-        setDocumentUnits(nextUnits)
-        setCaretIndex(caretIndexRef.current)
+        const nextState = deleteBackwardUnit(documentUnitsRef.current, caretIndexRef.current)
+        documentUnitsRef.current = nextState.units
+        caretIndexRef.current = nextState.caretIndex
+        setDocumentUnits(nextState.units)
+        setCaretIndex(nextState.caretIndex)
       }
       return
     }
@@ -573,13 +571,11 @@ export function useImeWorkbench() {
     if (event.key === 'Delete' && compositionUnits.length === 0 && !selectionRangeRef.current) {
       if (caretIndexRef.current < documentUnitsRef.current.length) {
         event.preventDefault()
-        const nextUnits = deleteUnitRange(
-          documentUnitsRef.current,
-          caretIndexRef.current,
-          caretIndexRef.current + 1,
-        )
-        documentUnitsRef.current = nextUnits
-        setDocumentUnits(nextUnits)
+        const nextState = deleteForwardUnit(documentUnitsRef.current, caretIndexRef.current)
+        documentUnitsRef.current = nextState.units
+        caretIndexRef.current = nextState.caretIndex
+        setDocumentUnits(nextState.units)
+        setCaretIndex(nextState.caretIndex)
       }
       return
     }

@@ -138,6 +138,26 @@ export function deleteUnitRange(
   return [...units.slice(0, start), ...units.slice(end)]
 }
 
+export function replaceSelectionWithUnits(
+  units: string[],
+  selectionRange: UnitSelectionRange,
+  inserted: string[],
+) {
+  const bounds = getSelectionBounds(selectionRange)
+
+  if (bounds == null) {
+    return {
+      units,
+      caretIndex: units.length,
+    }
+  }
+
+  return {
+    units: [...units.slice(0, bounds.start), ...inserted, ...units.slice(bounds.end)],
+    caretIndex: bounds.start + inserted.length,
+  }
+}
+
 export type UnitSelectionRange = {
   start: number
   end: number
@@ -166,5 +186,39 @@ export function getSelectionBounds(selectionRange: UnitSelectionRange) {
   return {
     start: Math.min(selectionRange.start, selectionRange.end),
     end: Math.max(selectionRange.start, selectionRange.end),
+  }
+}
+
+export function deleteBackwardUnit(
+  units: string[],
+  caretIndex: number,
+) {
+  if (caretIndex <= 0) {
+    return {
+      units,
+      caretIndex,
+    }
+  }
+
+  return {
+    units: deleteUnitRange(units, caretIndex - 1, caretIndex),
+    caretIndex: caretIndex - 1,
+  }
+}
+
+export function deleteForwardUnit(
+  units: string[],
+  caretIndex: number,
+) {
+  if (caretIndex >= units.length) {
+    return {
+      units,
+      caretIndex,
+    }
+  }
+
+  return {
+    units: deleteUnitRange(units, caretIndex, caretIndex + 1),
+    caretIndex,
   }
 }

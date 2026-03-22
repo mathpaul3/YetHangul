@@ -145,14 +145,21 @@
 - 시나리오:
   1. macOS/iOS/Android 시스템 한글 IME가 `composition*` 이벤트를 발생시킨다.
   2. 같은 입력이 `beforeinput`과 `compositionend`로 중복 들어온다.
+  3. 일부 브라우저는 `compositionActive`가 아직 참인 상태에서도 `beforeinput(insertFromComposition)`를 먼저 보낼 수 있다.
+  4. 한 번 소비된 텍스트와 같은 새 composition session이 이어서 들어올 수 있다.
 - 위험:
   - 같은 음절이 두 번 들어간다.
   - dedupe가 과도하면 정상 입력도 누락될 수 있다.
+  - `compositionActive`와 `isComposing`의 타이밍이 엇갈리면 정상 입력을 오탐으로 막을 수 있다.
 - 대응:
   - `beforeinput`/`compositionend` dedupe는 “최근 commit 텍스트” 기준으로만 최소한으로 처리한다.
   - 브라우저별 로그를 남겨 실제 차이를 확인할 수 있는 debug mode도 고려할 만하다.
+  - `compositionActive`가 참이면 `beforeinput`은 무조건 무시한다.
+  - duplicate marker는 한 번 소비되면 즉시 비워서 다음 composition session을 막지 않게 한다.
 - 테스트:
   - 같은 text가 `beforeinput`과 `compositionend`로 연속 들어올 때 1회만 commit되는지 테스트
+  - `compositionActive`가 남아 있을 때의 `beforeinput(insertFromComposition)` 무시 테스트
+  - duplicate marker가 cleared 된 뒤 같은 text의 새 composition session이 다시 허용되는지 테스트
 
 ## 11. 하드웨어 modifier stuck state
 

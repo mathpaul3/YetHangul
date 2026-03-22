@@ -22,5 +22,7 @@ YetHangul uses an input engine built on three pillars:
 
 - internal representation is numeric ids
 - Unicode conversion is done by the mapper
+- ambiguous standalone consonant inputs default to initial
+- finals are context-derived from the current syllable state
 - reparsing is limited to local syllable transitions such as final-to-initial carry
-
+- `ᆧ` remains medial-only and is not generalized as a standalone final target

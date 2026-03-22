@@ -8,6 +8,8 @@
 
 - Engine architecture: FSM + sparse transition table + undo log
 - Internal representation: numeric ids mapped to Unicode only at render and interoperability boundaries
+- Ambiguous standalone consonant inputs default to initial; finals are context-derived
+- `ᆧ` is medial-only and is not treated as a general final-consonant target
 - Desktop and tablet with hardware keyboard: hardware keyboard first
 - Mobile: on-screen keyboard first
 - Backspace: input-step undo
@@ -26,4 +28,3 @@
 - Exact internal modeling of special macros such as `Shift + ㅁ`
 - Paste normalization edge cases for compatibility jamo and precomposed syllables
 - Final production font asset placement and licensing checks
-

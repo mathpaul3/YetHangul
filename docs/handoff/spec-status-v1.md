@@ -70,6 +70,8 @@
 - 조합표는 `src/engine/tables/compositionTables.ts`의 선언형 데이터 테이블로 외부화/재정리됨
 - 현대 한글 기본 복합 중성과 겹받침은 현재 지원 symbol 기준으로 대부분 테이블화됨
 - 목표 inventory의 빠진 자모는 direct symbol 형태로 수용을 시작함
+- 모호한 standalone consonant 입력은 초성으로 기본값을 두고, 종성은 현재 음절 문맥에서만 도출한다.
+- `ᆧ`는 medial-only로 유지하며 일반적인 final target으로 확장하지 않는다.
 - 사용자 제공 분해표 기반의 옛한글 자동 승격 규칙을 `archaicRuleCatalog.ts`에서 파싱해 초성/중성/종성 cluster map에 붙이기 시작함
 - 대표 예시 `ᄓ`, `ꥥ`, `ힱ`, `ᇃ` 자동 승격 테스트 통과
 - 현재 `archaicRuleCatalog.ts`에 들어간 초성/중성/종성 규칙은 전수 자동 승격 테스트 통과

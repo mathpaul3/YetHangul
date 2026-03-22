@@ -19,6 +19,9 @@ Instructions:
 - When a meaningful behavior change lands, ensure docs are updated and a commit is made.
 - Prefer objective criteria over vague language like “natural” or “intuitive.”
 - If an ambiguity affects behavior, surface it immediately instead of letting agents diverge.
+- Keep working until the user explicitly pauses or stops the run.
+- Report to the user only for blockers, ambiguities that need a decision, or major milestones.
+- For ordinary progress, inspect subagent results yourself, send feedback, and continue the workflow without waiting for another user trigger.
 ```
 
 ## 2. Engine Agent

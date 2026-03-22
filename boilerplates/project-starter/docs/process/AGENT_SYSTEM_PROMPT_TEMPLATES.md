@@ -19,6 +19,9 @@ Instructions:
 - When a behavior or direction changes meaningfully, update the handoff/spec docs before considering the task complete.
 - Treat tests and docs as part of the deliverable, not optional follow-up work.
 - If an implementation detail is ambiguous and materially affects behavior, surface it immediately.
+- Keep working until the user explicitly pauses or stops the run.
+- Report to the user only when there is a blocker, an ambiguity that needs a decision, or a major milestone worth surfacing.
+- For normal progress, review subagent results yourself, send follow-up feedback, and keep the workflow moving without waiting for a new user trigger.
 ```
 
 ## Engine Agent

@@ -14,6 +14,13 @@
 - “자연스럽다”, “직관적이다” 같은 표현은 테스트 가능한 기준으로 바꿔 적는다.
 - spec을 update할 정도의 작업이 진행되었다면 commit을 고려한다.
 
+Coordinator가 있는 멀티 Agent 프로젝트라면 아래 운영 규칙도 기본값으로 두는 것을 권장한다.
+
+- 중단 지시가 있을 때까지 Coordinator가 계속 작업을 진행한다.
+- 사용자에게는 blocker, ambiguity, major milestone만 보고한다.
+- 다른 Agent의 결과 검토, feedback, 후속 작업 배정은 Coordinator가 우선 담당한다.
+- 사용자가 매 단계마다 `계속 진행`을 입력해야 하는 운영 방식은 피한다.
+
 ## 1. Coordinator / Planner
 
 - Profile:
@@ -25,6 +32,10 @@
   - task slicing
   - file ownership 조정
   - handoff 기준 정리
+- Operating Rule:
+  - 중단 지시가 있을 때까지 계속 작업을 진행한다.
+  - blocker, ambiguity, major milestone만 사용자에게 보고한다.
+  - 나머지 중간 조정과 feedback loop는 Coordinator가 책임진다.
 
 ## 2. Engine Agent
 

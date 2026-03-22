@@ -42,6 +42,16 @@
 - 설명보다 구현이 필요한 단계에서는 실제 변경, 검증, 문서 갱신까지 한 turn 안에서 끝내는 것을 우선한다.
 - 테스트나 빌드를 돌리지 못했다면 반드시 명시한다.
 
+### 2-1. Coordinator 자율 진행 규칙
+
+멀티 Agent 구조를 사용할 때는 아래 운영 규칙을 기본값으로 두는 것이 좋다.
+
+- 중단 지시가 있을 때까지 Coordinator가 계속 작업을 진행한다.
+- 사용자에게는 blocker, ambiguity, major milestone만 보고한다.
+- 그 외의 중간 단계에서는 Coordinator가 subagent 결과를 먼저 검토하고, feedback과 다음 작업을 직접 배정한다.
+- 사용자가 매번 `계속 진행`을 입력해야만 workflow가 이어지는 구조를 피한다.
+- 이 규칙을 쓸 때는 README, handoff 문서, agent prompt에 같은 내용을 함께 적어 source of truth를 맞춘다.
+
 ## 3. Agent에게 항상 제공하면 좋은 정보
 
 ### 3-1. Agent Profile
@@ -297,4 +307,3 @@
 - 사용자 가치는 `spec`
 - 실제 안전성은 `tests`
 - 작업 끊김 방지는 `commit + docs`
-

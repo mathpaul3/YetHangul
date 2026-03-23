@@ -117,12 +117,10 @@ const modifierLabels = {
   rightShift: 'R Shift',
 } as const
 
-type RuleModalType = 'shift' | 'ctrl' | null
-
 export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
   const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
-  const [ruleModal, setRuleModal] = useState<RuleModalType>(null)
+  const [showHelpOverlay, setShowHelpOverlay] = useState(true)
   const editorSurfaceTouchBehavior = getEditorSurfaceTouchBehavior()
   const {
     engineState,
@@ -222,13 +220,6 @@ export function ImeWorkbench() {
   const selectionLabel =
     selectionRange == null ? '없음' : `${selectionRange.start}-${selectionRange.end}`
 
-  const modalTitle = ruleModal === 'shift' ? 'Shift 규칙 전체' : 'Ctrl 규칙 전체'
-  const modalRows = ruleModal === 'shift' ? SHIFT_RULES : CTRL_RULES
-  const modalDescription =
-    ruleModal === 'shift'
-      ? 'Shift + 자음/모음 ⇨ 쌍자음/쌍모음'
-      : 'Ctrl + 자음/모음 ⇨ 자형 변환 (반치음ᅀ 예외)'
-
   return (
     <>
       <main
@@ -295,6 +286,14 @@ export function ImeWorkbench() {
                 onClick={() => void copySelectionText()}
               >
                 {renderCopyIcon('selection')}
+              </button>
+              <button
+                aria-label="도움말 열기"
+                className="badge badge-button"
+                type="button"
+                onClick={() => setShowHelpOverlay(true)}
+              >
+                도움말
               </button>
             </div>
 
@@ -671,29 +670,6 @@ export function ImeWorkbench() {
           </aside>
         </section>
 
-        <section className="panel info-panel" id="service-notes">
-          <div className="notes-grid">
-            <div className="stack">
-              <strong>기반 원칙</strong>
-              <div className="note-card">병서 원리 기반으로 초성·중성·종성을 순차 조합합니다.</div>
-              <button className="note-card note-card-button" type="button" onClick={() => setRuleModal('shift')}>
-                Shift + 문자 = 쌍자모 전체 규칙 보기
-              </button>
-              <button className="note-card note-card-button" type="button" onClick={() => setRuleModal('ctrl')}>
-                Ctrl + 문자 = 자형 변환 전체 규칙 보기
-              </button>
-            </div>
-            <div className="stack">
-              <strong>부가 기능</strong>
-              <div className="note-card">Shift / Ctrl은 `none → oneshot → locked` 순서로 고정할 수 있습니다.</div>
-              <div className="note-card">
-                종성 뒤 모음을 끊어쓰려면 `Ctrl + Space` 후 모음을 입력합니다.
-                예: `영 + Ctrl + Space + ㅣ → 영ㅣ`
-              </div>
-            </div>
-          </div>
-        </section>
-
         <footer className="footer">
           <a href={AUTHOR_URL} rel="noreferrer" target="_blank">
             @mathpaul3
@@ -718,41 +694,80 @@ export function ImeWorkbench() {
         </footer>
       </main>
 
-      {ruleModal ? (
-        <div className="modal-backdrop" role="presentation" onClick={() => setRuleModal(null)}>
+      {showHelpOverlay ? (
+        <div className="modal-backdrop" role="presentation" onClick={() => setShowHelpOverlay(false)}>
           <div
-            aria-labelledby="rule-modal-title"
+            aria-labelledby="help-overlay-title"
             aria-modal="true"
-            className="rule-modal"
+            className="rule-modal help-overlay"
             role="dialog"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="rule-modal-header">
-              <strong id="rule-modal-title">{modalTitle}</strong>
-              <button className="rule-modal-close" type="button" onClick={() => setRuleModal(null)}>
+              <strong id="help-overlay-title">입력 도움말</strong>
+              <button className="rule-modal-close" type="button" onClick={() => setShowHelpOverlay(false)}>
                 닫기
               </button>
             </div>
-            <p className="rule-modal-description">{modalDescription}</p>
-            <div className="rule-table-wrap">
-              <table className="rule-table">
-                <thead>
-                  <tr>
-                    <th>입력</th>
-                    <th>출력</th>
-                    <th>설명</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {modalRows.map(([input, output, description]) => (
-                    <tr key={input}>
-                      <td>{input}</td>
-                      <td>{output}</td>
-                      <td>{description}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="help-overlay-body">
+              <section className="help-section">
+                <strong>기반 원칙</strong>
+                <div className="help-principles">
+                  <div className="note-card">병서 원리 기반으로 초성·중성·종성을 순차 조합합니다.</div>
+                  <div className="note-card">Shift + 문자 = 쌍자모로 확장합니다.</div>
+                  <div className="note-card">Ctrl + 문자 = 자형 변환으로 확장합니다.</div>
+                </div>
+              </section>
+
+              <section className="help-section">
+                <strong>Shift 규칙 전체</strong>
+                <p className="rule-modal-description">Shift + 자음/모음 ⇨ 쌍자음/쌍모음</p>
+                <div className="rule-table-wrap">
+                  <table className="rule-table">
+                    <thead>
+                      <tr>
+                        <th>입력</th>
+                        <th>출력</th>
+                        <th>설명</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {SHIFT_RULES.map(([input, output, description]) => (
+                        <tr key={input}>
+                          <td>{input}</td>
+                          <td>{output}</td>
+                          <td>{description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="help-section">
+                <strong>Ctrl 규칙 전체</strong>
+                <p className="rule-modal-description">Ctrl + 자음/모음 ⇨ 자형 변환 (반치음ᅀ 예외)</p>
+                <div className="rule-table-wrap">
+                  <table className="rule-table">
+                    <thead>
+                      <tr>
+                        <th>입력</th>
+                        <th>출력</th>
+                        <th>설명</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {CTRL_RULES.map(([input, output, description]) => (
+                        <tr key={input}>
+                          <td>{input}</td>
+                          <td>{output}</td>
+                          <td>{description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             </div>
           </div>
         </div>

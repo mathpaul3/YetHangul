@@ -203,8 +203,8 @@
 - 현재 product shell은 다음 기준으로 유지한다.
   - topnav는 메뉴 없이 PNG 로고 + 제목 + 한 줄 설명만 둔다.
   - footer는 한 줄 링크 형태로 유지한다.
-  - 서비스 설명은 `기반 원칙 / 부가 기능` 두 section으로 짧게 유지한다.
-  - Shift / Ctrl 전체 규칙표는 inline 노출 대신 modal table로 보여준다.
+  - 서비스 설명은 기본으로 열려 있는 도움말 오버레이에서 보여주고, meta-row의 도움말 버튼으로 다시 열 수 있게 한다.
+  - 도움말 오버레이에는 기반 원칙 3가지와 Shift / Ctrl 전체 규칙표를 함께 넣고, 길이는 scroll로 처리한다.
   - 좁은 화면에서 긴 keycap label은 아이콘으로 치환하되, 실제 label/data attribute는 유지해 하이라이트와 접근성을 보존한다.
 
 ## Objective Quality Criteria

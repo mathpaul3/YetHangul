@@ -140,8 +140,8 @@ export function createTransitionMap(): TransitionMap {
       op: 'append_initial',
     })
     register(map, STATE_IDS.MEDIAL_ONLY, symbolId, {
-      nextStateId: STATE_IDS.INITIAL_MEDIAL_FINAL,
-      op: 'append_final',
+      nextStateId: STATE_IDS.INITIAL_ONLY,
+      op: 'commit_and_restart',
     })
     register(map, STATE_IDS.INITIAL_MEDIAL, symbolId, {
       nextStateId: STATE_IDS.INITIAL_MEDIAL_FINAL,

@@ -101,6 +101,7 @@
 
 - Status: `Done`
 - 종성 뒤 모음 입력 시 다음 음절 초성으로 이동하는 동작 구현
+- 방점이 붙은 음절 뒤에 standalone 중성이 온 뒤 자음이 입력되면, standalone 중성을 commit하고 다음 자음을 새 초성으로 시작하는 회귀 테스트를 추가함
 
 ## 14. 재분석 롤백 규칙
 
@@ -261,8 +262,8 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 184
-  - unit/service/engine regression: 161
+- 현재 테스트 수: 185
+  - unit/service/engine regression: 162
   - browser smoke (Playwright): 23
 
 ## 24. MVP 완료 정의

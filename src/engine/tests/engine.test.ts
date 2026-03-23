@@ -369,6 +369,21 @@ describe('engine', () => {
     expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('랏〮')
   })
 
+  it('commits a standalone medial after a toned syllable before starting the next consonant-led syllable', () => {
+    const state = runSequence([
+      INPUT_SYMBOL_IDS.CIEUC,
+      INPUT_SYMBOL_IDS.YA,
+      INPUT_SYMBOL_IDS.IEUNG,
+      INPUT_SYMBOL_IDS.TONE_DOUBLE,
+      INPUT_SYMBOL_IDS.I,
+      INPUT_SYMBOL_IDS.DIGEUT,
+      INPUT_SYMBOL_IDS.A,
+      INPUT_SYMBOL_IDS.IEUNG,
+    ])
+
+    expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('쟝〯ᅵ당')
+  })
+
   it('ignores tone input when there is no medial-bearing syllable to attach to', () => {
     const state = runSequence([
       INPUT_SYMBOL_IDS.RIEUL,

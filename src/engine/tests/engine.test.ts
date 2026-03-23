@@ -562,6 +562,21 @@ describe('engine', () => {
     expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('ᅟᅡ')
   })
 
+  it('forces a break after a final consonant when ctrl + space precedes a following vowel', () => {
+    const state = applyInput(
+      applyContextualFiller(
+        runSequence([
+          INPUT_SYMBOL_IDS.IEUNG,
+          INPUT_SYMBOL_IDS.YEO,
+          INPUT_SYMBOL_IDS.IEUNG,
+        ]),
+      ),
+      INPUT_SYMBOL_IDS.I,
+    )
+
+    expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('영ᅟᅵ')
+  })
+
   it('starts a new filled syllable when a non-composable vowel follows a completed syllable', () => {
     expect(
       render([

@@ -97,6 +97,8 @@
   - 초중성이 있으면 `쌍미음`
   - 입력이 없거나 종성까지 있으면 `초성 채움 + 중성 채움 + 쌍미음`
 - `Ctrl + Space`도 같은 철학으로 문맥형 filler 연산으로 해석한다.
+- 종성 뒤 모음을 이어쓰지 않고 끊어쓰고 싶을 때도 `Ctrl + Space`를 쓴다.
+- 즉 기본은 이어쓰기지만, `...종성 + Ctrl + Space + 모음`은 새 음절의 choseong filler를 강제로 만들어 `영ㅣ` 같은 표기를 가능하게 한다.
 - utility key(`Space`, `.`, `;`)는 on-screen modifier 상태뿐 아니라 현재 눌린 하드웨어 `Ctrl` 상태도 함께 본다.
 - `Enter`는 줄바꿈 literal input으로 처리한다.
 - `Ctrl + Shift + ㅎ -> ꥼ`, `Ctrl + Shift + ㅏ -> ᆢ`도 단계 축약 규칙으로 본다.

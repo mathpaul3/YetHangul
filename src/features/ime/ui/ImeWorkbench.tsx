@@ -686,6 +686,10 @@ export function ImeWorkbench() {
             <div className="stack">
               <strong>부가 기능</strong>
               <div className="note-card">Shift / Ctrl은 `none → oneshot → locked` 순서로 고정할 수 있습니다.</div>
+              <div className="note-card">
+                종성 뒤 모음을 끊어쓰려면 `Ctrl + Space` 후 모음을 입력합니다.
+                예: `영 + Ctrl + Space + ㅣ → 영ㅣ`
+              </div>
             </div>
           </div>
         </section>

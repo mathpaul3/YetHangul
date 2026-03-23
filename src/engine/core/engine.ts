@@ -420,7 +420,12 @@ function resolveModifiedSymbol(
     return INPUT_SYMBOL_IDS.SPECIAL_CHOSEONG_JEONGCHIEUM_SIOS
   }
   if (ctrlActive && symbolId === INPUT_SYMBOL_IDS.IEUNG) {
-    if (active.initial.length > 0 && active.medial.length > 0) {
+    if (
+      active.initial.length > 0 &&
+      active.medial.length > 0 &&
+      active.final.length === 0 &&
+      active.tones.length === 0
+    ) {
       return INPUT_SYMBOL_IDS.DIRECT_FINAL_U_11F0
     }
     return INPUT_SYMBOL_IDS.SPECIAL_CHOSEONG_OLD_IEUNG

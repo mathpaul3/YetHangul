@@ -103,6 +103,7 @@
 - 소비된 `oneshot` modifier는 backspace undo 후에도 되살아나지 않는다.
 - `locked` modifier는 입력/undo를 거쳐도 유지된다.
 - 방점은 한 음절에 하나만 허용하고, 이미 방점이 있거나 중성이 없는 경우의 추가 방점 입력은 무시한다.
+- 방점을 backspace로 제거한 직후에는 같은 음절에 다시 방점을 붙일 수 있어야 하며, on-screen utility key 경로도 이 규칙을 그대로 따른다.
 
 ## Input Rule Policy
 
@@ -114,7 +115,8 @@
 - primitive로 남는 자모는 `archaicPrimitiveCatalog.ts`에 따로 정리해서, target inventory 전체가 `primitive 또는 automatic rule` 중 하나로 설명되도록 맞추고 있다.
 - `Ctrl + ㅇ`은 문맥에 따라 분기한다.
   - 초성/중성이 아직 없는 문맥: `ᅌ`
-  - 이미 `초성 + 중성`이 있는 문맥: 종성 `ᇰ`
+  - 이미 `초성 + 중성`이 있고 아직 종성/방점이 없는 문맥: 종성 `ᇰ`
+  - 종성이나 방점까지 있는 문맥에서는 새 음절의 초성 `ᅌ`으로 다시 시작한다.
 
 ## Reparse Policy
 

@@ -609,15 +609,8 @@ export function useImeWorkbench() {
     flashVirtualKey(utilityLabelMap[utilityKey])
 
     if (utilityKey === 'enter') {
-      recentImeCommitRef.current = '\n'
-      handleLiteralInput('\n')
+      handleLineBreakInput()
       return
-    }
-
-    commitCompositionToDocument()
-
-    if (selectionRangeRef.current) {
-      deleteSelection()
     }
 
     const ctrlActive =
@@ -627,6 +620,12 @@ export function useImeWorkbench() {
       hardwareModifierState.rightCtrl === true
 
     if (utilityKey === 'space') {
+      commitCompositionToDocument()
+
+      if (selectionRangeRef.current) {
+        deleteSelection()
+      }
+
       if (!ctrlActive) {
         dispatch({ type: 'input', symbolId: INPUT_SYMBOL_IDS.SPACE })
         return
@@ -638,6 +637,11 @@ export function useImeWorkbench() {
 
     if (!ctrlActive) {
       return
+    }
+
+    if (selectionRangeRef.current) {
+      commitCompositionToDocument()
+      deleteSelection()
     }
 
     dispatch({

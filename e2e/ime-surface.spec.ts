@@ -152,3 +152,21 @@ test('mixed paste keeps literal and supported text in original order', async ({ 
 
   await expectRenderedText(page, 'A간B')
 })
+
+test('onscreen tone can be reapplied after backspace', async ({ page }) => {
+  await page.goto('/')
+
+  await clickKey(page, 'ㄹ')
+  await clickKey(page, 'ㅏ')
+  await clickKey(page, 'ㅅ')
+  await clickKey(page, 'L Ctrl')
+  await clickKey(page, '.')
+  await expectRenderedText(page, '랏〮')
+
+  await clickKey(page, 'Backspace')
+  await expectRenderedText(page, '랏')
+
+  await clickKey(page, 'L Ctrl')
+  await clickKey(page, '.')
+  await expectRenderedText(page, '랏〮')
+})

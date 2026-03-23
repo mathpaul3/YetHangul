@@ -332,6 +332,17 @@ describe('engine', () => {
     expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('ᅌᅡᇰ')
   })
 
+  it('maps ctrl + ieung to an initial old ieung after a syllable already has a final', () => {
+    let state = runSequence([
+      INPUT_SYMBOL_IDS.GIYEOK,
+      INPUT_SYMBOL_IDS.A,
+      INPUT_SYMBOL_IDS.NIEUN,
+    ])
+    state = applyInputWithModifiers(state, INPUT_SYMBOL_IDS.IEUNG, { leftCtrl: true })
+
+    expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('간ᅌ')
+  })
+
   it('ignores additional tone input once a syllable already has a tone mark', () => {
     const state = runSequence([
       INPUT_SYMBOL_IDS.RIEUL,
@@ -340,6 +351,19 @@ describe('engine', () => {
       INPUT_SYMBOL_IDS.TONE_SINGLE,
       INPUT_SYMBOL_IDS.TONE_SINGLE,
       INPUT_SYMBOL_IDS.TONE_DOUBLE,
+    ])
+
+    expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('랏〮')
+  })
+
+  it('allows a tone mark to be reapplied after it is removed with backspace', () => {
+    const state = runSequence([
+      INPUT_SYMBOL_IDS.RIEUL,
+      INPUT_SYMBOL_IDS.A,
+      INPUT_SYMBOL_IDS.SIOS,
+      INPUT_SYMBOL_IDS.TONE_SINGLE,
+      INPUT_SYMBOL_IDS.BACKSPACE,
+      INPUT_SYMBOL_IDS.TONE_SINGLE,
     ])
 
     expect(jamoIdsToUnicode([...state.committed, ...state.active.jamoIds])).toBe('랏〮')

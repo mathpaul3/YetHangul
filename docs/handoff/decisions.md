@@ -62,6 +62,19 @@
 - Atomic Queue가 소진되면 남은 Partial을 기준으로 새 smoke/proof task를 다시 만든다.
 - 구현 단계 말미의 nav / footer / legal / analytics / branding 작업은 하나의 service shell 묶음으로 다루고, 실제 사용 기반 polish와 함께 처리한다.
 
+## Input Collection Policy
+
+- YetHangul은 입력 source를 하나의 low-level DOM event(`keydown`)로 통일하지 않는다.
+- 이유:
+  - 모바일/태블릿 native IME는 meaningful `keydown`를 안정적으로 제공하지 않는다.
+  - committed text surface(`beforeinput` / `compositionend`)가 더 canonical한 경우가 많다.
+- 따라서 source-specific adapter는 유지한다.
+  - UI on-screen keyboard
+  - hardware keyboard
+  - native IME / beforeinput / composition
+- 대신 adapter 출력은 가능한 한 `normalized input event -> single dispatcher -> engine/editor` 경계로 수렴시킨다.
+- 이 원칙의 상세 정리는 `docs/handoff/input-flow-review.md`를 source of truth로 둔다.
+
 ## Keyboard Policy
 
 - 데스크톱: 하드웨어 키보드 우선

@@ -18,6 +18,7 @@
 - 구현 말미의 nav / footer / legal / analytics / branding은 흩어진 소작업보다 `service shell` 묶음으로 처리하는 쪽을 우선 검토한다.
 - 긴 규칙표나 장문 설명은 main workspace를 밀어내지 않도록 modal, drawer, 별도 도움말 surface로 분리하는 방안을 우선 검토한다.
 - 작은 화면에서 긴 keycap label이 레이아웃을 깨면 아이콘/축약형으로 치환하되, 접근성 라벨과 테스트 식별자는 유지한다.
+- 입력 source가 여러 개라면(`UI keyboard`, `hardware keyboard`, `native IME`) low-level DOM event 하나로 통일하려 하지 말고, source-specific adapter와 normalized event boundary를 분리하는 쪽을 우선 검토한다.
 
 Coordinator가 있는 멀티 Agent 프로젝트라면 아래 운영 규칙도 기본값으로 두는 것을 권장한다.
 

@@ -246,6 +246,28 @@
 다운로드형 브라우저 자동화가 막히거나 비용이 클 때는,
 설치된 시스템 브라우저 채널을 real-browser smoke에 재사용하고, breadth는 service-level matrix로 유지하는 편이 효율적이다.
 
+### 8-6-1. input source는 억지로 하나의 low-level DOM event로 통일하지 않기
+
+입력 source가 여러 개인 프로젝트에서는 다음 유혹이 생기기 쉽다.
+
+- UI keyboard
+- hardware keyboard
+- native IME
+
+를 모두 `keydown` 같은 하나의 low-level DOM event로 통일하고 싶어지는 것이다.
+
+하지만 실제로는 이 방식이 자주 깨진다.
+
+- native IME는 meaningful `keydown`를 안정적으로 제공하지 않을 수 있다.
+- committed text는 `beforeinput` / `compositionend`가 더 canonical한 경우가 많다.
+
+권장 방식:
+
+- source-specific adapter는 유지한다.
+- 대신 adapter 출력은 `normalized input event -> single dispatcher -> engine/editor` 경계로 모은다.
+
+즉 “입력 수집”과 “입력 정규화 이후의 공통 처리”를 분리하는 것이 안전하다.
+
 ### 8-7. 구현 말미에는 service shell을 하나의 묶음으로 처리하기
 
 프로젝트 구현 단계가 마무리에 접어들면 아래 항목이 산발적으로 생기기 쉽다.

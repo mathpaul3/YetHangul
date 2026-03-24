@@ -23,10 +23,13 @@ import {
   resolveCompositionEndInterop,
   shouldSuppressInteropTextAfterDirectDispatch,
 } from '@/features/ime/services/inputInterop'
+import { dispatchNormalizedInputEvent } from '@/features/ime/services/normalizedDispatcher'
+import type { NormalizedInputEvent } from '@/features/ime/services/normalizedInput'
 import {
   getLongPressModifierMode,
   getNextModifierMode,
 } from '@/features/ime/services/modifierInteraction'
+import { dispatchNormalizedTextBatch } from '@/features/ime/services/nativeTextBatch'
 import type { PressedModifierState } from '@/features/ime/services/hardwareKeyboard'
 import {
   clampCaretIndex,
@@ -547,83 +550,38 @@ export function useImeWorkbench() {
     insertLiteralTextIntoDocument(text)
   }
 
-  function dispatchNormalizedInputEvent(
-    event:
-      | {
-          type: 'symbol'
-          symbolId: number
-          visualKeyLabel?: string
-          transientModifiers?: Partial<Record<ModifierKey, boolean>>
-          directText?: string | null
-        }
-      | {
-          type: 'literal'
-          text: string
-          visualKeyLabel?: string
-          directText?: string | null
-        }
-      | {
-          type: 'modifier'
-          modifierKey: ModifierKey
-          visualKeyLabel?: string
-        }
-      | {
-          type: 'utility'
-          utilityKey: 'space' | 'period' | 'semicolon' | 'enter'
-          directText?: string | null
-        }
-      | {
-          type: 'navigation'
-          direction: 'arrowLeft' | 'arrowRight' | 'home' | 'end'
-        },
+  function handleTransientSymbolInput(
+    symbolId: number,
+    transientModifiers: Partial<Record<ModifierKey, boolean>>,
+    visualKeyLabel?: string,
   ) {
-    switch (event.type) {
-      case 'symbol':
-        if (shouldSuppressNormalizedEvent(`symbol:${event.symbolId}:${event.visualKeyLabel ?? ''}`)) {
-          return
-        }
-        markRecentDirectDispatch(event.directText ?? null, event.symbolId)
-        if (event.transientModifiers) {
-          if (event.visualKeyLabel) {
-            flashVirtualKey(event.visualKeyLabel)
-          }
-
-          if (selectionRangeRef.current) {
-            commitCompositionToDocument()
-            deleteSelection()
-          }
-
-          dispatch({
-            type: 'inputWithModifiers',
-            symbolId: event.symbolId,
-            transientModifiers: event.transientModifiers,
-          })
-          return
-        }
-
-        handleInput(event.symbolId, event.visualKeyLabel)
-        return
-      case 'literal':
-        if (shouldSuppressNormalizedEvent(`literal:${event.text}`)) {
-          return
-        }
-        markRecentDirectDispatch(event.directText ?? event.text)
-        handleLiteralInput(event.text, event.visualKeyLabel)
-        return
-      case 'modifier':
-        handleModifierMainClick(event.modifierKey)
-        return
-      case 'utility':
-        if (shouldSuppressNormalizedEvent(`utility:${event.utilityKey}`)) {
-          return
-        }
-        markRecentDirectDispatch(event.directText ?? (event.utilityKey === 'enter' ? '\n' : null))
-        handleUtilityInput(event.utilityKey)
-        return
-      case 'navigation':
-        handleNavigationInput(event.direction)
-        return
+    if (visualKeyLabel) {
+      flashVirtualKey(visualKeyLabel)
     }
+
+    if (selectionRangeRef.current) {
+      commitCompositionToDocument()
+      deleteSelection()
+    }
+
+    dispatch({
+      type: 'inputWithModifiers',
+      symbolId,
+      transientModifiers,
+    })
+  }
+
+  function dispatchNormalizedEvent(event: NormalizedInputEvent) {
+    return dispatchNormalizedInputEvent(event, {
+      shouldSuppressNormalizedEvent,
+      markRecentDirectDispatch,
+      handleInput,
+      handleLiteralInput,
+      handleModifierMainClick,
+      handleUtilityInput,
+      handleNavigationInput,
+      handleTransientSymbolInput,
+    })
   }
 
   function collapseSelectionTo(index: number) {
@@ -710,29 +668,13 @@ export function useImeWorkbench() {
     modifierLongPressControllerRef.current[modifierKey] = null
   }
 
-  function dispatchUnicodeText(text: string) {
-    commitCompositionToDocument()
-
-    if (selectionRangeRef.current) {
-      deleteSelection()
-    }
-
-    let normalizedTextState = createInitialEngineState()
-
-    for (const char of text) {
-      const symbols = normalizeUnicodeToInputSymbols(char)
-
-      if (symbols.length > 0) {
-        for (const symbolId of symbols) {
-          normalizedTextState = applyInput(normalizedTextState, symbolId)
-        }
-        continue
-      }
-
-      normalizedTextState = applyLiteralInput(normalizedTextState, char)
-    }
-
-    insertLiteralTextIntoDocument(jamoIdsToUnicode(getRenderedJamoIds(normalizedTextState)))
+  function dispatchNormalizedText(text: string) {
+    dispatchNormalizedTextBatch(text, {
+      commitCompositionToDocument,
+      hasSelection: () => selectionRangeRef.current != null,
+      deleteSelection,
+      insertLiteralTextIntoDocument,
+    })
   }
 
   function handleCopy(event: React.ClipboardEvent<HTMLElement>) {
@@ -895,7 +837,7 @@ export function useImeWorkbench() {
     }
 
     event.preventDefault()
-    dispatchUnicodeText(text)
+    dispatchNormalizedText(text)
   }
 
   function handleBeforeInput(event: React.FormEvent<HTMLElement>) {
@@ -953,7 +895,7 @@ export function useImeWorkbench() {
     }
 
     event.preventDefault()
-    dispatchUnicodeText(decision.dispatchText)
+    dispatchNormalizedText(decision.dispatchText)
   }
 
   function handleCompositionStart() {
@@ -987,7 +929,7 @@ export function useImeWorkbench() {
     }
 
     event.preventDefault()
-    dispatchUnicodeText(decision.dispatchText)
+    dispatchNormalizedText(decision.dispatchText)
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLElement>) {
@@ -999,7 +941,7 @@ export function useImeWorkbench() {
 
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
-      dispatchNormalizedInputEvent({
+      dispatchNormalizedEvent({
         type: 'navigation',
         direction: 'arrowLeft',
       })
@@ -1008,7 +950,7 @@ export function useImeWorkbench() {
 
     if (event.key === 'ArrowRight') {
       event.preventDefault()
-      dispatchNormalizedInputEvent({
+      dispatchNormalizedEvent({
         type: 'navigation',
         direction: 'arrowRight',
       })
@@ -1017,7 +959,7 @@ export function useImeWorkbench() {
 
     if (event.key === 'Home') {
       event.preventDefault()
-      dispatchNormalizedInputEvent({
+      dispatchNormalizedEvent({
         type: 'navigation',
         direction: 'home',
       })
@@ -1026,7 +968,7 @@ export function useImeWorkbench() {
 
     if (event.key === 'End') {
       event.preventDefault()
-      dispatchNormalizedInputEvent({
+      dispatchNormalizedEvent({
         type: 'navigation',
         direction: 'end',
       })
@@ -1035,7 +977,7 @@ export function useImeWorkbench() {
 
     if (event.key === 'Enter') {
       event.preventDefault()
-      dispatchNormalizedInputEvent({
+      dispatchNormalizedEvent({
         type: 'utility',
         utilityKey: 'enter',
         directText: '\n',
@@ -1078,7 +1020,7 @@ export function useImeWorkbench() {
         event.key.length === 1
       ) {
         event.preventDefault()
-        dispatchNormalizedInputEvent({
+        dispatchNormalizedEvent({
           type: 'literal',
           text: event.key,
           directText: event.key,
@@ -1122,7 +1064,7 @@ export function useImeWorkbench() {
       return
     }
 
-    dispatchNormalizedInputEvent({
+    dispatchNormalizedEvent({
       type: 'symbol',
       symbolId,
       visualKeyLabel: visualKeyLabel ?? undefined,
@@ -1292,7 +1234,7 @@ export function useImeWorkbench() {
     handleLiteralInput,
     handleUtilityInput,
     handleNavigationInput,
-    dispatchNormalizedInputEvent,
+    dispatchNormalizedInputEvent: dispatchNormalizedEvent,
     handleModifierMainClick,
     handleModifierMainPointerDown,
     handleModifierMainPointerEnd,

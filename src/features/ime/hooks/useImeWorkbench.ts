@@ -45,14 +45,12 @@ import {
   deleteForwardUnit,
   deleteSelectionUnits,
   type EditorDocumentMutation,
+  getCollapsedCaretIndexForNavigation,
   getSelectionBounds,
-  getLineEndIndex,
-  getLineStartIndex,
+  getNavigationTargetIndex,
   insertLineBreakUnit,
   insertUnitsAt,
   insertTextUnits,
-  moveCaretBackwardUnit,
-  moveCaretForwardUnit,
   normalizeSelectionRangeToDocument,
   resolveEditorUnitIndexFromPointerTarget,
   segmentTextToEditorUnits,
@@ -792,23 +790,26 @@ export function useImeWorkbench() {
 
     const flushState = {
       caretIndex: caretIndexRef.current,
-      unitCount: documentUnitsRef.current.length,
     }
 
     if (direction === 'arrowLeft' || direction === 'arrowRight') {
       if (!isShiftActive()) {
-        const bounds = getSelectionBounds(selectionRangeRef.current)
+        const collapsedIndex = getCollapsedCaretIndexForNavigation(
+          selectionRangeRef.current,
+          direction,
+        )
 
-        if (bounds) {
-          collapseSelectionTo(direction === 'arrowLeft' ? bounds.start : bounds.end)
+        if (collapsedIndex != null) {
+          collapseSelectionTo(collapsedIndex)
           return
         }
       }
 
-      const nextCaretIndex =
-        direction === 'arrowLeft'
-          ? moveCaretBackwardUnit(flushState.caretIndex, flushState.unitCount)
-          : moveCaretForwardUnit(flushState.caretIndex, flushState.unitCount)
+      const nextCaretIndex = getNavigationTargetIndex(
+        documentUnitsRef.current,
+        flushState.caretIndex,
+        direction,
+      )
 
       if (isShiftActive()) {
         extendSelectionTo(nextCaretIndex)
@@ -819,10 +820,11 @@ export function useImeWorkbench() {
       return
     }
 
-    const targetIndex =
-      direction === 'home'
-        ? getLineStartIndex(documentUnitsRef.current, flushState.caretIndex)
-        : getLineEndIndex(documentUnitsRef.current, flushState.caretIndex)
+    const targetIndex = getNavigationTargetIndex(
+      documentUnitsRef.current,
+      flushState.caretIndex,
+      direction,
+    )
 
     if (isShiftActive()) {
       extendSelectionTo(targetIndex)

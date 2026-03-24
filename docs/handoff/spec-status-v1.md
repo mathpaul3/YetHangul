@@ -205,6 +205,7 @@
 - `ArrowLeft/Right`, `Home`, `End`, `Shift + ArrowLeft/Right`, `Shift + Home/End`, `Delete`를 editor-layer에 연결함
 - `Home/End`는 문서 전체가 아니라 현재 줄 기준으로 이동하도록 보강함
 - Phase 3 첫 slice로 selection replacement, literal/newline insertion, backspace/delete가 같은 editor mutation result shape를 통해 적용되도록 훅과 helper 경계를 정리함
+- 이어서 newline 경계의 `←/→/Home/End`와 selection collapse도 같은 line-aware helper 계약을 따르도록 정리하고 regression으로 고정함
 - `Copy All`, `Copy Selection` 버튼을 추가했고, plain text serialization을 기준으로 복사 경로를 통일함
 - 브라우저 기본 selection은 가능한 한 차단하고, 자체 selection을 source of truth로 유지하는 방향으로 정리 중
 - 조합 버퍼 flush와 selection bounds 계산을 `editorUnits.ts` helper로 분리했고, 훅은 snapshot ref 기준으로 caret/document 동기화를 맞추도록 보강함

@@ -14,6 +14,7 @@
 - input pipeline refactor Phase 2 첫 slice로 native text를 `NormalizedInputBatch`로 명시한 뒤 canonicalize / dispatch하는 경계를 추가
 - native batch 경로의 newline/tone/selection replacement proof를 unit/service/e2e에 추가
 - input pipeline refactor Phase 3 첫 slice로 editor mutation result shape를 helper 중심으로 공통화
+- input pipeline refactor Phase 3 후속 slice로 newline 경계의 `←/→/Home/End`와 selection collapse를 line-aware helper 계약으로 고정
 
 ## [0.1.0]
 

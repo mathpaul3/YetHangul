@@ -219,8 +219,8 @@ Current Atomic Slice:
 - `R25-3a` `Landed`
   - selection replacement, literal/newline insertion, backspace/delete가 같은 editor mutation result shape를 통해 적용되도록 정리했다.
   - 첫 단계에서는 gesture/source adapter를 바꾸지 않고, `useImeWorkbench.ts` 안의 반복적인 document/caret/selection state 적용을 helper 중심으로 줄였다.
-- `R25-3b` `Open`
-  - newline 경계의 caret 이동, selection collapse, delete/backspace가 같은 line-aware helper 규칙을 따르는지 추가 regression으로 고정한다.
+- `R25-3b` `Landed`
+  - newline 경계의 caret 이동과 selection collapse가 `editorUnits.ts`의 같은 line-aware helper 계약을 따르도록 정리하고 regression으로 고정했다.
 - mixed-source editor mutation parity
 - selection normalization after replacement / deletion
 

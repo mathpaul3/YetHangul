@@ -107,14 +107,8 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - source와 무관하게 document mutation이 같은 helper surface를 타도록 editor-layer를 더 일원화한다.
 - `R25-3a` `Landed`
   - selection replacement, literal/newline insertion, backspace/delete가 같은 editor mutation result shape를 통해 적용되도록 정리한다.
-- `R25-3b` `Open`
+- `R25-3b` `Landed`
   - newline 경계의 caret 이동과 selection collapse가 같은 line-aware helper 규칙을 따르는지 regression으로 고정한다.
-- `R25-3` `Open`
-  - source와 무관한 editor mutation helper 경계를 하나로 묶고, selection / delete / newline / caret proof를 공통화한다.
-- `R25-3a` `Open`
-  - selection replacement와 backspace/delete가 source별 분기보다 helper 기반 mutation으로 설명되도록 정리한다.
-- `R25-3b` `Open`
-  - caret movement, line break insertion, selection normalization이 같은 editor surface contract를 따르는지 regression으로 고정한다.
 - `R25-3c` `Open`
   - keyboard / mouse / touch / native IME가 같은 mutation helper surface를 사용하도록 mixed-source proof를 고정한다.
 

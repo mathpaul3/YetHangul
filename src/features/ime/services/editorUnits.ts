@@ -131,6 +131,8 @@ export type EditorDocumentMutation = {
   selectionRange: UnitSelectionRange
 }
 
+export type NavigationDirection = 'arrowLeft' | 'arrowRight' | 'home' | 'end'
+
 export function commitCompositionUnits(
   units: string[],
   caretIndex: number,
@@ -379,6 +381,19 @@ export function moveCaretForwardUnit(caretIndex: number, unitCount: number) {
   return clampCaretIndex(caretIndex + 1, unitCount)
 }
 
+export function getCollapsedCaretIndexForNavigation(
+  selectionRange: UnitSelectionRange,
+  direction: 'arrowLeft' | 'arrowRight',
+) {
+  const bounds = getSelectionBounds(selectionRange)
+
+  if (bounds == null) {
+    return null
+  }
+
+  return direction === 'arrowLeft' ? bounds.start : bounds.end
+}
+
 export function getLineStartIndex(
   units: string[],
   caretIndex: number,
@@ -407,4 +422,24 @@ export function getLineEndIndex(
   }
 
   return units.length
+}
+
+export function getNavigationTargetIndex(
+  units: string[],
+  caretIndex: number,
+  direction: NavigationDirection,
+) {
+  if (direction === 'arrowLeft') {
+    return moveCaretBackwardUnit(caretIndex, units.length)
+  }
+
+  if (direction === 'arrowRight') {
+    return moveCaretForwardUnit(caretIndex, units.length)
+  }
+
+  if (direction === 'home') {
+    return getLineStartIndex(units, caretIndex)
+  }
+
+  return getLineEndIndex(units, caretIndex)
 }

@@ -11,6 +11,8 @@ import {
   deleteSelectionUnits,
   deleteUnitRange,
   getLineEndIndex,
+  getCollapsedCaretIndexForNavigation,
+  getNavigationTargetIndex,
   getLineStartIndex,
   getSelectionBounds,
   insertLineBreakUnit,
@@ -484,6 +486,21 @@ describe('editorUnits', () => {
     expect(getLineEndIndex(['가', '\n', '나', '다'], 1)).toBe(1)
     expect(getLineEndIndex(['가', '\n', '나', '다'], 2)).toBe(4)
     expect(getLineEndIndex(['가', '\n', '나', '다'], 4)).toBe(4)
+  })
+
+  it('collapses newline-spanning selections toward the requested navigation edge', () => {
+    expect(getCollapsedCaretIndexForNavigation({ start: 1, end: 4 }, 'arrowLeft')).toBe(1)
+    expect(getCollapsedCaretIndexForNavigation({ start: 1, end: 4 }, 'arrowRight')).toBe(4)
+    expect(getCollapsedCaretIndexForNavigation(null, 'arrowLeft')).toBeNull()
+  })
+
+  it('derives line-aware navigation targets from one helper contract', () => {
+    const units = ['가', '\n', '나', '다']
+
+    expect(getNavigationTargetIndex(units, 1, 'arrowLeft')).toBe(0)
+    expect(getNavigationTargetIndex(units, 1, 'arrowRight')).toBe(2)
+    expect(getNavigationTargetIndex(units, 3, 'home')).toBe(2)
+    expect(getNavigationTargetIndex(units, 0, 'end')).toBe(1)
   })
 
   it('treats click-only transitions as caret moves and drag transitions as selections', () => {

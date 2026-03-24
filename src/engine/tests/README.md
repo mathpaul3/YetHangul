@@ -1,6 +1,6 @@
 # Engine Tests
 
-이 디렉터리에는 입력 엔진의 전이, 재분석, undo 규칙 테스트를 둡니다.
+이 디렉터리에는 입력 엔진의 전이, 재분석, round-trip, modifier, undo 규칙 테스트를 둡니다.
 
 우선순위:
 
@@ -8,4 +8,5 @@
 2. 종성 뒤 모음 재분석
 3. 입력 단계 기준 백스페이스
 4. modifier 처리
-
+5. Unicode normalize / round-trip
+6. archaic rule / primitive coverage

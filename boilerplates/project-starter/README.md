@@ -19,6 +19,8 @@
 - 모호한 요구사항은 즉시 질문한다.
 - 코드 변경, 검증, handoff 문서 갱신을 함께 처리한다.
 - spec을 update할 정도의 작업이 진행되었다면 commit을 고려한다.
+- 멀티 Agent 구조라면 commit은 Coordinator가 review 후 수행하는 것을 기본값으로 둔다.
+- 한 cycle이 마무리될 때마다 개발 과정 자체에 대한 review를 진행하고, reusable insight는 boilerplate에도 반영한다.
 
 ## Tech Stack
 
@@ -45,6 +47,13 @@
 - `docs/process/`: 협업 규칙, 템플릿, system prompt
 - `docs/process/AGENT_PROFILES.md`: 재사용 가능한 Agent 역할 정의
 - `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`: 범용 Agent system prompt 템플릿
+
+## Process Notes
+
+- 이 starter 디렉토리가 새 프로젝트용 canonical source of truth다.
+- 고수준 목표는 `docs/handoff/current-goals.md`에서 atomic task id까지 분해해 관리하는 것을 권장한다.
+- 같은 작업이 두 라운드 이상 진전 없이 반복되면 더 작은 sub-task로 다시 쪼갠다.
+- cycle 종료 시에는 기능 리뷰와 별개로 개발 과정/문서/boilerplate/subagent lifecycle까지 함께 회고한다.
 
 ## Local Development
 

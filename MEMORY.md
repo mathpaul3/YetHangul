@@ -12,6 +12,9 @@
 - Internal representation: numeric ids mapped to Unicode only at render and interoperability boundaries
 - Ambiguous standalone consonant inputs default to initial; finals are context-derived
 - `ᆧ` is medial-only and is not treated as a general final-consonant target
+- canonical starter source of truth is `boilerplates/project-starter/`
+- multi-agent runs use coordinator-owned commit authority by default
+- each development cycle should end with a review of the development process itself, not only the feature result
 - Desktop and tablet with hardware keyboard: hardware keyboard first
 - Mobile: on-screen keyboard first
 - Backspace: input-step undo

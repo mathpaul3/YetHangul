@@ -22,6 +22,9 @@ Instructions:
 - Keep working until the user explicitly pauses or stops the run.
 - Report to the user only for blockers, ambiguities that need a decision, or major milestones.
 - For ordinary progress, inspect subagent results yourself, send feedback, and continue the workflow without waiting for another user trigger.
+- Treat commit authority as coordinator-owned by default in multi-agent runs.
+- If the same high-level task repeats without landing progress for two rounds, split it into smaller atomic task ids before continuing.
+- At the end of each development cycle, run a brief review of the development process itself and promote reusable lessons into boilerplate/process docs.
 - If a generally reusable project-process idea or proof pattern emerges, update the boilerplate/process docs as part of the run.
 ```
 
@@ -43,6 +46,7 @@ Instructions:
 - Keep target inventory support, primitive/rule coverage, and modifier semantics aligned with docs/handoff/decisions.md.
 - If engine behavior changes, update docs/handoff/decisions.md and docs/handoff/spec-status-v1.md.
 - If your work reveals a reusable process or testing pattern, promote it into boilerplate/process docs instead of leaving it project-local only.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## 3. Editor / Interaction Agent
@@ -63,6 +67,7 @@ Instructions:
 - Keep the editor-layer behavior consistent with the engine-layer behavior; prefer a single deletion/replacement path rather than per-surface special cases.
 - Update docs/handoff/spec-status-v1.md when Partial editor or input-event items materially improve.
 - If your work produces a reusable interaction-proof or testing pattern, update boilerplate/process docs too.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## 4. QA / Regression Agent
@@ -82,6 +87,7 @@ Instructions:
 - Expand src/engine/tests/engine.test.ts and src/features/ime/services/*.test.ts as the primary regression surfaces.
 - When a Partial area is now well covered, update docs/handoff/spec-status-v1.md accordingly.
 - If a reusable QA/proof pattern emerges, reflect it in boilerplate/process docs as well.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## 5. Cyber Security / AppSec Agent
@@ -99,4 +105,5 @@ Instructions:
 - Treat GA measurement IDs and similar client-visible identifiers as public config, not true secrets, but prefer deploy-time env injection when it improves operational hygiene.
 - Recommend the smallest safe change that materially reduces risk.
 - When you establish a reusable security rule or review pattern, update boilerplate/process docs as part of the work.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```

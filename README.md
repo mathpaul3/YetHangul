@@ -88,13 +88,12 @@
   - 도메인 규칙 문서
 
 - `docs/process/`
-  - Agent 협업 방식, 템플릿, system prompt 초안
-
-- `docs/process/templates/`
-  - 새 프로젝트 시작 시 복사해서 사용할 템플릿 파일 세트
+  - Agent 협업 방식과 프로젝트 운영 규칙
+  - 새 프로젝트 starter의 source of truth는 `boilerplates/project-starter/`
 
 - `boilerplates/project-starter/`
-  - 바로 복사해서 새 프로젝트에 쓸 수 있는 starter 구조
+  - 새 프로젝트 starter의 canonical source of truth
+  - 문서, handoff, process boilerplate를 여기서 관리
 
 - `scripts/create-project-from-boilerplate.sh`
   - boilerplate를 새 프로젝트 디렉토리에 복사하고 기본 구조를 생성하는 스크립트

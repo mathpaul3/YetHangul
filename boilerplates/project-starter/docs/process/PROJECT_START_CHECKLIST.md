@@ -7,6 +7,7 @@
 - [ ] `CHANGELOG.md`
 - [ ] `docs/handoff/decisions.md`
 - [ ] `docs/handoff/spec-status-v1.md`
+- [ ] `docs/handoff/current-goals.md`
 
 ## Project Setup
 
@@ -28,9 +29,11 @@
 - [ ] 최소 실행 가능한 앱/서비스 생성
 - [ ] 핵심 로직 테스트 작성
 - [ ] handoff 문서 갱신 루틴 확정
+- [ ] commit authority가 누구에게 있는지 확정
+- [ ] atomic task queue 운영 여부 확정
 
 ## Operations
 
 - [ ] 운영/수익화 확장 메모 시작
 - [ ] backlog 분류 체계 정의
-
+- [ ] cycle 종료 시 개발 과정 review 루틴 정의

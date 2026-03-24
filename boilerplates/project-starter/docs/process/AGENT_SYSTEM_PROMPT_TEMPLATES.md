@@ -22,6 +22,9 @@ Instructions:
 - Keep working until the user explicitly pauses or stops the run.
 - Report to the user only when there is a blocker, an ambiguity that needs a decision, or a major milestone worth surfacing.
 - For normal progress, review subagent results yourself, send follow-up feedback, and keep the workflow moving without waiting for a new user trigger.
+- Treat commit authority as coordinator-owned by default in multi-agent runs.
+- If the same high-level task repeats without landing progress for two rounds, split it into smaller atomic task ids before continuing.
+- At the end of each development cycle, run a brief review of the development process itself and promote reusable lessons into boilerplate/process docs.
 - If a generally reusable project-process idea or proof pattern emerges during the run, update the boilerplate/process docs as part of the work.
 ```
 
@@ -42,6 +45,7 @@ Instructions:
 - Avoid making UI behavior changes directly unless required to preserve the engine contract.
 - Update handoff/spec docs when engine behavior changes.
 - If your work reveals a reusable process or testing pattern, note it for boilerplate updates instead of leaving it project-local only.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## Editor / Interaction Agent
@@ -61,6 +65,7 @@ Instructions:
 - Every fixed bug should gain a regression test when practical.
 - Update handoff/spec docs when behavior changes.
 - If your work produces a reusable interaction-proof or testing pattern, update boilerplate/process docs as well.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## QA / Regression Agent
@@ -79,6 +84,7 @@ Instructions:
 - Focus especially on multi-step scenarios, not just single interactions.
 - Update handoff/spec docs if the project’s tested coverage meaningfully improves.
 - If a reusable QA/proof pattern emerges, reflect it in boilerplate/process docs too.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## Documentation Steward
@@ -97,6 +103,7 @@ Instructions:
 - Prefer short, high-signal updates over long narrative rewrites.
 - Call out stale or duplicated sources of truth and consolidate them.
 - When project-local process improvements prove broadly reusable, promote them into boilerplate/process docs.
+- At the end of each development cycle, explicitly review stale files, unused code, and duplicated documentation.
 ```
 
 ## Release / Ops Agent
@@ -114,6 +121,7 @@ Instructions:
 - Favor explicitness and reproducibility over cleverness.
 - When changing deployment behavior, document required env vars, secrets, and rollback expectations.
 - Avoid app-layer behavior changes unless directly required for build/deploy correctness.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```
 
 ## Cyber Security / AppSec Agent
@@ -133,4 +141,5 @@ Instructions:
 - Prefer concrete findings, threat scenarios, and mitigations over vague “security is important” comments.
 - When practical, add automated checks, regression tests, or documentation so the security improvement persists.
 - Update handoff/process docs when you establish a reusable security rule or review pattern.
+- Do not make commits directly unless the project explicitly delegates commit authority to you.
 ```

@@ -122,11 +122,17 @@ export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
   const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
   const [showHelpOverlay, setShowHelpOverlay] = useState(false)
+  const [helpSections, setHelpSections] = useState({
+    principles: true,
+    shift: true,
+    ctrl: true,
+  })
   const editorSurfaceTouchBehavior = getEditorSurfaceTouchBehavior()
   const {
     engineState,
     hardwareModifierState,
     pressedVisualKeys,
+    copyFeedback,
     renderedUnits,
     renderedCaretIndex,
     renderedText,
@@ -233,6 +239,13 @@ export function ImeWorkbench() {
     return iconMap[label] ?? label
   }
 
+  function toggleHelpSection(section: keyof typeof helpSections) {
+    setHelpSections((previous) => ({
+      ...previous,
+      [section]: !previous[section],
+    }))
+  }
+
   const syllableCount = renderedUnits.length
   const decomposedCount = Array.from(renderedText).length
   const selectionLabel =
@@ -314,6 +327,8 @@ export function ImeWorkbench() {
                 도움말
               </button>
             </div>
+
+            {copyFeedback ? <div className="copy-toast">{copyFeedback}</div> : null}
 
             <output className="sr-only" data-testid="rendered-text-value">
               {renderedText.length > 0 ? renderedText : '\u00A0'}
@@ -729,62 +744,93 @@ export function ImeWorkbench() {
             </div>
             <div className="help-overlay-body">
               <section className="help-section">
-                <strong>기반 원칙</strong>
-                <div className="help-principles">
-                  <div className="note-card">병서 원리 기반으로 초성·중성·종성을 순차 조합합니다.</div>
-                  <div className="note-card">Shift + 문자 = 쌍자모로 확장합니다.</div>
-                  <div className="note-card">Ctrl + 문자 = 자형 변환으로 확장합니다.</div>
-                </div>
+                <button
+                  className="help-accordion"
+                  type="button"
+                  onClick={() => toggleHelpSection('principles')}
+                >
+                  <strong>병서 원리 기반으로 초성·중성·종성을 순차 조합</strong>
+                  <span>{helpSections.principles ? '접기' : '예시 보기'}</span>
+                </button>
+                {helpSections.principles ? (
+                  <div className="help-principles">
+                    <div className="note-card">현대 한글처럼 자모를 순서대로 입력하면 조합 가능한 음절로 자동 승격합니다.</div>
+                    <div className="note-card">예: `ㅂ + ㅅ + ㄱ + ㅜ + ㄹ → ᄢᅮᆯ`</div>
+                    <div className="note-card">예: `ㄱ + ㅠ + ㅏ + ㄴ → ᄀᆎᆫ`</div>
+                  </div>
+                ) : null}
               </section>
 
               <section className="help-section">
-                <strong>Shift 규칙 전체</strong>
-                <p className="rule-modal-description">Shift + 자음/모음 ⇨ 쌍자음/쌍모음</p>
-                <div className="rule-table-wrap">
-                  <table className="rule-table">
-                    <thead>
-                      <tr>
-                        <th>입력</th>
-                        <th>출력</th>
-                        <th>설명</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {SHIFT_RULES.map(([input, output, description]) => (
-                        <tr key={input}>
-                          <td>{input}</td>
-                          <td>{output}</td>
-                          <td>{description}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <button
+                  className="help-accordion"
+                  type="button"
+                  onClick={() => toggleHelpSection('shift')}
+                >
+                  <strong>Shift + 문자 = 쌍자모</strong>
+                  <span>{helpSections.shift ? '접기' : '전체 보기'}</span>
+                </button>
+                {helpSections.shift ? (
+                  <>
+                    <p className="rule-modal-description">Shift + 자음/모음 ⇨ 쌍자음/쌍모음</p>
+                    <div className="rule-table-wrap">
+                      <table className="rule-table">
+                        <thead>
+                          <tr>
+                            <th>입력</th>
+                            <th>출력</th>
+                            <th>설명</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {SHIFT_RULES.map(([input, output, description]) => (
+                            <tr key={input}>
+                              <td>{input}</td>
+                              <td>{output}</td>
+                              <td>{description}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                ) : null}
               </section>
 
               <section className="help-section">
-                <strong>Ctrl 규칙 전체</strong>
-                <p className="rule-modal-description">Ctrl + 자음/모음 ⇨ 자형 변환 (반치음ᅀ 예외)</p>
-                <div className="rule-table-wrap">
-                  <table className="rule-table">
-                    <thead>
-                      <tr>
-                        <th>입력</th>
-                        <th>출력</th>
-                        <th>설명</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {CTRL_RULES.map(([input, output, description]) => (
-                        <tr key={input}>
-                          <td>{input}</td>
-                          <td>{output}</td>
-                          <td>{description}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <button
+                  className="help-accordion"
+                  type="button"
+                  onClick={() => toggleHelpSection('ctrl')}
+                >
+                  <strong>Ctrl + 문자 = 자형 변환</strong>
+                  <span>{helpSections.ctrl ? '접기' : '전체 보기'}</span>
+                </button>
+                {helpSections.ctrl ? (
+                  <>
+                    <p className="rule-modal-description">Ctrl + 자음/모음 ⇨ 자형 변환 (반치음ᅀ 예외)</p>
+                    <div className="rule-table-wrap">
+                      <table className="rule-table">
+                        <thead>
+                          <tr>
+                            <th>입력</th>
+                            <th>출력</th>
+                            <th>설명</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {CTRL_RULES.map(([input, output, description]) => (
+                            <tr key={input}>
+                              <td>{input}</td>
+                              <td>{output}</td>
+                              <td>{description}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                ) : null}
               </section>
             </div>
           </div>

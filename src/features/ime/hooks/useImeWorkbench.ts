@@ -99,6 +99,7 @@ export function useImeWorkbench() {
   const [documentUnits, setDocumentUnits] = useState<string[]>([])
   const [caretIndex, setCaretIndex] = useState(0)
   const [selectionRange, setSelectionRange] = useState<SelectionRange>(null)
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
   const pressedModifiersRef = useRef<PressedModifierState>({})
   const documentUnitsRef = useRef<string[]>([])
   const caretIndexRef = useRef(0)
@@ -122,6 +123,7 @@ export function useImeWorkbench() {
     rightShift: false,
   })
   const selectionAnchorRef = useRef<number | null>(null)
+  const copyFeedbackTimeoutRef = useRef<number | null>(null)
   const isDraggingSelectionRef = useRef(false)
   const didMoveSelectionRef = useRef(false)
   const dragStartUnitIndexRef = useRef<number | null>(null)
@@ -233,8 +235,29 @@ export function useImeWorkbench() {
       for (const controller of Object.values(modifierLongPressControllerRef.current)) {
         controller?.cancel()
       }
+
+      if (copyFeedbackTimeoutRef.current != null) {
+        window.clearTimeout(copyFeedbackTimeoutRef.current)
+      }
     }
   }, [])
+
+  function showCopyFeedback(message = '복사되었습니다') {
+    if (typeof window === 'undefined') {
+      setCopyFeedback(message)
+      return
+    }
+
+    if (copyFeedbackTimeoutRef.current != null) {
+      window.clearTimeout(copyFeedbackTimeoutRef.current)
+    }
+
+    setCopyFeedback(message)
+    copyFeedbackTimeoutRef.current = window.setTimeout(() => {
+      setCopyFeedback(null)
+      copyFeedbackTimeoutRef.current = null
+    }, 1400)
+  }
 
   function setHardwareModifier(modifierKey: ModifierKey, pressed: boolean) {
     pressedModifiersRef.current[modifierKey] = pressed
@@ -582,10 +605,12 @@ export function useImeWorkbench() {
 
     event.preventDefault()
     event.clipboardData.setData('text/plain', text)
+    showCopyFeedback()
   }
 
   async function copyAllText() {
     await navigator.clipboard.writeText(renderedText)
+    showCopyFeedback()
   }
 
   async function copySelectionText() {
@@ -596,6 +621,7 @@ export function useImeWorkbench() {
     }
 
     await navigator.clipboard.writeText(renderedUnits.slice(bounds.start, bounds.end).join(''))
+    showCopyFeedback()
   }
 
   function handleUtilityInput(utilityKey: 'space' | 'period' | 'semicolon' | 'enter') {
@@ -1017,7 +1043,14 @@ export function useImeWorkbench() {
       return
     }
 
-    const unitIndex = resolveEditorUnitIndexFromPointerTarget(event.target)
+    const pointedTarget =
+      typeof document !== 'undefined'
+        ? document.elementFromPoint(event.clientX, event.clientY)
+        : null
+
+    const unitIndex =
+      resolveEditorUnitIndexFromPointerTarget(pointedTarget) ??
+      resolveEditorUnitIndexFromPointerTarget(event.target)
 
     if (unitIndex == null) {
       return
@@ -1055,6 +1088,7 @@ export function useImeWorkbench() {
   return {
     caretIndex,
     selectionRange,
+    copyFeedback,
     renderedUnits,
     renderedCaretIndex,
     engineState,

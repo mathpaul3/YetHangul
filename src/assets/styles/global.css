@@ -219,6 +219,16 @@ textarea {
   align-items: center;
 }
 
+.copy-toast {
+  align-self: flex-start;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(47, 106, 104, 0.92);
+  color: #fffaf5;
+  font-size: 0.88rem;
+  box-shadow: 0 10px 24px rgba(47, 106, 104, 0.2);
+}
+
 .badge {
   padding: 8px 12px;
   border-radius: 999px;
@@ -421,6 +431,27 @@ textarea {
 .help-section {
   display: grid;
   gap: 10px;
+}
+
+.help-accordion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(36, 27, 22, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 251, 245, 0.92);
+  color: #241b16;
+  text-align: left;
+  cursor: pointer;
+}
+
+.help-accordion span {
+  color: #7a2f12;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .help-principles {

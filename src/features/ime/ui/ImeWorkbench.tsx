@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
 import { useImeWorkbench } from '@/features/ime/hooks/useImeWorkbench'
 import { getEditorSurfaceTouchBehavior } from '@/features/ime/services/editorSurface'
@@ -7,6 +7,7 @@ import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMod
 const preferredMode = detectPreferredKeyboardMode()
 const REPOSITORY_URL = 'https://github.com/mathpaul3/yet-hangul'
 const AUTHOR_URL = 'https://github.com/mathpaul3'
+const HELP_OVERLAY_DISMISSED_KEY = 'yethangul-help-overlay-dismissed'
 const SHIFT_RULES = [
   ['Shift + ㄱ', 'ᄁ', '쌍기역'],
   ['Shift + ㄴ', 'ᄔ', '쌍니은'],
@@ -120,7 +121,7 @@ const modifierLabels = {
 export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
   const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
-  const [showHelpOverlay, setShowHelpOverlay] = useState(true)
+  const [showHelpOverlay, setShowHelpOverlay] = useState(false)
   const editorSurfaceTouchBehavior = getEditorSurfaceTouchBehavior()
   const {
     engineState,
@@ -157,6 +158,23 @@ export function ImeWorkbench() {
     handleCompositionStart,
     handleCompositionEnd,
   } = useImeWorkbench()
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const dismissed = window.localStorage.getItem(HELP_OVERLAY_DISMISSED_KEY)
+    setShowHelpOverlay(dismissed !== 'true')
+  }, [])
+
+  function closeHelpOverlay() {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(HELP_OVERLAY_DISMISSED_KEY, 'true')
+    }
+
+    setShowHelpOverlay(false)
+  }
 
   function getModifierVisualClass(key: keyof typeof modifierLabels) {
     const mode = engineState.modifierState[key]
@@ -695,7 +713,7 @@ export function ImeWorkbench() {
       </main>
 
       {showHelpOverlay ? (
-        <div className="modal-backdrop" role="presentation" onClick={() => setShowHelpOverlay(false)}>
+        <div className="modal-backdrop" role="presentation" onClick={closeHelpOverlay}>
           <div
             aria-labelledby="help-overlay-title"
             aria-modal="true"
@@ -705,7 +723,7 @@ export function ImeWorkbench() {
           >
             <div className="rule-modal-header">
               <strong id="help-overlay-title">입력 도움말</strong>
-              <button className="rule-modal-close" type="button" onClick={() => setShowHelpOverlay(false)}>
+              <button className="rule-modal-close" type="button" onClick={closeHelpOverlay}>
                 닫기
               </button>
             </div>

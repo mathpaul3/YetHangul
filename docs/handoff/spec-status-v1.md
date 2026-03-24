@@ -128,6 +128,9 @@
 - on-screen key press도 짧은 pressed highlight를 직접 보여주도록 보강함
 - bottom row에 `Enter`를 추가해 하드웨어와 같은 줄바꿈 경로를 on-screen에서도 제공함
 - on-screen 입력 뒤 editor root로 focus를 되돌려 이후 하드웨어 입력이 자연스럽게 이어지도록 조정함
+- PC는 기본 펼침, 모바일/태블릿은 modifier/navigation compact row만 보이는 기본 접힘 상태를 사용함
+- compact row는 `L/R Ctrl`, `L/R Shift`, `Home`, `End`, `←`, `→`만 노출하고 토글로 전체 키보드를 펼칠 수 있음
+- `L/R Ctrl`, `L/R Shift`는 동시에 활성화되지 않도록 반대쪽을 자동으로 끄는 상호배제 규칙을 적용함
 - on-screen `Backspace`는 long press repeat를 지원해 하드웨어 auto-repeat와의 차이를 일부 줄임
 - on-screen navigation row(`←`, `→`, `Home`, `End`)를 추가해 editor-layer caret 이동을 하드웨어 없이도 사용할 수 있게 함
 - on-screen `←` / `→`도 long press repeat를 지원해 하드웨어 화살표 반복 입력과의 차이를 일부 줄임

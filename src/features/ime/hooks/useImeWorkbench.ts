@@ -261,14 +261,29 @@ export function useImeWorkbench() {
 
   function setHardwareModifier(modifierKey: ModifierKey, pressed: boolean) {
     pressedModifiersRef.current[modifierKey] = pressed
+    const siblingModifierMap: Partial<Record<ModifierKey, ModifierKey>> = {
+      leftCtrl: 'rightCtrl',
+      rightCtrl: 'leftCtrl',
+      leftShift: 'rightShift',
+      rightShift: 'leftShift',
+    }
+    const siblingModifier = siblingModifierMap[modifierKey]
+
+    if (pressed && siblingModifier) {
+      pressedModifiersRef.current[siblingModifier] = false
+    }
 
     setHardwareModifierState((previous) => {
-      if (previous[modifierKey] === pressed) {
+      if (
+        previous[modifierKey] === pressed &&
+        (!pressed || !siblingModifier || previous[siblingModifier] === false)
+      ) {
         return previous
       }
 
       return {
         ...previous,
+        ...(pressed && siblingModifier ? { [siblingModifier]: false } : {}),
         [modifierKey]: pressed,
       }
     })

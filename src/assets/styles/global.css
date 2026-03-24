@@ -302,6 +302,26 @@ textarea {
   font-size: 0.92rem;
 }
 
+.keyboard-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.keyboard-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #ede1ca;
+  color: #5f4734;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .keyboard-shell {
   display: grid;
   gap: 10px;
@@ -337,6 +357,10 @@ textarea {
   grid-template-columns: 1.15fr 1.15fr minmax(0, 3fr) 1fr 1fr 1fr 1fr;
 }
 
+.keyboard-row-collapsed {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
 .keycap {
   min-height: 52px;
   min-width: 0;
@@ -367,6 +391,10 @@ textarea {
 
 .keycap-space {
   letter-spacing: 0.04em;
+}
+
+.keycap-compact {
+  min-height: 48px;
 }
 
 .footer {
@@ -597,6 +625,10 @@ textarea {
     padding: 16px;
   }
 
+  .keyboard-heading {
+    align-items: center;
+  }
+
   .editor-output {
     min-height: 220px;
     padding: 14px;
@@ -632,8 +664,21 @@ textarea {
     font-size: 0.86rem;
   }
 
+  .keyboard-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .keyboard-toggle {
+    align-self: flex-start;
+  }
+
   .keyboard-row-bottom {
     grid-template-columns: 1fr 1fr minmax(0, 2.1fr) 0.85fr 0.85fr 0.85fr 0.85fr;
+  }
+
+  .keyboard-row-collapsed {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .keycap {
@@ -677,6 +722,10 @@ textarea {
 
   .keyboard-row-bottom {
     grid-template-columns: 0.92fr 0.92fr minmax(0, 1.9fr) 0.78fr 0.78fr 0.78fr 0.78fr;
+  }
+
+  .keyboard-row-collapsed {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .keycap {

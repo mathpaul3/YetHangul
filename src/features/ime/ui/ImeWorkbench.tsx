@@ -109,6 +109,16 @@ const keyboardRows = {
     ['←', 'arrowLeft'],
     ['→', 'arrowRight'],
   ],
+  compact: [
+    ['L Ctrl', 'leftCtrl'],
+    ['R Ctrl', 'rightCtrl'],
+    ['L Shift', 'leftShift'],
+    ['R Shift', 'rightShift'],
+    ['Home', 'home'],
+    ['End', 'end'],
+    ['←', 'arrowLeft'],
+    ['→', 'arrowRight'],
+  ],
 } as const
 
 const modifierLabels = {
@@ -122,6 +132,7 @@ export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
   const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
   const [showHelpOverlay, setShowHelpOverlay] = useState(false)
+  const [isKeyboardExpanded, setIsKeyboardExpanded] = useState(preferredMode === 'hardware')
   const [helpSections, setHelpSections] = useState({
     principles: true,
     shift: true,
@@ -237,6 +248,179 @@ export function ImeWorkbench() {
     }
 
     return iconMap[label] ?? label
+  }
+
+  function renderKeyboardAction(
+    label: string,
+    action: number | string,
+    keyClassName = '',
+  ) {
+    if (action === 'backspace') {
+      return (
+        <button
+          className={`keycap keycap-utility keycap-backspace ${getKeycapClass(label)} ${keyClassName}`.trim()}
+          data-key-label={label}
+          key={label}
+          type="button"
+          onPointerCancel={clearBackspaceRepeat}
+          onPointerDown={(event) => {
+            preventVirtualKeyboardFocus(event)
+            handleVirtualBackspacePointerDown()
+            restoreEditorFocus()
+          }}
+          onPointerLeave={clearBackspaceRepeat}
+          onPointerUp={clearBackspaceRepeat}
+        >
+          {renderKeyLabel(label)}
+        </button>
+      )
+    }
+
+    if (action === 'enter') {
+      return (
+        <button
+          className={`keycap keycap-utility keycap-enter ${getKeycapClass(label)} ${keyClassName}`.trim()}
+          data-key-label={label}
+          key={label}
+          type="button"
+          onClick={() => {
+            handleUtilityInput('enter')
+            restoreEditorFocus()
+          }}
+          onPointerDown={preventVirtualKeyboardFocus}
+        >
+          {renderKeyLabel(label)}
+        </button>
+      )
+    }
+
+    if (action === 'semicolon' || action === 'period' || action === 'space') {
+      const utilityKey =
+        action === 'semicolon'
+          ? 'semicolon'
+          : action === 'period'
+            ? 'period'
+            : 'space'
+
+      return (
+        <button
+          className={`keycap keycap-utility ${action === 'space' ? 'keycap-space' : ''} ${getKeycapClass(label)} ${keyClassName}`.trim()}
+          data-key-label={label}
+          key={label}
+          type="button"
+          onClick={() => {
+            handleUtilityInput(utilityKey)
+            restoreEditorFocus()
+          }}
+          onPointerDown={preventVirtualKeyboardFocus}
+        >
+          {renderKeyLabel(label)}
+        </button>
+      )
+    }
+
+    if (
+      action === 'leftCtrl' ||
+      action === 'rightCtrl' ||
+      action === 'leftShift' ||
+      action === 'rightShift'
+    ) {
+      return (
+        <button
+          className={`keycap keycap-utility keycap-modifier ${getModifierVisualClass(action)} ${getKeycapClass(label)} ${keyClassName}`.trim()}
+          data-key-label={label}
+          data-modifier-key={action}
+          data-modifier-mode={engineState.modifierState[action]}
+          key={label}
+          type="button"
+          onClick={() => {
+            handleModifierMainClick(action)
+            restoreEditorFocus()
+          }}
+          onPointerDown={preventVirtualKeyboardFocus}
+        >
+          {renderKeyLabel(label)}
+        </button>
+      )
+    }
+
+    if (
+      action === 'arrowLeft' ||
+      action === 'arrowRight' ||
+      action === 'home' ||
+      action === 'end'
+    ) {
+      return (
+        <button
+          className={`keycap keycap-utility ${getKeycapClass(label)} ${keyClassName}`.trim()}
+          data-key-label={label}
+          key={label}
+          type="button"
+          onClick={(event) => {
+            if ((action === 'arrowLeft' || action === 'arrowRight') && event.detail !== 0) {
+              return
+            }
+
+            handleNavigationInput(action)
+            restoreEditorFocus()
+          }}
+          onPointerCancel={
+            action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
+          }
+          onPointerDown={(event) => {
+            preventVirtualKeyboardFocus(event)
+
+            if (action === 'arrowLeft' || action === 'arrowRight') {
+              handleVirtualNavigationPointerDown(action)
+            }
+
+            restoreEditorFocus()
+          }}
+          onPointerLeave={
+            action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
+          }
+          onPointerUp={
+            action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
+          }
+        >
+          {renderKeyLabel(label)}
+        </button>
+      )
+    }
+
+    if (typeof action === 'string') {
+      return (
+        <button
+          className={`keycap ${getKeycapClass(label)} ${keyClassName}`.trim()}
+          data-key-label={label}
+          key={label}
+          type="button"
+          onClick={() => {
+            handleLiteralInput(action, label)
+            restoreEditorFocus()
+          }}
+          onPointerDown={preventVirtualKeyboardFocus}
+        >
+          {renderKeyLabel(label)}
+        </button>
+      )
+    }
+
+    return (
+      <button
+        className={`keycap ${getKeycapClass(label)} ${keyClassName}`.trim()}
+        data-key-label={label}
+        key={label}
+        type="button"
+        onClick={() => {
+          handleInput(action, label)
+          restoreEditorFocus()
+        }}
+        onPointerDown={preventVirtualKeyboardFocus}
+      >
+        {renderKeyLabel(label)}
+      </button>
+    )
   }
 
   function toggleHelpSection(section: keyof typeof helpSections) {
@@ -434,268 +618,59 @@ export function ImeWorkbench() {
                   <strong>Keyboard</strong>
                   <p>QWERTY 배열 기반의 키보드입니다.</p>
                 </div>
+                <button
+                  aria-expanded={isKeyboardExpanded}
+                  className="keyboard-toggle"
+                  type="button"
+                  onClick={() => setIsKeyboardExpanded((previous) => !previous)}
+                >
+                  <span aria-hidden="true">{isKeyboardExpanded ? '⌃' : '⌄'}</span>
+                  <span>{isKeyboardExpanded ? '접기' : '펼치기'}</span>
+                </button>
               </div>
 
-              <div className="keyboard-shell" data-testid="keyboard-shell">
-                <div className="keyboard-row keyboard-row-number" data-testid="keyboard-row-number">
-                  {keyboardRows.number.map(([label, action]) => {
-                    if (action === 'backspace') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility keycap-backspace ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          key={label}
-                          type="button"
-                          onPointerCancel={clearBackspaceRepeat}
-                          onPointerDown={(event) => {
-                            preventVirtualKeyboardFocus(event)
-                            handleVirtualBackspacePointerDown()
-                            restoreEditorFocus()
-                          }}
-                          onPointerLeave={clearBackspaceRepeat}
-                          onPointerUp={clearBackspaceRepeat}
-                        >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
+              <div
+                className={`keyboard-shell ${isKeyboardExpanded ? '' : 'keyboard-shell-collapsed'}`.trim()}
+                data-testid="keyboard-shell"
+                data-keyboard-expanded={isKeyboardExpanded}
+              >
+                {isKeyboardExpanded ? (
+                  <>
+                    <div className="keyboard-row keyboard-row-number" data-testid="keyboard-row-number">
+                      {keyboardRows.number.map(([label, action]) =>
+                        renderKeyboardAction(label, action),
+                      )}
+                    </div>
 
-                    return (
-                      <button
-                        className={`keycap ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        key={label}
-                        type="button"
-                        onClick={() => {
-                          handleLiteralInput(action, label)
-                          restoreEditorFocus()
-                        }}
-                        onPointerDown={preventVirtualKeyboardFocus}
-                      >
-                        {renderKeyLabel(label)}
-                      </button>
-                    )
-                  })}
-                </div>
+                    <div className="keyboard-row keyboard-row-1" data-testid="keyboard-row-1">
+                      {keyboardRows.top.map(([label, action]) => renderKeyboardAction(label, action))}
+                    </div>
 
-                <div className="keyboard-row keyboard-row-1" data-testid="keyboard-row-1">
-                  {keyboardRows.top.map(([label, action]) => {
-                    if (action === 'enter') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility keycap-enter ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            handleUtilityInput('enter')
-                            restoreEditorFocus()
-                          }}
-                          onPointerDown={preventVirtualKeyboardFocus}
-                        >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
+                    <div className="keyboard-row keyboard-row-2" data-testid="keyboard-row-2">
+                      {keyboardRows.middle.map(([label, action]) =>
+                        renderKeyboardAction(label, action),
+                      )}
+                    </div>
 
-                    return (
-                      <button
-                        className={`keycap ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        key={label}
-                        type="button"
-                        onClick={() => {
-                          handleInput(action as number, label)
-                          restoreEditorFocus()
-                        }}
-                        onPointerDown={preventVirtualKeyboardFocus}
-                      >
-                        {renderKeyLabel(label)}
-                      </button>
-                    )
-                  })}
-                </div>
+                    <div className="keyboard-row keyboard-row-shift" data-testid="keyboard-row-shift">
+                      {keyboardRows.bottom.map(([label, action]) =>
+                        renderKeyboardAction(label, action),
+                      )}
+                    </div>
 
-                <div className="keyboard-row keyboard-row-2" data-testid="keyboard-row-2">
-                  {keyboardRows.middle.map(([label, action]) => {
-                    if (action === 'semicolon') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            handleUtilityInput('semicolon')
-                            restoreEditorFocus()
-                          }}
-                          onPointerDown={preventVirtualKeyboardFocus}
-                        >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
-
-                    return (
-                      <button
-                        className={`keycap ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        key={label}
-                        type="button"
-                        onClick={() => {
-                          handleInput(action as number, label)
-                          restoreEditorFocus()
-                        }}
-                        onPointerDown={preventVirtualKeyboardFocus}
-                      >
-                        {renderKeyLabel(label)}
-                      </button>
-                    )
-                  })}
-                </div>
-
-                <div className="keyboard-row keyboard-row-shift" data-testid="keyboard-row-shift">
-                  {keyboardRows.bottom.map(([label, action]) => {
-                    if (action === 'leftShift' || action === 'rightShift') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility keycap-modifier ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          data-modifier-key={action}
-                          data-modifier-mode={engineState.modifierState[action]}
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            handleModifierMainClick(action)
-                            restoreEditorFocus()
-                          }}
-                          onPointerDown={preventVirtualKeyboardFocus}
-                        >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
-
-                    if (action === 'period') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            handleUtilityInput('period')
-                            restoreEditorFocus()
-                          }}
-                        onPointerDown={preventVirtualKeyboardFocus}
-                      >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
-
-                    return (
-                      <button
-                        className={`keycap ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        key={label}
-                        type="button"
-                        onClick={() => {
-                          handleInput(action as number, label)
-                          restoreEditorFocus()
-                        }}
-                        onPointerDown={preventVirtualKeyboardFocus}
-                      >
-                        {renderKeyLabel(label)}
-                      </button>
-                    )
-                  })}
-                </div>
-
-                <div className="keyboard-row keyboard-row-bottom" data-testid="keyboard-row-bottom">
-                  {keyboardRows.nav.map(([label, action]) => {
-                    if (action === 'leftCtrl' || action === 'rightCtrl') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility keycap-modifier ${getModifierVisualClass(action)} ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          data-modifier-key={action}
-                          data-modifier-mode={engineState.modifierState[action]}
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            handleModifierMainClick(action)
-                            restoreEditorFocus()
-                          }}
-                          onPointerDown={preventVirtualKeyboardFocus}
-                        >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
-
-                    if (action === 'space') {
-                      return (
-                        <button
-                          className={`keycap keycap-utility keycap-space ${getKeycapClass(label)}`}
-                          data-key-label={label}
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            handleUtilityInput('space')
-                            restoreEditorFocus()
-                          }}
-                          onPointerDown={preventVirtualKeyboardFocus}
-                        >
-                          {renderKeyLabel(label)}
-                        </button>
-                      )
-                    }
-
-                    return (
-                      <button
-                        className={`keycap keycap-utility ${getKeycapClass(label)}`}
-                        data-key-label={label}
-                        key={label}
-                        type="button"
-                        onClick={(event) => {
-                          if ((action === 'arrowLeft' || action === 'arrowRight') && event.detail !== 0) {
-                            return
-                          }
-
-                          handleNavigationInput(action as 'arrowLeft' | 'arrowRight' | 'home' | 'end')
-                          restoreEditorFocus()
-                        }}
-                        onPointerCancel={
-                          action === 'arrowLeft' || action === 'arrowRight'
-                            ? clearNavigationRepeat
-                            : undefined
-                        }
-                        onPointerDown={(event) => {
-                          preventVirtualKeyboardFocus(event)
-
-                          if (action === 'arrowLeft' || action === 'arrowRight') {
-                            handleVirtualNavigationPointerDown(action)
-                          }
-
-                          restoreEditorFocus()
-                        }}
-                        onPointerLeave={
-                          action === 'arrowLeft' || action === 'arrowRight'
-                            ? clearNavigationRepeat
-                            : undefined
-                        }
-                        onPointerUp={
-                          action === 'arrowLeft' || action === 'arrowRight'
-                            ? clearNavigationRepeat
-                            : undefined
-                        }
-                      >
-                        {renderKeyLabel(label)}
-                      </button>
-                    )
-                  })}
-                </div>
+                    <div className="keyboard-row keyboard-row-bottom" data-testid="keyboard-row-bottom">
+                      {keyboardRows.nav.map(([label, action]) =>
+                        renderKeyboardAction(label, action),
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="keyboard-row keyboard-row-collapsed" data-testid="keyboard-row-collapsed">
+                    {keyboardRows.compact.map(([label, action]) =>
+                      renderKeyboardAction(label, action, 'keycap-compact'),
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </aside>

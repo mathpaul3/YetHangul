@@ -611,10 +611,19 @@ export function setModifierMode(
   modifierKey: ModifierKey,
   nextMode: ModifierMode,
 ) {
+  const siblingModifierMap: Partial<Record<ModifierKey, ModifierKey>> = {
+    leftCtrl: 'rightCtrl',
+    rightCtrl: 'leftCtrl',
+    leftShift: 'rightShift',
+    rightShift: 'leftShift',
+  }
+  const siblingModifier = siblingModifierMap[modifierKey]
+
   return {
     ...engineState,
     modifierState: {
       ...engineState.modifierState,
+      ...(siblingModifier && nextMode !== 'off' ? { [siblingModifier]: 'off' } : {}),
       [modifierKey]: nextMode,
     },
   }

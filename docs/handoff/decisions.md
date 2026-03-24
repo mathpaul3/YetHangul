@@ -74,6 +74,11 @@
 - 로마자/기타 외국어 입력은 literal text로 그대로 통과시킨다.
 - 특수 입력은 `L/R Ctrl`, `L/R Shift` 버튼 또는 물리 modifier 조합으로 접근한다.
 - 온스크린 UI는 두벌식 QWERTY 한글 배열을 그대로 따르는 일반 자모 버튼과 숫자 row, `L/R Ctrl`, `L/R Shift`, `Space`, `.`, `;`, `Backspace`, navigation row(`←`, `→`, `Home`, `End`)를 같은 키보드 배열 안에 배치한다.
+- 온스크린 키보드는 플랫폼별 기본 상태를 다르게 둔다.
+  - PC: 기본 펼침
+  - 모바일/태블릿: 기본 접힘
+- 접힘 상태에서는 `L Ctrl`, `R Ctrl`, `L Shift`, `R Shift`, `Home`, `End`, `←`, `→`만 남긴 compact row를 보여준다.
+- 접힘/펼침은 키보드 헤더의 토글 버튼으로 전환한다.
 - 자체 자판은 60% 키보드 느낌을 유지하고, 반응형에서도 각 줄의 QWERTY 배열 자체는 무너지지 않게 유지한다.
 - 별도 modifier 패널은 두지 않고, 키보드만 남기는 방향으로 간다.
 - `Space`는 기본적으로 일반 공백을 입력한다.
@@ -91,6 +96,8 @@
 - 물리 키가 없거나 좌우 구분이 어려운 환경에서는 on-screen modifier 버튼으로 대체한다.
 - on-screen modifier는 hover만으로 상태가 바뀌지 않는다.
 - on-screen modifier는 한 번 누를 때마다 `off -> oneshot -> locked -> off` 순으로 순환한다.
+- `L/R Ctrl`, `L/R Shift`는 동시에 활성화되지 않게 유지한다.
+- 한쪽을 `oneshot` 또는 `locked`로 올리면 반대쪽은 자동으로 `off`가 된다.
 - modifier는 단순 치환 키가 아니라, 현재 음절 상태를 보정하는 연산자로도 동작한다.
 - 특히 `Shift + ㅁ`은 문맥형 매크로로 해석한다.
   - 초성만 있으면 `중성 채움 + 쌍미음`

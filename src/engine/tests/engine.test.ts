@@ -222,6 +222,22 @@ describe('engine', () => {
     expect(state.modifierState.leftShift).toBe('locked')
   })
 
+  it('turns off the opposite ctrl modifier when one side is activated', () => {
+    const withLeftCtrl = setModifierMode(createInitialEngineState(), 'leftCtrl', 'locked')
+    const withRightCtrl = setModifierMode(withLeftCtrl, 'rightCtrl', 'oneshot')
+
+    expect(withRightCtrl.modifierState.leftCtrl).toBe('off')
+    expect(withRightCtrl.modifierState.rightCtrl).toBe('oneshot')
+  })
+
+  it('turns off the opposite shift modifier when one side is activated', () => {
+    const withLeftShift = setModifierMode(createInitialEngineState(), 'leftShift', 'locked')
+    const withRightShift = setModifierMode(withLeftShift, 'rightShift', 'locked')
+
+    expect(withRightShift.modifierState.leftShift).toBe('off')
+    expect(withRightShift.modifierState.rightShift).toBe('locked')
+  })
+
   it('passes literal latin text through without qwerty-to-hangul remapping', () => {
     const state = applyLiteralInput(
       applyLiteralInput(

@@ -13,6 +13,7 @@
 - input pipeline refactor Phase 1로 `NormalizedInputEvent`, shared dispatcher, native text batch adapter 경계를 코드와 문서에 고정
 - input pipeline refactor Phase 2 첫 slice로 native text를 `NormalizedInputBatch`로 명시한 뒤 canonicalize / dispatch하는 경계를 추가
 - native batch 경로의 newline/tone/selection replacement proof를 unit/service/e2e에 추가
+- input pipeline refactor Phase 3 첫 slice로 editor mutation result shape를 helper 중심으로 공통화
 
 ## [0.1.0]
 

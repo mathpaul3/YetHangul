@@ -601,7 +601,7 @@ export function ImeWorkbench() {
                   >
                     <span className={`caret ${renderedCaretIndex === 0 ? 'caret-visible' : ''}`} />
                   </button>
-                  {renderedUnits.map((unit, index) => {
+                  {renderedUnits.map((unit: string, index: number) => {
                     const isSelected =
                       selectionRange != null &&
                       index >= selectionRange.start &&

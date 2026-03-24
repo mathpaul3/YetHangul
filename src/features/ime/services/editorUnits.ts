@@ -125,6 +125,12 @@ export function insertUnitsAt(
   return [...units.slice(0, index), ...inserted, ...units.slice(index)]
 }
 
+export type EditorDocumentMutation = {
+  units: string[]
+  caretIndex: number
+  selectionRange: UnitSelectionRange
+}
+
 export function commitCompositionUnits(
   units: string[],
   caretIndex: number,
@@ -245,6 +251,17 @@ export function clampCaretIndex(index: number, unitCount: number) {
   return Math.max(0, Math.min(index, unitCount))
 }
 
+export function collapseSelectionToIndex(
+  units: string[],
+  index: number,
+): EditorDocumentMutation {
+  return {
+    units,
+    caretIndex: clampCaretIndex(index, units.length),
+    selectionRange: null,
+  }
+}
+
 export function getSelectionBounds(selectionRange: UnitSelectionRange) {
   if (selectionRange == null) {
     return null
@@ -284,6 +301,40 @@ export function cancelSelectionGesture(caretIndex: number, unitCount: number) {
     selectionRange: null as UnitSelectionRange,
     caretIndex: clampCaretIndex(caretIndex, unitCount),
   }
+}
+
+export function deleteSelectionUnits(
+  units: string[],
+  selectionRange: UnitSelectionRange,
+): EditorDocumentMutation {
+  const nextState = replaceSelectionWithUnits(units, selectionRange, [])
+
+  return {
+    units: nextState.units,
+    caretIndex: nextState.caretIndex,
+    selectionRange: null,
+  }
+}
+
+export function insertTextUnits(
+  units: string[],
+  caretIndex: number,
+  text: string,
+): EditorDocumentMutation {
+  const insertedUnits = segmentTextToEditorUnits(text)
+
+  return {
+    units: insertUnitsAt(units, caretIndex, insertedUnits),
+    caretIndex: caretIndex + insertedUnits.length,
+    selectionRange: null,
+  }
+}
+
+export function insertLineBreakUnit(
+  units: string[],
+  caretIndex: number,
+): EditorDocumentMutation {
+  return insertTextUnits(units, caretIndex, '\n')
 }
 
 export function deleteBackwardUnit(

@@ -35,7 +35,7 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 1. 키보드 배열, editor surface, copy/newline 같은 실제 사용 문제를 우선 수정한다.
 2. nav / footer / logo / license / analytics scaffold를 service shell 묶음으로 유지한다.
 3. 새 회귀가 생기면 unit/service/e2e 중 맞는 레이어에 즉시 고정한다.
-4. input pipeline refactor는 spec-first로 진행하고, Phase 2는 native batch normalization을 `R25-2` 계열 atomic task id로 쪼개서 한 번에 1개만 다룬다.
+4. input pipeline refactor는 spec-first로 진행하고, Phase 3는 editor mutation unification을 `R25-3` 계열 atomic task id로 쪼개서 한 번에 1개만 다룬다.
 5. input pipeline refactor Phase 3는 editor mutation unification을 `R25-3` 계열 atomic task id로 쪼개서 한 번에 1개만 다룬다.
 
 ## Atomic Queue
@@ -103,6 +103,12 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - native mixed literal + Hangul 입력이 normalized batch로 canonical order를 유지하는지 regression으로 고정한다.
 - `R25-2b` `Landed`
   - native batch 경로에서 duplicate suppression, tone / filler / newline, selection replacement가 shared rule을 따르는지 regression으로 고정한다.
+- `R25-3` `In Progress`
+  - source와 무관하게 document mutation이 같은 helper surface를 타도록 editor-layer를 더 일원화한다.
+- `R25-3a` `Landed`
+  - selection replacement, literal/newline insertion, backspace/delete가 같은 editor mutation result shape를 통해 적용되도록 정리한다.
+- `R25-3b` `Open`
+  - newline 경계의 caret 이동과 selection collapse가 같은 line-aware helper 규칙을 따르는지 regression으로 고정한다.
 - `R25-3` `Open`
   - source와 무관한 editor mutation helper 경계를 하나로 묶고, selection / delete / newline / caret proof를 공통화한다.
 - `R25-3a` `Open`

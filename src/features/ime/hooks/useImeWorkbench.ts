@@ -35,6 +35,7 @@ import {
 } from '@/features/ime/services/nativeTextBatch'
 import type { PressedModifierState } from '@/features/ime/services/hardwareKeyboard'
 import {
+  collapseSelectionToIndex,
   clampCaretIndex,
   commitCompositionUnits,
   cancelSelectionGesture,
@@ -42,15 +43,18 @@ import {
   createSelectionRange,
   deleteBackwardUnit,
   deleteForwardUnit,
+  deleteSelectionUnits,
+  type EditorDocumentMutation,
   getSelectionBounds,
   getLineEndIndex,
   getLineStartIndex,
+  insertLineBreakUnit,
   insertUnitsAt,
+  insertTextUnits,
   moveCaretBackwardUnit,
   moveCaretForwardUnit,
   normalizeSelectionRangeToDocument,
   resolveEditorUnitIndexFromPointerTarget,
-  replaceSelectionWithUnits,
   segmentTextToEditorUnits,
 } from '@/features/ime/services/editorUnits'
 import {
@@ -404,10 +408,11 @@ export function useImeWorkbench() {
         nextState.units !== documentUnitsRef.current ||
         nextState.caretIndex !== caretIndexRef.current
       ) {
-        documentUnitsRef.current = nextState.units
-        caretIndexRef.current = nextState.caretIndex
-        setDocumentUnits(nextState.units)
-        setCaretIndex(nextState.caretIndex)
+        applyEditorMutation({
+          units: nextState.units,
+          caretIndex: nextState.caretIndex,
+          selectionRange: null,
+        })
       }
       return true
     }
@@ -424,10 +429,11 @@ export function useImeWorkbench() {
 
     if (compositionUnits.length === 0 && caretIndexRef.current < documentUnitsRef.current.length) {
       const nextState = deleteForwardUnit(documentUnitsRef.current, caretIndexRef.current)
-      documentUnitsRef.current = nextState.units
-      caretIndexRef.current = nextState.caretIndex
-      setDocumentUnits(nextState.units)
-      setCaretIndex(nextState.caretIndex)
+      applyEditorMutation({
+        units: nextState.units,
+        caretIndex: nextState.caretIndex,
+        selectionRange: null,
+      })
     }
   }
 
@@ -507,11 +513,11 @@ export function useImeWorkbench() {
       }
     }
 
-    documentUnitsRef.current = nextState.units
-    caretIndexRef.current = nextState.caretIndex
-    setDocumentUnits(nextState.units)
-    setCaretIndex(nextState.caretIndex)
-    selectionAnchorRef.current = null
+    applyEditorMutation({
+      units: nextState.units,
+      caretIndex: nextState.caretIndex,
+      selectionRange: null,
+    })
     clearCompositionBuffer()
 
     return {
@@ -521,22 +527,21 @@ export function useImeWorkbench() {
     }
   }
 
-  function insertLiteralTextIntoDocument(text: string) {
-    const insertedUnits = segmentTextToEditorUnits(text)
-    const nextUnits = insertUnitsAt(
-      documentUnitsRef.current,
-      caretIndexRef.current,
-      insertedUnits,
-    )
-
-    documentUnitsRef.current = nextUnits
-    caretIndexRef.current += insertedUnits.length
-    selectionRangeRef.current = null
+  function applyEditorMutation(nextState: EditorDocumentMutation) {
+    documentUnitsRef.current = nextState.units
+    caretIndexRef.current = nextState.caretIndex
+    selectionRangeRef.current = nextState.selectionRange
     selectionAnchorRef.current = null
-    setDocumentUnits(nextUnits)
-    setCaretIndex(caretIndexRef.current)
-    setSelectionRange(null)
+    setDocumentUnits(nextState.units)
+    setCaretIndex(nextState.caretIndex)
+    setSelectionRange(nextState.selectionRange)
     clearBrowserSelection()
+  }
+
+  function insertLiteralTextIntoDocument(text: string) {
+    applyEditorMutation(
+      insertTextUnits(documentUnitsRef.current, caretIndexRef.current, text),
+    )
   }
 
   function handleLiteralInput(text: string, visualKeyLabel?: string) {
@@ -588,13 +593,7 @@ export function useImeWorkbench() {
   }
 
   function collapseSelectionTo(index: number) {
-    const nextIndex = clampCaretIndex(index, documentUnitsRef.current.length)
-    selectionAnchorRef.current = null
-    selectionRangeRef.current = null
-    caretIndexRef.current = nextIndex
-    setSelectionRange(null)
-    setCaretIndex(nextIndex)
-    clearBrowserSelection()
+    applyEditorMutation(collapseSelectionToIndex(documentUnitsRef.current, index))
   }
 
   function deleteSelection() {
@@ -606,15 +605,9 @@ export function useImeWorkbench() {
       return
     }
 
-    const nextState = replaceSelectionWithUnits(documentUnitsRef.current, selectionRangeRef.current, [])
-    documentUnitsRef.current = nextState.units
-    selectionRangeRef.current = null
-    caretIndexRef.current = nextState.caretIndex
-    setDocumentUnits(nextState.units)
-    setSelectionRange(null)
-    setCaretIndex(nextState.caretIndex)
-    selectionAnchorRef.current = null
-    clearBrowserSelection()
+    applyEditorMutation(
+      deleteSelectionUnits(documentUnitsRef.current, selectionRangeRef.current),
+    )
   }
 
   function extendSelectionTo(nextCaretIndex: number) {
@@ -766,7 +759,15 @@ export function useImeWorkbench() {
 
   function handleLineBreakInput() {
     recentImeCommitRef.current = '\n'
-    handleLiteralInput('\n')
+    commitCompositionToDocument()
+
+    if (selectionRangeRef.current) {
+      applyEditorMutation(
+        deleteSelectionUnits(documentUnitsRef.current, selectionRangeRef.current),
+      )
+    }
+
+    applyEditorMutation(insertLineBreakUnit(documentUnitsRef.current, caretIndexRef.current))
   }
 
   function isShiftActive() {
@@ -1129,13 +1130,7 @@ export function useImeWorkbench() {
 
   function handleCaretPlacement(nextIndex: number) {
     commitCompositionToDocument()
-    const clampedIndex = clampCaretIndex(nextIndex, documentUnitsRef.current.length)
-    selectionRangeRef.current = null
-    caretIndexRef.current = clampedIndex
-    setSelectionRange(null)
-    setCaretIndex(clampedIndex)
-    selectionAnchorRef.current = null
-    clearBrowserSelection()
+    applyEditorMutation(collapseSelectionToIndex(documentUnitsRef.current, nextIndex))
   }
 
   function handleSelectionStart(unitIndex: number) {

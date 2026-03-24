@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  collapseSelectionToIndex,
   clampCaretIndex,
   commitCompositionUnits,
   createDragSelectionRange,
@@ -7,10 +8,13 @@ import {
   createSelectionRange,
   deleteBackwardUnit,
   deleteForwardUnit,
+  deleteSelectionUnits,
   deleteUnitRange,
   getLineEndIndex,
   getLineStartIndex,
   getSelectionBounds,
+  insertLineBreakUnit,
+  insertTextUnits,
   insertUnitsAt,
   normalizeSelectionRangeToDocument,
   moveCaretBackwardUnit,
@@ -215,6 +219,38 @@ describe('editorUnits', () => {
     ).toEqual({
       units: ['다', '나'],
       caretIndex: 1,
+    })
+  })
+
+  it('deletes a selection through the shared mutation helper', () => {
+    expect(deleteSelectionUnits(['가', '\n', '나'], { start: 0, end: 2 })).toEqual({
+      units: ['나'],
+      caretIndex: 0,
+      selectionRange: null,
+    })
+  })
+
+  it('inserts text through the shared mutation helper', () => {
+    expect(insertTextUnits(['가', '나'], 1, '다')).toEqual({
+      units: ['가', '다', '나'],
+      caretIndex: 2,
+      selectionRange: null,
+    })
+  })
+
+  it('inserts a line break through the shared mutation helper', () => {
+    expect(insertLineBreakUnit(['가', '나'], 1)).toEqual({
+      units: ['가', '\n', '나'],
+      caretIndex: 2,
+      selectionRange: null,
+    })
+  })
+
+  it('collapses selection through the shared mutation helper', () => {
+    expect(collapseSelectionToIndex(['가', '\n', '나'], 2)).toEqual({
+      units: ['가', '\n', '나'],
+      caretIndex: 2,
+      selectionRange: null,
     })
   })
 

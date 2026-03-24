@@ -3,6 +3,7 @@ import {
   isLineBreakBeforeInput,
   resolveBeforeInputInterop,
   resolveCompositionEndInterop,
+  shouldSuppressInteropTextAfterDirectDispatch,
 } from '@/features/ime/services/inputInterop'
 
 describe('input interop', () => {
@@ -245,6 +246,35 @@ describe('input interop', () => {
       dispatchText: '나',
       nextRecentCommittedText: '나',
     })
+  })
+
+  it('suppresses immediate duplicate text after direct key dispatch', () => {
+    expect(
+      shouldSuppressInteropTextAfterDirectDispatch({
+        text: 'ㅆ',
+        recentDirectText: 'ㅆ',
+        recentDirectTimestamp: 100,
+        now: 140,
+      }),
+    ).toBe(true)
+
+    expect(
+      shouldSuppressInteropTextAfterDirectDispatch({
+        text: 'ㅆ',
+        recentDirectText: 'ㅅ',
+        recentDirectTimestamp: 100,
+        now: 140,
+      }),
+    ).toBe(false)
+
+    expect(
+      shouldSuppressInteropTextAfterDirectDispatch({
+        text: 'ㅆ',
+        recentDirectText: 'ㅆ',
+        recentDirectTimestamp: 100,
+        now: 220,
+      }),
+    ).toBe(false)
   })
 
   it('allows insertFromComposition again after the focus-regain duplicate marker has cleared', () => {

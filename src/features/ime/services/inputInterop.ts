@@ -16,6 +16,14 @@ type InteropDecision = {
   nextRecentCommittedText: string | null
 }
 
+type DirectDispatchSuppressionParams = {
+  text: string
+  recentDirectText: string | null
+  recentDirectTimestamp: number | null
+  now: number
+  windowMs?: number
+}
+
 function isCompositionInputType(inputType: string) {
   return inputType.includes('Composition') || inputType === 'insertFromComposition'
 }
@@ -84,4 +92,18 @@ export function resolveCompositionEndInterop({
     dispatchText: data,
     nextRecentCommittedText: data,
   }
+}
+
+export function shouldSuppressInteropTextAfterDirectDispatch({
+  text,
+  recentDirectText,
+  recentDirectTimestamp,
+  now,
+  windowMs = 64,
+}: DirectDispatchSuppressionParams) {
+  if (!text || recentDirectText == null || recentDirectTimestamp == null) {
+    return false
+  }
+
+  return recentDirectText === text && now - recentDirectTimestamp <= windowMs
 }

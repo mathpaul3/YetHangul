@@ -174,6 +174,14 @@
 - Google Analytics는 `VITE_GA_TRACKING_ID`가 제공될 때만 로드하는 optional scaffold로 둔다.
 - GA4 측정 ID는 client-side에 노출되는 public identifier이지만, 운영상은 hardcode하지 않고 deploy-time env로만 주입한다.
 
+## Versioning Policy
+
+- pre-1.0 단계에서는 `0.MINOR.PATCH` 운영을 기본으로 한다.
+- `MINOR`는 사용자에게 설명 가능한 기능 단위나 단기 Goal iteration이 마무리될 때 올린다.
+- `PATCH`는 버그 수정, UI/UX polish, 문서/테스트/운영 안정화에 사용한다.
+- 버전은 커밋마다 올리지 않고, 릴리스 가능한 단위가 모였을 때만 올린다.
+- 세부 기준은 `docs/process/versioning.md`를 source of truth로 둔다.
+
 ## Scope Clarification
 
 - 사용자 확인으로 범위를 다음처럼 고정했다.
@@ -193,6 +201,8 @@
 - 다음 단계는 실제 키 입력 규칙이 이 전체 규칙 집합을 얼마나 자연스럽게 소화하는지 더 촘촘히 검증하는 것이다.
 - 동시에 `keydown`만으로 부족한 환경을 위해 `beforeinput` / `compositionstart` / `compositionend` 경로를 부분 도입해, 시스템 IME가 만든 한글 자모/음절도 normalize 후 엔진에 태우는 방향으로 가고 있다.
 - `beforeinput`과 `compositionend`가 같은 조합 결과를 중복 전달하는 브라우저를 대비해, 최근 commit 텍스트를 기준으로 한 dedupe 규칙을 도입했다.
+- 하드웨어 keydown, on-screen key press, native keyboard beforeinput/composition 경로는 가능한 한 `normalized input event -> single dispatcher -> engine/editor` 흐름으로 수렴시킨다.
+- direct key dispatch 직후 들어오는 동일 문자 `beforeinput` / `compositionend`는 짧은 suppression window로 억제한다.
 - 편집기 1차 구현으로 `document units + caret index + selection range` 레이어를 입력기 위에 얹었다.
 - 현재 결과 영역은 음절 단위 caret 경계 클릭, drag selection, 선택 삭제, 좌우/Home/End 이동을 지원한다.
 - 브라우저 기본 selection은 가능한 한 배제하고, 자체 selection과 copy 버튼(`Copy All`, `Copy Selection`)을 우선한다.

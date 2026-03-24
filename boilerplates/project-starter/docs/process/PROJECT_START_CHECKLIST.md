@@ -5,6 +5,7 @@
 - [ ] `README.md`
 - [ ] `MEMORY.md`
 - [ ] `CHANGELOG.md`
+- [ ] `docs/process/VERSIONING.md`
 - [ ] `docs/handoff/decisions.md`
 - [ ] `docs/handoff/spec-status-v1.md`
 - [ ] `docs/handoff/current-goals.md`

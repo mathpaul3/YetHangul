@@ -150,15 +150,11 @@ export function ImeWorkbench() {
     renderedCaretIndex,
     renderedText,
     selectionRange,
-    handleInput,
     handleVirtualBackspacePointerDown,
     clearBackspaceRepeat,
     handleVirtualNavigationPointerDown,
     clearNavigationRepeat,
-    handleLiteralInput,
-    handleUtilityInput,
-    handleNavigationInput,
-    handleModifierMainClick,
+    dispatchNormalizedInputEvent,
     handleCaretPlacement,
     handleSelectionEnd,
     handlePointerCancel,
@@ -291,7 +287,11 @@ export function ImeWorkbench() {
           key={label}
           type="button"
           onClick={() => {
-            handleUtilityInput('enter')
+            dispatchNormalizedInputEvent({
+              type: 'utility',
+              utilityKey: 'enter',
+              directText: '\n',
+            })
             focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
@@ -316,7 +316,10 @@ export function ImeWorkbench() {
           key={label}
           type="button"
           onClick={() => {
-            handleUtilityInput(utilityKey)
+            dispatchNormalizedInputEvent({
+              type: 'utility',
+              utilityKey,
+            })
             focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
@@ -341,7 +344,11 @@ export function ImeWorkbench() {
           key={label}
           type="button"
           onClick={() => {
-            handleModifierMainClick(action)
+            dispatchNormalizedInputEvent({
+              type: 'modifier',
+              modifierKey: action,
+              visualKeyLabel: label,
+            })
             focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
@@ -368,7 +375,10 @@ export function ImeWorkbench() {
               return
             }
 
-            handleNavigationInput(action)
+            dispatchNormalizedInputEvent({
+              type: 'navigation',
+              direction: action,
+            })
             focusInputSurface()
           }}
           onPointerCancel={
@@ -403,7 +413,12 @@ export function ImeWorkbench() {
           key={label}
           type="button"
           onClick={() => {
-            handleLiteralInput(action, label)
+            dispatchNormalizedInputEvent({
+              type: 'literal',
+              text: action,
+              visualKeyLabel: label,
+              directText: action,
+            })
             focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
@@ -420,7 +435,11 @@ export function ImeWorkbench() {
         key={label}
         type="button"
         onClick={() => {
-          handleInput(action, label)
+          dispatchNormalizedInputEvent({
+            type: 'symbol',
+            symbolId: action,
+            visualKeyLabel: label,
+          })
           focusInputSurface()
         }}
         onPointerDown={preventVirtualKeyboardFocus}

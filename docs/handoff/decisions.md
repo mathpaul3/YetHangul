@@ -79,6 +79,8 @@
   - 모바일/태블릿: 기본 접힘
 - 접힘 상태에서는 `L Ctrl`, `R Ctrl`, `L Shift`, `R Shift`, `Home`, `End`, `←`, `→`만 남긴 compact row를 보여준다.
 - 접힘/펼침은 키보드 헤더의 토글 버튼으로 전환한다.
+- 모바일/태블릿에서는 입력 결과창을 누르면 offscreen textarea에 포커스를 보내 OS native keyboard를 호출한다.
+- 이 native keyboard proxy는 키보드 호출 용도이며, 실제 입력 해석은 기존 `beforeinput` / `composition*` / `keydown` 경로와 editor-layer가 계속 담당한다.
 - 자체 자판은 60% 키보드 느낌을 유지하고, 반응형에서도 각 줄의 QWERTY 배열 자체는 무너지지 않게 유지한다.
 - 별도 modifier 패널은 두지 않고, 키보드만 남기는 방향으로 간다.
 - `Space`는 기본적으로 일반 공백을 입력한다.

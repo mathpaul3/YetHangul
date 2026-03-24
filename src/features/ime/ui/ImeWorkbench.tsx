@@ -130,6 +130,7 @@ const modifierLabels = {
 
 export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
+  const nativeKeyboardRef = useRef<HTMLTextAreaElement | null>(null)
   const [renderMode, setRenderMode] = useState<'composed' | 'decomposed'>('composed')
   const [showHelpOverlay, setShowHelpOverlay] = useState(false)
   const [isKeyboardExpanded, setIsKeyboardExpanded] = useState(preferredMode === 'hardware')
@@ -139,6 +140,7 @@ export function ImeWorkbench() {
     ctrl: true,
   })
   const editorSurfaceTouchBehavior = getEditorSurfaceTouchBehavior()
+  const nativeKeyboardEnabled = preferredMode !== 'hardware'
   const {
     engineState,
     hardwareModifierState,
@@ -224,7 +226,12 @@ export function ImeWorkbench() {
     event.preventDefault()
   }
 
-  function restoreEditorFocus() {
+  function focusInputSurface() {
+    if (nativeKeyboardEnabled) {
+      nativeKeyboardRef.current?.focus({ preventScroll: true })
+      return
+    }
+
     rootRef.current?.focus()
   }
 
@@ -266,7 +273,7 @@ export function ImeWorkbench() {
           onPointerDown={(event) => {
             preventVirtualKeyboardFocus(event)
             handleVirtualBackspacePointerDown()
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerLeave={clearBackspaceRepeat}
           onPointerUp={clearBackspaceRepeat}
@@ -285,7 +292,7 @@ export function ImeWorkbench() {
           type="button"
           onClick={() => {
             handleUtilityInput('enter')
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
@@ -310,7 +317,7 @@ export function ImeWorkbench() {
           type="button"
           onClick={() => {
             handleUtilityInput(utilityKey)
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
@@ -335,7 +342,7 @@ export function ImeWorkbench() {
           type="button"
           onClick={() => {
             handleModifierMainClick(action)
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
@@ -362,7 +369,7 @@ export function ImeWorkbench() {
             }
 
             handleNavigationInput(action)
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerCancel={
             action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
@@ -374,7 +381,7 @@ export function ImeWorkbench() {
               handleVirtualNavigationPointerDown(action)
             }
 
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerLeave={
             action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
@@ -397,7 +404,7 @@ export function ImeWorkbench() {
           type="button"
           onClick={() => {
             handleLiteralInput(action, label)
-            restoreEditorFocus()
+            focusInputSurface()
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
@@ -414,7 +421,7 @@ export function ImeWorkbench() {
         type="button"
         onClick={() => {
           handleInput(action, label)
-          restoreEditorFocus()
+          focusInputSurface()
         }}
         onPointerDown={preventVirtualKeyboardFocus}
       >
@@ -451,9 +458,36 @@ export function ImeWorkbench() {
         onPaste={handlePaste}
         onPointerCancel={handlePointerCancel}
         onPointerMoveCapture={handleEditorSurfacePointerMove}
-        onPointerUp={handleSelectionEnd}
+        onPointerUp={() => {
+          handleSelectionEnd()
+          if (nativeKeyboardEnabled) {
+            focusInputSurface()
+          }
+        }}
         tabIndex={0}
       >
+        <textarea
+          aria-hidden="true"
+          autoCapitalize="off"
+          autoCorrect="off"
+          className="native-keyboard-proxy"
+          defaultValue=""
+          inputMode="text"
+          onBeforeInput={handleBeforeInput}
+          onBlur={handleEditorBlur}
+          onCompositionEnd={handleCompositionEnd}
+          onCompositionStart={handleCompositionStart}
+          onFocus={handleEditorFocus}
+          onInput={(event) => {
+            event.currentTarget.value = ''
+          }}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+          onPaste={handlePaste}
+          ref={nativeKeyboardRef}
+          spellCheck={false}
+          tabIndex={nativeKeyboardEnabled ? 0 : -1}
+        />
         <header className="topnav">
           <div className="brand-copy brand-copy-with-logo">
             <img alt="옛한글 입력기 로고" className="topnav-logo" src="/yethangul-logo.png" />
@@ -526,7 +560,10 @@ export function ImeWorkbench() {
                   className="editor-boundary editor-boundary-root"
                   data-editor-boundary-index={0}
                   type="button"
-                  onClick={() => handleCaretPlacement(0)}
+                  onClick={() => {
+                    handleCaretPlacement(0)
+                    focusInputSurface()
+                  }}
                   onPointerDown={(event) => event.preventDefault()}
                 >
                   <span className={`caret ${renderedCaretIndex === 0 ? 'caret-visible' : ''}`} />
@@ -537,7 +574,10 @@ export function ImeWorkbench() {
                   <button
                     className="editor-boundary"
                     type="button"
-                    onClick={() => handleCaretPlacement(0)}
+                    onClick={() => {
+                      handleCaretPlacement(0)
+                      focusInputSurface()
+                    }}
                     onPointerDown={(event) => event.preventDefault()}
                   >
                     <span className={`caret ${renderedCaretIndex === 0 ? 'caret-visible' : ''}`} />
@@ -568,7 +608,10 @@ export function ImeWorkbench() {
                             className="editor-boundary editor-boundary-linebreak"
                             data-editor-boundary-index={index + 1}
                             type="button"
-                            onClick={() => handleCaretPlacement(index + 1)}
+                            onClick={() => {
+                              handleCaretPlacement(index + 1)
+                              focusInputSurface()
+                            }}
                             onPointerDown={(event) => event.preventDefault()}
                           >
                             <span
@@ -596,7 +639,10 @@ export function ImeWorkbench() {
                           className="editor-boundary"
                           data-editor-boundary-index={index + 1}
                           type="button"
-                          onClick={() => handleCaretPlacement(index + 1)}
+                          onClick={() => {
+                            handleCaretPlacement(index + 1)
+                            focusInputSurface()
+                          }}
                           onPointerDown={(event) => event.preventDefault()}
                         >
                           <span

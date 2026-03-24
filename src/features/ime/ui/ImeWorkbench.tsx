@@ -328,8 +328,6 @@ export function ImeWorkbench() {
               </button>
             </div>
 
-            {copyFeedback ? <div className="copy-toast">{copyFeedback}</div> : null}
-
             <output className="sr-only" data-testid="rendered-text-value">
               {renderedText.length > 0 ? renderedText : '\u00A0'}
             </output>
@@ -727,6 +725,8 @@ export function ImeWorkbench() {
         </footer>
       </main>
 
+      {copyFeedback ? <div className="copy-toast">{copyFeedback}</div> : null}
+
       {showHelpOverlay ? (
         <div className="modal-backdrop" role="presentation" onClick={closeHelpOverlay}>
           <div
@@ -752,13 +752,19 @@ export function ImeWorkbench() {
                   <strong>병서 원리 기반으로 초성·중성·종성을 순차 조합</strong>
                   <span>{helpSections.principles ? '접기' : '예시 보기'}</span>
                 </button>
-                {helpSections.principles ? (
-                  <div className="help-principles">
-                    <div className="note-card">현대 한글처럼 자모를 순서대로 입력하면 조합 가능한 음절로 자동 승격합니다.</div>
-                    <div className="note-card">예: `ㅂ + ㅅ + ㄱ + ㅜ + ㄹ → ᄢᅮᆯ`</div>
-                    <div className="note-card">예: `ㄱ + ㅠ + ㅏ + ㄴ → ᄀᆎᆫ`</div>
+                <div className={`help-accordion-panel ${helpSections.principles ? 'help-accordion-panel-open' : ''}`}>
+                  <div className="help-accordion-panel-inner">
+                    <p className="help-description">현대 한글처럼 자모를 순서대로 입력하면 조합 가능한 음절로 자동 승격합니다.</p>
+                    <div className="help-example-surface">
+                      <strong className="help-example-title">예시</strong>
+                      <ul className="help-example-list">
+                        <li><code>ㅂ + ㅅ + ㄱ + ㅜ + ㄹ</code> → <code>ᄢᅮᆯ</code></li>
+                        <li><code>ㄱ + ㅠ + ㅏ + ㄴ</code> → <code>ᄀᆎᆫ</code></li>
+                        <li><code>ㅌ + ㅣ + ㅑ + ㄴ</code> → <code>ᄐᆙᆫ</code></li>
+                      </ul>
+                    </div>
                   </div>
-                ) : null}
+                </div>
               </section>
 
               <section className="help-section">
@@ -770,9 +776,9 @@ export function ImeWorkbench() {
                   <strong>Shift + 문자 = 쌍자모</strong>
                   <span>{helpSections.shift ? '접기' : '전체 보기'}</span>
                 </button>
-                {helpSections.shift ? (
-                  <>
-                    <p className="rule-modal-description">Shift + 자음/모음 ⇨ 쌍자음/쌍모음</p>
+                <div className={`help-accordion-panel ${helpSections.shift ? 'help-accordion-panel-open' : ''}`}>
+                  <div className="help-accordion-panel-inner">
+                    <p className="help-description">Shift를 사용해 기본 자모를 쌍자음·쌍모음 계열로 확장합니다.</p>
                     <div className="rule-table-wrap">
                       <table className="rule-table">
                         <thead>
@@ -793,8 +799,8 @@ export function ImeWorkbench() {
                         </tbody>
                       </table>
                     </div>
-                  </>
-                ) : null}
+                  </div>
+                </div>
               </section>
 
               <section className="help-section">
@@ -806,9 +812,9 @@ export function ImeWorkbench() {
                   <strong>Ctrl + 문자 = 자형 변환</strong>
                   <span>{helpSections.ctrl ? '접기' : '전체 보기'}</span>
                 </button>
-                {helpSections.ctrl ? (
-                  <>
-                    <p className="rule-modal-description">Ctrl + 자음/모음 ⇨ 자형 변환 (반치음ᅀ 예외)</p>
+                <div className={`help-accordion-panel ${helpSections.ctrl ? 'help-accordion-panel-open' : ''}`}>
+                  <div className="help-accordion-panel-inner">
+                    <p className="help-description">Ctrl을 사용해 치두음, 아래아, 방점, 채움문자 등 자형 변환을 적용합니다.</p>
                     <div className="rule-table-wrap">
                       <table className="rule-table">
                         <thead>
@@ -829,8 +835,8 @@ export function ImeWorkbench() {
                         </tbody>
                       </table>
                     </div>
-                  </>
-                ) : null}
+                  </div>
+                </div>
               </section>
             </div>
           </div>

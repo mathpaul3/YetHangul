@@ -220,13 +220,18 @@ textarea {
 }
 
 .copy-toast {
-  align-self: flex-start;
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  z-index: 30;
+  transform: translateX(-50%);
   padding: 8px 12px;
   border-radius: 999px;
   background: rgba(47, 106, 104, 0.92);
   color: #fffaf5;
   font-size: 0.88rem;
   box-shadow: 0 10px 24px rgba(47, 106, 104, 0.2);
+  pointer-events: none;
 }
 
 .badge {
@@ -364,13 +369,6 @@ textarea {
   letter-spacing: 0.04em;
 }
 
-.note-card {
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: rgba(255, 251, 245, 0.92);
-  border: 1px solid rgba(36, 27, 22, 0.08);
-}
-
 .footer {
   margin-top: 20px;
   display: flex;
@@ -454,9 +452,52 @@ textarea {
   white-space: nowrap;
 }
 
-.help-principles {
+.help-accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 180ms ease;
+}
+
+.help-accordion-panel-open {
+  grid-template-rows: 1fr;
+}
+
+.help-accordion-panel-inner {
+  min-height: 0;
+  overflow: hidden;
   display: grid;
   gap: 10px;
+}
+
+.help-description {
+  margin: 0;
+  color: #6e5948;
+  font-size: 0.94rem;
+}
+
+.help-example-surface {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 251, 245, 0.92);
+  border: 1px solid rgba(36, 27, 22, 0.08);
+}
+
+.help-example-title {
+  font-size: 0.92rem;
+}
+
+.help-example-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.help-example-list li {
+  color: #3b2c22;
+  font-size: 0.94rem;
 }
 
 .rule-modal-header {

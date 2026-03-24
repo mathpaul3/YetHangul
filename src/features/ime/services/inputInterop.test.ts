@@ -5,6 +5,7 @@ import {
   resolveCompositionEndInterop,
   shouldSuppressInteropTextAfterDirectDispatch,
 } from '@/features/ime/services/inputInterop'
+import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
 
 describe('input interop', () => {
   it('ignores beforeinput while composition is still active', () => {
@@ -275,6 +276,42 @@ describe('input interop', () => {
         now: 220,
       }),
     ).toBe(false)
+
+    expect(
+      shouldSuppressInteropTextAfterDirectDispatch({
+        text: 'ㅆ',
+        recentDirectText: 'ㅅ',
+        recentDirectSymbolId: 123,
+        recentDirectTimestamp: 100,
+        now: 140,
+        normalizeTextToSymbols: (value) => (value === 'ㅆ' ? [123] : []),
+      }),
+    ).toBe(true)
+  })
+
+  it('suppresses immediate modifier-shaped duplicates that share the same base key', () => {
+    expect(
+      shouldSuppressInteropTextAfterDirectDispatch({
+        text: 'ㅆ',
+        recentDirectText: null,
+        recentDirectSymbolId: INPUT_SYMBOL_IDS.SIOS,
+        recentDirectTimestamp: 100,
+        now: 140,
+        normalizeTextToSymbols: (value) =>
+          value === 'ㅆ' ? [INPUT_SYMBOL_IDS.SPECIAL_SHIFT_SIOS] : [],
+      }),
+    ).toBe(true)
+
+    expect(
+      shouldSuppressInteropTextAfterDirectDispatch({
+        text: 'ㅅ',
+        recentDirectText: null,
+        recentDirectSymbolId: INPUT_SYMBOL_IDS.SIOS,
+        recentDirectTimestamp: 100,
+        now: 140,
+        normalizeTextToSymbols: (value) => (value === 'ㅅ' ? [INPUT_SYMBOL_IDS.SIOS] : []),
+      }),
+    ).toBe(true)
   })
 
   it('allows insertFromComposition again after the focus-regain duplicate marker has cleared', () => {

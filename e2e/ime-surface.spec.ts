@@ -2,9 +2,26 @@ import { expect, test } from '@playwright/test'
 
 const desktopProjects = new Set(['chromium-desktop'])
 const mobileProjects = new Set(['mobile-chromium', 'mobile-small-chromium'])
+const HELP_OVERLAY_DISMISSED_KEY = 'yethangul-help-overlay-dismissed'
+
+async function gotoApp(page: Parameters<typeof test>[0]['page']) {
+  await page.addInitScript((storageKey) => {
+    window.localStorage.setItem(storageKey, 'true')
+  }, HELP_OVERLAY_DISMISSED_KEY)
+  await page.goto('/')
+}
 
 async function clickKey(page: Parameters<typeof test>[0]['page'], label: string) {
   await page.locator(`[data-key-label="${label}"]`).first().click()
+}
+
+async function ensureExpandedKeyboard(page: Parameters<typeof test>[0]['page']) {
+  const keyboard = page.getByTestId('keyboard-shell')
+  const expanded = await keyboard.getAttribute('data-keyboard-expanded')
+
+  if (expanded !== 'true') {
+    await page.getByRole('button', { name: /펼치기|접기/ }).click()
+  }
 }
 
 async function expectRenderedText(page: Parameters<typeof test>[0]['page'], text: string) {
@@ -12,7 +29,7 @@ async function expectRenderedText(page: Parameters<typeof test>[0]['page'], text
 }
 
 test('preferred mode matches project surface expectations', async ({ page }, testInfo) => {
-  await page.goto('/')
+  await gotoApp(page)
 
   const mode = await page.getByTestId('preferred-mode').getAttribute('data-mode')
 
@@ -34,7 +51,15 @@ test('preferred mode matches project surface expectations', async ({ page }, tes
 test('mobile surfaces keep stable rows and visible compact state feedback', async ({ page }, testInfo) => {
   test.skip(!mobileProjects.has(testInfo.project.name))
 
-  await page.goto('/')
+  await gotoApp(page)
+
+  await expect(page.getByTestId('keyboard-row-collapsed')).toBeVisible()
+
+  for (const label of ['L Shift', 'R Shift', 'L Ctrl', 'R Ctrl', 'Home', 'End', '←', '→']) {
+    await expect(page.locator(`[data-key-label="${label}"]`).first()).toBeVisible()
+  }
+
+  await ensureExpandedKeyboard(page)
 
   await expect(page.getByTestId('keyboard-row-number')).toBeVisible()
   await expect(page.getByTestId('keyboard-row-1')).toBeVisible()
@@ -48,7 +73,8 @@ test('mobile surfaces keep stable rows and visible compact state feedback', asyn
 })
 
 test('on-screen keyboard keeps parity for modifier cycle, composition, enter, and delete', async ({ page }) => {
-  await page.goto('/')
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
 
   const leftShift = page.locator('[data-modifier-key="leftShift"]').first()
   await expect(leftShift).toHaveAttribute('data-modifier-mode', 'off')
@@ -76,7 +102,7 @@ test('on-screen keyboard keeps parity for modifier cycle, composition, enter, an
 test('browser surface keeps composition and focus-regain enter flows aligned', async ({ page }, testInfo) => {
   test.skip(!desktopProjects.has(testInfo.project.name))
 
-  await page.goto('/')
+  await gotoApp(page)
 
   await page.locator('main').focus()
   await page.evaluate(() => {
@@ -105,7 +131,8 @@ test('browser surface keeps composition and focus-regain enter flows aligned', a
 })
 
 test('editor surface keeps caret placement, replacement, and newline edits stable', async ({ page }) => {
-  await page.goto('/')
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
 
   await clickKey(page, 'ㄱ')
   await clickKey(page, 'ㅏ')
@@ -131,7 +158,7 @@ test('editor surface keeps caret placement, replacement, and newline edits stabl
 })
 
 test('mixed paste keeps literal and supported text in original order', async ({ page }) => {
-  await page.goto('/')
+  await gotoApp(page)
 
   await page.locator('main').focus()
   await page.evaluate(() => {
@@ -154,7 +181,8 @@ test('mixed paste keeps literal and supported text in original order', async ({ 
 })
 
 test('onscreen tone can be reapplied after backspace', async ({ page }) => {
-  await page.goto('/')
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
 
   await clickKey(page, 'ㄹ')
   await clickKey(page, 'ㅏ')
@@ -169,4 +197,14 @@ test('onscreen tone can be reapplied after backspace', async ({ page }) => {
   await clickKey(page, 'L Ctrl')
   await clickKey(page, '.')
   await expectRenderedText(page, '랏〮')
+})
+
+test('onscreen ctrl and shift combinations do not duplicate sios output', async ({ page }) => {
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
+
+  await clickKey(page, 'R Ctrl')
+  await clickKey(page, 'R Shift')
+  await clickKey(page, 'ㅅ')
+  await expectRenderedText(page, 'ᄿ')
 })

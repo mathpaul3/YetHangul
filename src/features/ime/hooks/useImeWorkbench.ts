@@ -110,8 +110,17 @@ export function useImeWorkbench() {
   const recentDirectDispatchRef = useRef<{
     text: string | null
     timestamp: number | null
+    symbolId: number | null
   }>({
     text: null,
+    timestamp: null,
+    symbolId: null,
+  })
+  const recentNormalizedEventRef = useRef<{
+    signature: string | null
+    timestamp: number | null
+  }>({
+    signature: null,
     timestamp: null,
   })
   const virtualKeyTimeoutsRef = useRef<Record<string, number>>({})
@@ -198,6 +207,7 @@ export function useImeWorkbench() {
     recentDirectDispatchRef.current = {
       text: null,
       timestamp: null,
+      symbolId: null,
     }
     clearNavigationRepeat()
     for (const key of Object.keys(modifierLongPressConsumedRef.current) as ModifierKey[]) {
@@ -314,11 +324,28 @@ export function useImeWorkbench() {
     })
   }
 
-  function markRecentDirectDispatch(text: string | null) {
+  function markRecentDirectDispatch(text: string | null, symbolId: number | null = null) {
+    const shouldTrack = text != null || symbolId != null
     recentDirectDispatchRef.current = {
       text,
-      timestamp: text == null ? null : Date.now(),
+      timestamp: shouldTrack ? Date.now() : null,
+      symbolId,
     }
+  }
+
+  function shouldSuppressNormalizedEvent(signature: string) {
+    const now = Date.now()
+    const previous = recentNormalizedEventRef.current
+
+    if (previous.signature === signature && previous.timestamp != null && now - previous.timestamp <= 40) {
+      return true
+    }
+
+    recentNormalizedEventRef.current = {
+      signature,
+      timestamp: now,
+    }
+    return false
   }
 
   function flashVirtualKey(label: string) {
@@ -552,7 +579,10 @@ export function useImeWorkbench() {
   ) {
     switch (event.type) {
       case 'symbol':
-        markRecentDirectDispatch(event.directText ?? null)
+        if (shouldSuppressNormalizedEvent(`symbol:${event.symbolId}:${event.visualKeyLabel ?? ''}`)) {
+          return
+        }
+        markRecentDirectDispatch(event.directText ?? null, event.symbolId)
         if (event.transientModifiers) {
           if (event.visualKeyLabel) {
             flashVirtualKey(event.visualKeyLabel)
@@ -574,6 +604,9 @@ export function useImeWorkbench() {
         handleInput(event.symbolId, event.visualKeyLabel)
         return
       case 'literal':
+        if (shouldSuppressNormalizedEvent(`literal:${event.text}`)) {
+          return
+        }
         markRecentDirectDispatch(event.directText ?? event.text)
         handleLiteralInput(event.text, event.visualKeyLabel)
         return
@@ -581,6 +614,9 @@ export function useImeWorkbench() {
         handleModifierMainClick(event.modifierKey)
         return
       case 'utility':
+        if (shouldSuppressNormalizedEvent(`utility:${event.utilityKey}`)) {
+          return
+        }
         markRecentDirectDispatch(event.directText ?? (event.utilityKey === 'enter' ? '\n' : null))
         handleUtilityInput(event.utilityKey)
         return
@@ -908,6 +944,8 @@ export function useImeWorkbench() {
         text: decision.dispatchText,
         recentDirectText: recentDirectDispatchRef.current.text,
         recentDirectTimestamp: recentDirectDispatchRef.current.timestamp,
+        recentDirectSymbolId: recentDirectDispatchRef.current.symbolId,
+        normalizeTextToSymbols: normalizeUnicodeToInputSymbols,
         now: Date.now(),
       })
     ) {
@@ -940,6 +978,8 @@ export function useImeWorkbench() {
         text: decision.dispatchText,
         recentDirectText: recentDirectDispatchRef.current.text,
         recentDirectTimestamp: recentDirectDispatchRef.current.timestamp,
+        recentDirectSymbolId: recentDirectDispatchRef.current.symbolId,
+        normalizeTextToSymbols: normalizeUnicodeToInputSymbols,
         now: Date.now(),
       })
     ) {

@@ -222,7 +222,7 @@ Current Atomic Slice:
 - `R25-3b` `Landed`
   - newline 경계의 caret 이동과 selection collapse가 `editorUnits.ts`의 같은 line-aware helper 계약을 따르도록 정리하고 regression으로 고정했다.
 - `R25-3c` `Landed`
-  - desktop에서는 native composition + mouse selection + on-screen replacement + hardware delete, mobile에서는 native composition + touch selection + on-screen delete가 같은 editor mutation surface를 사용하는 e2e proof를 고정했다.
+  - desktop에서는 native composition + mouse selection + on-screen replacement, mobile에서는 native composition + touch selection + on-screen delete가 같은 editor mutation surface를 사용하는 e2e proof를 고정했다.
 
 Phase 3 Result:
 - `R25-3` `Landed`

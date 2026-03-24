@@ -219,7 +219,7 @@
 - touch-like drag selection copy/replacement/delete-backspace와 pointer-cancel cleanup 회귀 테스트를 추가함
 - touch drag selection이 `pointerenter`에만 의존하지 않도록 pointer-move fallback과 target-index helper를 추가함
 - small-screen touch selection에서 browser pan/scroll gesture를 suppress하는 editor surface touch contract를 추가함
-- desktop에서는 native composition + mouse selection + on-screen replacement + hardware delete, mobile에서는 native composition + touch selection + on-screen delete가 같은 editor mutation helper surface를 쓴다는 mixed-source browser proof를 추가함
+- desktop에서는 native composition + mouse selection + on-screen replacement, mobile에서는 native composition + touch selection + on-screen delete가 같은 editor mutation helper surface를 쓴다는 mixed-source browser proof를 추가함
 - proof:
   - helper regression + long-document/touch/pointer-cancel coverage
   - Chrome desktop/tablet/mobile/mobile-small smoke에서 caret placement, replacement, newline edit flow 통과
@@ -272,9 +272,9 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 185
-  - unit/service/engine regression: 162
-  - browser smoke (Playwright): 23
+- 현재 테스트 수: 218
+  - unit/service/engine regression: 184
+  - browser smoke (Playwright): 34
 
 ## 24. MVP 완료 정의
 

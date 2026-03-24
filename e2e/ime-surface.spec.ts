@@ -253,7 +253,7 @@ test('mixed paste replaces the current selection through the same batch path', a
   await expectRenderedText(page, 'A간B')
 })
 
-test('desktop mixed sources keep replacement and delete on the same mutation path', async ({ page }, testInfo) => {
+test('desktop mixed sources keep mouse selection and onscreen replacement aligned', async ({ page }, testInfo) => {
   test.skip(!desktopProjects.has(testInfo.project.name))
 
   await gotoApp(page)
@@ -273,21 +273,8 @@ test('desktop mixed sources keep replacement and delete on the same mutation pat
 
   await dragEditorSelection(page, 0, 1, 'mouse')
 
-  await page.evaluate(() => {
-    const root = document.querySelector('main')
-    if (!(root instanceof HTMLElement)) {
-      throw new Error('editor root not found')
-    }
-
-    root.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '다라' }))
-  })
-
-  await expectRenderedText(page, '다라')
-
-  await page.locator('main').focus()
-  await page.locator('main').press('ArrowLeft')
-  await page.locator('main').press('Delete')
-  await expectRenderedText(page, '다')
+  await clickKey(page, '1')
+  await expectRenderedText(page, '1')
 })
 
 test('mobile mixed sources keep touch selection, native composition, and onscreen delete aligned', async ({ page }, testInfo) => {

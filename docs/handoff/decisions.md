@@ -222,6 +222,7 @@
 - batch 경계 proof는 mixed literal + Hangul order, newline/tone, selection replacement, duplicate suppression을 unit/service/e2e로 나눠 유지한다.
 - native batch는 shared dispatcher와 같은 normalized event vocabulary를 재사용하되, 실제 document 반영은 batch canonicalization 경계를 통해 수행한다.
 - 이유는 hook reducer state가 같은 tick 안에서 즉시 갱신되지 않기 때문에, native batch를 direct per-event dispatcher로 바로 흘리면 mixed literal + Hangul 순서가 깨질 수 있기 때문이다.
+- Phase 3에서는 source-specific adapter를 input collection까지만 두고, selection / delete / newline / caret mutation은 shared editor helper로만 수행한다.
 - native IME text는 raw DOM text로 바로 문서에 꽂지 않고, 가능하면 batch adapter를 거쳐 normalized boundary로 올린다.
 - 편집기 1차 구현으로 `document units + caret index + selection range` 레이어를 입력기 위에 얹었다.
 - 현재 결과 영역은 음절 단위 caret 경계 클릭, drag selection, 선택 삭제, 좌우/Home/End 이동을 지원한다.

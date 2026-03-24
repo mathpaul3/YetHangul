@@ -193,6 +193,7 @@ Current Atomic Slice:
 
 목표:
 - source와 무관하게 document mutation이 완전히 같은 helper 경로를 타게 만든다.
+- current-goals의 atomic task ids는 `R25-3`, `R25-3a`, `R25-3b`, `R25-3c`로 추적한다.
 
 작업:
 - selection replacement
@@ -205,6 +206,7 @@ Current Atomic Slice:
 Done Criteria:
 - editor-layer mutation이 source별 분기보다 helper별 분기로만 설명된다.
 - keyboard / mouse / touch / native IME가 같은 document mutation surface를 사용한다.
+- source-specific adapter는 input collection까지만 맡고, mutation 자체는 shared helper layer에서만 일어난다.
 
 Key Regression Tests:
 - caret placement
@@ -212,6 +214,8 @@ Key Regression Tests:
 - newline boundary edits
 - long-document copy / replace / delete / shrink
 - touch drag selection / pointer cancel
+- mixed-source editor mutation parity
+- selection normalization after replacement / deletion
 
 ## 7. Suggested Implementation Order
 

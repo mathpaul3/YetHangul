@@ -103,13 +103,13 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - native mixed literal + Hangul 입력이 normalized batch로 canonical order를 유지하는지 regression으로 고정한다.
 - `R25-2b` `Landed`
   - native batch 경로에서 duplicate suppression, tone / filler / newline, selection replacement가 shared rule을 따르는지 regression으로 고정한다.
-- `R25-3` `In Progress`
+- `R25-3` `Landed`
   - source와 무관하게 document mutation이 같은 helper surface를 타도록 editor-layer를 더 일원화한다.
 - `R25-3a` `Landed`
   - selection replacement, literal/newline insertion, backspace/delete가 같은 editor mutation result shape를 통해 적용되도록 정리한다.
 - `R25-3b` `Landed`
   - newline 경계의 caret 이동과 selection collapse가 같은 line-aware helper 규칙을 따르는지 regression으로 고정한다.
-- `R25-3c` `Open`
+- `R25-3c` `Landed`
   - keyboard / mouse / touch / native IME가 같은 mutation helper surface를 사용하도록 mixed-source proof를 고정한다.
 
 ### Queue Rules

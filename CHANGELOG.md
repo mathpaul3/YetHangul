@@ -15,6 +15,7 @@
 - native batch 경로의 newline/tone/selection replacement proof를 unit/service/e2e에 추가
 - input pipeline refactor Phase 3 첫 slice로 editor mutation result shape를 helper 중심으로 공통화
 - input pipeline refactor Phase 3 후속 slice로 newline 경계의 `←/→/Home/End`와 selection collapse를 line-aware helper 계약으로 고정
+- input pipeline refactor Phase 3 마지막 slice로 desktop/mobile mixed-source editor mutation smoke를 고정
 
 ## [0.1.0]
 

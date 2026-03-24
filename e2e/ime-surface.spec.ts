@@ -28,6 +28,40 @@ async function expectRenderedText(page: Parameters<typeof test>[0]['page'], text
   await expect(page.getByTestId('rendered-text-value')).toHaveText(text)
 }
 
+async function dragEditorSelection(
+  page: Parameters<typeof test>[0]['page'],
+  startIndex: number,
+  endIndex: number,
+  pointerType: 'mouse' | 'touch',
+) {
+  await page.evaluate(
+    ({ startIndex, endIndex, pointerType }) => {
+      const startUnit = document.querySelector(`[data-editor-unit-index="${startIndex}"]`)
+      const endUnit = document.querySelector(`[data-editor-unit-index="${endIndex}"]`)
+      const surface = document.querySelector('[data-testid="editor-surface"]')
+
+      if (!(startUnit instanceof HTMLElement) || !(endUnit instanceof HTMLElement) || !(surface instanceof HTMLElement)) {
+        throw new Error('editor selection targets not found')
+      }
+
+      const init = {
+        bubbles: true,
+        pointerId: 1,
+        pointerType,
+        isPrimary: true,
+        button: 0,
+        buttons: 1,
+      } satisfies PointerEventInit
+
+      startUnit.dispatchEvent(new PointerEvent('pointerdown', init))
+      endUnit.dispatchEvent(new PointerEvent('pointermove', init))
+      endUnit.dispatchEvent(new PointerEvent('pointerenter', init))
+      surface.dispatchEvent(new PointerEvent('pointerup', init))
+    },
+    { startIndex, endIndex, pointerType },
+  )
+}
+
 test('preferred mode matches project surface expectations', async ({ page }, testInfo) => {
   await gotoApp(page)
 
@@ -217,6 +251,78 @@ test('mixed paste replaces the current selection through the same batch path', a
   })
 
   await expectRenderedText(page, 'A간B')
+})
+
+test('desktop mixed sources keep replacement and delete on the same mutation path', async ({ page }, testInfo) => {
+  test.skip(!desktopProjects.has(testInfo.project.name))
+
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
+
+  await page.locator('main').focus()
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    root.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '간나' }))
+  })
+
+  await expectRenderedText(page, '간나')
+
+  await dragEditorSelection(page, 0, 1, 'mouse')
+
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    root.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '다라' }))
+  })
+
+  await expectRenderedText(page, '다라')
+
+  await page.locator('main').focus()
+  await page.locator('main').press('ArrowLeft')
+  await page.locator('main').press('Delete')
+  await expectRenderedText(page, '다')
+})
+
+test('mobile mixed sources keep touch selection, native composition, and onscreen delete aligned', async ({ page }, testInfo) => {
+  test.skip(!mobileProjects.has(testInfo.project.name))
+
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
+
+  await page.locator('main').focus()
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    root.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '간나' }))
+  })
+
+  await expectRenderedText(page, '간나')
+
+  await dragEditorSelection(page, 0, 1, 'touch')
+
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    root.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '다라' }))
+  })
+
+  await expectRenderedText(page, '다라')
+
+  await clickKey(page, 'Backspace')
+  await expectRenderedText(page, '다')
 })
 
 test('onscreen tone can be reapplied after backspace', async ({ page }) => {

@@ -219,9 +219,11 @@
 - touch-like drag selection copy/replacement/delete-backspace와 pointer-cancel cleanup 회귀 테스트를 추가함
 - touch drag selection이 `pointerenter`에만 의존하지 않도록 pointer-move fallback과 target-index helper를 추가함
 - small-screen touch selection에서 browser pan/scroll gesture를 suppress하는 editor surface touch contract를 추가함
+- desktop에서는 native composition + mouse selection + on-screen replacement + hardware delete, mobile에서는 native composition + touch selection + on-screen delete가 같은 editor mutation helper surface를 쓴다는 mixed-source browser proof를 추가함
 - proof:
   - helper regression + long-document/touch/pointer-cancel coverage
   - Chrome desktop/tablet/mobile/mobile-small smoke에서 caret placement, replacement, newline edit flow 통과
+  - desktop/mobile mixed-source mutation smoke 통과
 - 결론:
   - current editor-layer scope에서 필요한 편집 surface는 안정화되었다고 보고 Done으로 본다
 

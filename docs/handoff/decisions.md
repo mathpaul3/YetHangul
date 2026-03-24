@@ -61,6 +61,7 @@
 - 반복되는 task는 한 단계에서 멈추지 않고 더 작은 sub-task id로 계속 분해한다.
 - Atomic Queue가 소진되면 남은 Partial을 기준으로 새 smoke/proof task를 다시 만든다.
 - 구현 단계 말미의 nav / footer / legal / analytics / branding 작업은 하나의 service shell 묶음으로 다루고, 실제 사용 기반 polish와 함께 처리한다.
+- 입력 파이프라인 refactor는 `docs/handoff/input-pipeline-refactor.md`를 spec-first source of truth로 둔다.
 
 ## Input Collection Policy
 

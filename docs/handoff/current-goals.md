@@ -25,6 +25,7 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 1. 실제 사용 중 발견되는 UX 문제를 작은 묶음으로 빠르게 닫는다.
 2. service shell(nav / footer / legal / analytics / branding)을 한 번에 정리한다.
 3. smoke / regression / handoff / boilerplate를 현재 구현 상태와 계속 동기화한다.
+4. 입력 파이프라인 refactor는 `docs/handoff/input-pipeline-refactor.md` 기준으로 spec-first로 진행한다.
 
 ## Immediate Queue
 

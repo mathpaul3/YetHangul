@@ -26,7 +26,7 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 2. service shell(nav / footer / legal / analytics / branding)을 한 번에 정리한다.
 3. smoke / regression / handoff / boilerplate를 현재 구현 상태와 계속 동기화한다.
 4. 입력 source를 바꾸지 않으면서도 `normalized input event -> single dispatcher -> engine/editor` 경계를 더 명확하게 만든다.
-4. 입력 파이프라인 refactor는 `docs/handoff/input-pipeline-refactor.md` 기준으로 spec-first로 진행한다.
+5. 입력 파이프라인 refactor는 `docs/handoff/input-pipeline-refactor.md` 기준으로 spec-first로 진행한다.
 
 ## Immediate Queue
 
@@ -35,7 +35,7 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 1. 키보드 배열, editor surface, copy/newline 같은 실제 사용 문제를 우선 수정한다.
 2. nav / footer / logo / license / analytics scaffold를 service shell 묶음으로 유지한다.
 3. 새 회귀가 생기면 unit/service/e2e 중 맞는 레이어에 즉시 고정한다.
-4. input pipeline refactor는 spec-first로 진행하고, Phase 1은 behavior-preserving boundary clarification만 다룬다.
+4. input pipeline refactor는 spec-first로 진행하고, Phase 2는 native batch normalization을 `R25-2` 계열 atomic task id로 쪼개서 한 번에 1개만 다룬다.
 
 ## Atomic Queue
 
@@ -96,6 +96,12 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - `NormalizedInputEvent` 타입과 single dispatcher / native batch adapter를 코드 경계로 드러내고 기존 동작을 유지한다.
 - `R25-1c` `Landed`
   - dispatcher/batch adapter 경계에 대한 unit/service regression을 추가하고, 기존 parity smoke가 유지되는지 확인한다.
+- `R25-2` `Open`
+  - native beforeinput / composition 문자열 경로를 batch adapter로 승격하고, shared normalized boundary를 명시한다.
+- `R25-2a` `Open`
+  - native mixed literal + Hangul 입력이 normalized batch로 canonical order를 유지하는지 regression으로 고정한다.
+- `R25-2b` `Open`
+  - native batch 경로에서 duplicate suppression, tone / filler / newline, selection replacement가 shared rule을 따르는지 regression으로 고정한다.
 
 ### Queue Rules
 

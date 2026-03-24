@@ -50,7 +50,7 @@
 4. `beforeinput` / `compositionstart` / `compositionend`가 들어온다.
 5. `resolveBeforeInputInterop(...)` / `resolveCompositionEndInterop(...)`가 동작한다.
 6. `shouldSuppressInteropTextAfterDirectDispatch(...)`가 중복 입력을 방어한다.
-7. `dispatchUnicodeText(...)`가 문자열을 internal symbol / literal sequence로 정규화한다.
+7. `dispatchNormalizedTextBatch(...)`가 문자열을 internal symbol / literal batch로 정규화한다.
 8. editor/document가 갱신된다.
 9. `renderedUnits`가 갱신된다.
 
@@ -161,22 +161,26 @@ Key Regression Tests:
 ### Phase 2. Native Batch Normalization
 
 목표:
-- native 문자열 경로를 batch normalized event 관점으로 더 끌어올린다.
+- native 문자열 경로를 explicit batch adapter로 승격하고, shared normalized boundary를 더 직접적으로 공유하게 만든다.
+- current-goals의 atomic task ids는 `R25-2`, `R25-2a`, `R25-2b`로 추적한다.
 
 작업:
-- `dispatchUnicodeText(...)`의 역할을 더 명시적으로 batch adapter로 바꾼다.
-- 가능한 경우 native text를 normalized symbol/literal batch로 분해한다.
-- batch dispatcher와 modifier consumption rule을 정리한다.
+- `dispatchNormalizedTextBatch(...)`의 역할을 batch adapter로 명시한다.
+- native text를 normalized symbol/literal batch로 분해할 수 있는 경로를 먼저 정리한다.
+- batch adapter와 `dispatchNormalizedInputEvent(...)` 사이의 경계를 명시한다.
+- batch dispatcher와 modifier consumption rule을 shared rule로 고정한다.
 
 Done Criteria:
-- mixed literal + Hangul + tone / filler / composition cases가 같은 normalized boundary를 더 많이 공유한다.
+- mixed literal + Hangul + tone / filler / composition cases가 batch adapter를 통해 같은 normalized boundary를 더 많이 공유한다.
 - direct dispatch 이후 native 후행 입력이 더 적은 특수 처리로 막힌다.
+- native text 경로가 raw DOM text 처리보다 batch signature 기준으로 설명 가능하다.
 
 Key Regression Tests:
 - mixed paste 순서 보존
 - compositionend / beforeinput 중복 억제
 - tone / filler / newline / replacement text 회귀
 - 동일 기본 키에서 파생된 modifier형 후행 text duplicate 억제
+- batch adapter가 literal + Hangul mix를 canonical order로 유지하는지 확인
 
 ### Phase 3. Editor Mutation Unification
 
@@ -206,7 +210,8 @@ Key Regression Tests:
 
 1. Phase 1부터 시작한다.
 2. Phase 1이 끝나면 native batch normalization을 검토한다.
-3. Phase 2가 안정되면 editor mutation unification을 더 좁혀간다.
+3. Phase 2는 `R25-2` 계열 atomic task id로 쪼개서 한 번에 1개만 잡는다.
+4. Phase 2가 안정되면 editor mutation unification을 더 좁혀간다.
 
 ## 8. Related Documents
 
@@ -214,4 +219,3 @@ Key Regression Tests:
 - `docs/handoff/decisions.md`
 - `docs/handoff/spec-status-v1.md`
 - `docs/handoff/current-goals.md`
-

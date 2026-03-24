@@ -217,6 +217,7 @@
 - `beforeinput`과 `compositionend`가 같은 조합 결과를 중복 전달하는 브라우저를 대비해, 최근 commit 텍스트를 기준으로 한 dedupe 규칙을 도입했다.
 - 하드웨어 keydown, on-screen key press, native keyboard beforeinput/composition 경로는 가능한 한 `normalized input event -> single dispatcher -> engine/editor` 흐름으로 수렴시킨다.
 - direct key dispatch 직후 들어오는 동일 문자 `beforeinput` / `compositionend`는 짧은 suppression window로 억제한다.
+- native IME text는 raw DOM text로 바로 문서에 꽂지 않고, 가능하면 batch adapter를 거쳐 normalized boundary로 올린다.
 - 편집기 1차 구현으로 `document units + caret index + selection range` 레이어를 입력기 위에 얹었다.
 - 현재 결과 영역은 음절 단위 caret 경계 클릭, drag selection, 선택 삭제, 좌우/Home/End 이동을 지원한다.
 - 브라우저 기본 selection은 가능한 한 배제하고, 자체 selection과 copy 버튼(`Copy All`, `Copy Selection`)을 우선한다.

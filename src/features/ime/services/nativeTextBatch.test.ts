@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
+  canonicalizeNormalizedInputBatch,
   createNormalizedInputBatchFromText,
   dispatchNormalizedInputBatch,
   dispatchNormalizedTextBatch,
@@ -19,65 +20,57 @@ describe('native text batch adapter', () => {
 
   it('groups adjacent literal text into a single literal batch event', () => {
     expect(createNormalizedInputBatchFromText('ABC')).toEqual([
-      { type: 'literal', text: 'ABC', directText: 'A' },
+      { type: 'literal', text: 'ABC', directText: 'ABC' },
     ])
   })
 
+  it('canonicalizes a normalized batch to rendered unicode text', () => {
+    expect(canonicalizeNormalizedInputBatch(createNormalizedInputBatchFromText('A간B'))).toBe(
+      'A간B',
+    )
+  })
+
   it('dispatches a prepared normalized batch through the shared dispatcher runtime', () => {
-    const handleInput = vi.fn()
-    const handleLiteralInput = vi.fn()
+    const commitCompositionToDocument = vi.fn()
+    const deleteSelection = vi.fn()
+    const insertLiteralTextIntoDocument = vi.fn()
 
     dispatchNormalizedInputBatch(createNormalizedInputBatchFromText('간A'), {
-      shouldSuppressNormalizedEvent: () => false,
-      markRecentDirectDispatch: vi.fn(),
-      handleInput,
-      handleLiteralInput,
-      handleModifierMainClick: vi.fn(),
-      handleUtilityInput: vi.fn(),
-      handleNavigationInput: vi.fn(),
-      handleTransientSymbolInput: vi.fn(),
+      commitCompositionToDocument,
+      hasSelection: () => true,
+      deleteSelection,
+      insertLiteralTextIntoDocument,
     })
 
-    expect(handleInput).toHaveBeenCalledTimes(3)
-    expect(handleLiteralInput).toHaveBeenCalledWith('A', undefined)
+    expect(commitCompositionToDocument).toHaveBeenCalledTimes(1)
+    expect(deleteSelection).toHaveBeenCalledTimes(1)
+    expect(insertLiteralTextIntoDocument).toHaveBeenCalledWith('간A')
   })
 
   it('keeps the text wrapper aligned with the batch dispatcher', () => {
-    const handleInput = vi.fn()
-    const handleLiteralInput = vi.fn()
+    const insertLiteralTextIntoDocument = vi.fn()
 
     dispatchNormalizedTextBatch('A간', {
-      shouldSuppressNormalizedEvent: () => false,
-      markRecentDirectDispatch: vi.fn(),
-      handleInput,
-      handleLiteralInput,
-      handleModifierMainClick: vi.fn(),
-      handleUtilityInput: vi.fn(),
-      handleNavigationInput: vi.fn(),
-      handleTransientSymbolInput: vi.fn(),
+      commitCompositionToDocument: vi.fn(),
+      hasSelection: () => false,
+      deleteSelection: vi.fn(),
+      insertLiteralTextIntoDocument,
     })
 
-    expect(handleLiteralInput).toHaveBeenCalledWith('A', undefined)
-    expect(handleInput).toHaveBeenCalledTimes(3)
+    expect(insertLiteralTextIntoDocument).toHaveBeenCalledWith('A간')
   })
 
   it('preserves newline and tone order through the text batch wrapper', () => {
-    const handleInput = vi.fn()
-    const handleLiteralInput = vi.fn()
+    const insertLiteralTextIntoDocument = vi.fn()
 
     dispatchNormalizedTextBatch('간〮\nA', {
-      shouldSuppressNormalizedEvent: () => false,
-      markRecentDirectDispatch: vi.fn(),
-      handleInput,
-      handleLiteralInput,
-      handleModifierMainClick: vi.fn(),
-      handleUtilityInput: vi.fn(),
-      handleNavigationInput: vi.fn(),
-      handleTransientSymbolInput: vi.fn(),
+      commitCompositionToDocument: vi.fn(),
+      hasSelection: () => false,
+      deleteSelection: vi.fn(),
+      insertLiteralTextIntoDocument,
     })
 
-    expect(handleInput).toHaveBeenCalledTimes(4)
-    expect(handleLiteralInput).toHaveBeenNthCalledWith(1, '\nA', undefined)
+    expect(insertLiteralTextIntoDocument).toHaveBeenCalledWith('간〮\nA')
   })
 
   it('exposes a stable signature for a normalized batch', () => {

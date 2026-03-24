@@ -180,6 +180,45 @@ test('mixed paste keeps literal and supported text in original order', async ({ 
   await expectRenderedText(page, 'A간B')
 })
 
+test('mixed paste replaces the current selection through the same batch path', async ({ page }) => {
+  await gotoApp(page)
+
+  await page.locator('main').focus()
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    root.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '간나' }))
+  })
+
+  const firstUnit = page.locator('[data-editor-unit-index="0"]')
+  const secondUnit = page.locator('[data-editor-unit-index="1"]')
+  await firstUnit.hover()
+  await page.mouse.down()
+  await secondUnit.hover()
+  await page.mouse.up()
+
+  await page.evaluate(() => {
+    const root = document.querySelector('main')
+    if (!(root instanceof HTMLElement)) {
+      throw new Error('editor root not found')
+    }
+
+    const data = new DataTransfer()
+    data.setData('text/plain', 'A간B')
+    root.dispatchEvent(
+      new ClipboardEvent('paste', {
+        bubbles: true,
+        clipboardData: data,
+      }),
+    )
+  })
+
+  await expectRenderedText(page, 'A간B')
+})
+
 test('onscreen tone can be reapplied after backspace', async ({ page }) => {
   await gotoApp(page)
   await ensureExpandedKeyboard(page)

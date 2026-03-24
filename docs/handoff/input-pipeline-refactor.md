@@ -161,17 +161,17 @@ Key Regression Tests:
 ### Phase 2. Native Batch Normalization
 
 목표:
-- native 문자열 경로를 explicit batch adapter로 승격하고, shared normalized boundary를 더 직접적으로 공유하게 만든다.
+- native 문자열 경로를 explicit batch adapter로 승격하고, shared normalized vocabulary를 더 직접적으로 공유하게 만든다.
 - current-goals의 atomic task ids는 `R25-2`, `R25-2a`, `R25-2b`로 추적한다.
 
 작업:
 - `dispatchNormalizedTextBatch(...)`의 역할을 batch adapter로 명시한다.
 - native text를 normalized symbol/literal batch로 분해할 수 있는 경로를 먼저 정리한다.
-- batch adapter와 `dispatchNormalizedInputEvent(...)` 사이의 경계를 명시한다.
-- batch dispatcher와 modifier consumption rule을 shared rule로 고정한다.
+- batch adapter와 `dispatchNormalizedInputEvent(...)`가 같은 normalized vocabulary를 공유하되, document 반영은 batch canonicalization 경계에서 수행한다.
+- batch adapter와 modifier consumption rule을 shared rule로 고정한다.
 
 Done Criteria:
-- mixed literal + Hangul + tone / filler / composition cases가 batch adapter를 통해 같은 normalized boundary를 더 많이 공유한다.
+- mixed literal + Hangul + tone / filler / composition cases가 batch adapter를 통해 같은 normalized vocabulary를 더 많이 공유한다.
 - direct dispatch 이후 native 후행 입력이 더 적은 특수 처리로 막힌다.
 - native text 경로가 raw DOM text 처리보다 batch signature 기준으로 설명 가능하다.
 
@@ -186,8 +186,8 @@ Current Atomic Slice:
 - `R25-2a` `Landed`
   - native text를 `NormalizedInputBatch`로 먼저 만들고, 그 batch를 canonicalize한 뒤 document에 넣는 경계를 코드로 드러냈다.
   - mixed literal + Hangul 순서 보존을 batch 생성 / batch canonicalization / batch dispatch regression으로 고정했다.
-- `R25-2b` `Open`
-  - tone / filler / newline / selection replacement / duplicate suppression이 batch 경계에서도 shared rule을 유지하는지 추가 proof를 쌓는다.
+- `R25-2b` `Landed`
+  - tone / filler / newline / selection replacement / duplicate suppression이 batch 경계에서도 shared rule을 유지하는지 unit/service/e2e regression으로 고정했다.
 
 ### Phase 3. Editor Mutation Unification
 

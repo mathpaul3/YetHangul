@@ -96,11 +96,11 @@ subagent는 새 라운드를 시작할 때 아래에서 **정확히 1개 task id
   - `NormalizedInputEvent` 타입과 single dispatcher / native batch adapter를 코드 경계로 드러내고 기존 동작을 유지한다.
 - `R25-1c` `Landed`
   - dispatcher/batch adapter 경계에 대한 unit/service regression을 추가하고, 기존 parity smoke가 유지되는지 확인한다.
-- `R25-2` `In Progress`
+- `R25-2` `Landed`
   - native beforeinput / composition 문자열 경로를 batch adapter로 승격하고, shared normalized boundary를 명시한다.
 - `R25-2a` `Landed`
   - native mixed literal + Hangul 입력이 normalized batch로 canonical order를 유지하는지 regression으로 고정한다.
-- `R25-2b` `In Progress`
+- `R25-2b` `Landed`
   - native batch 경로에서 duplicate suppression, tone / filler / newline, selection replacement가 shared rule을 따르는지 regression으로 고정한다.
 
 ### Queue Rules

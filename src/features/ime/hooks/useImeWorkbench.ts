@@ -673,14 +673,10 @@ export function useImeWorkbench() {
 
   function dispatchNormalizedText(text: string) {
     dispatchNormalizedInputBatch(createNormalizedInputBatchFromText(text), {
-      shouldSuppressNormalizedEvent,
-      markRecentDirectDispatch,
-      handleInput,
-      handleLiteralInput,
-      handleModifierMainClick,
-      handleUtilityInput,
-      handleNavigationInput,
-      handleTransientSymbolInput,
+      commitCompositionToDocument,
+      hasSelection: () => selectionRangeRef.current != null,
+      deleteSelection,
+      insertLiteralTextIntoDocument,
     })
   }
 

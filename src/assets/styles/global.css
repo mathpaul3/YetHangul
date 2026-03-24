@@ -207,7 +207,7 @@ textarea {
 }
 
 .editor-decomposed-unit {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "NanumBarunGothic-YetHangul", "Noto Sans KR", sans-serif;
   font-size: 0.8em;
   letter-spacing: 0.03em;
 }
@@ -467,12 +467,14 @@ textarea {
   overflow: hidden;
   display: grid;
   gap: 10px;
+  padding: 2px 14px 0 14px;
 }
 
 .help-description {
   margin: 0;
   color: #6e5948;
   font-size: 0.94rem;
+  padding-left: 2px;
 }
 
 .help-example-surface {
@@ -498,6 +500,12 @@ textarea {
 .help-example-list li {
   color: #3b2c22;
   font-size: 0.94rem;
+}
+
+.help-example-list code,
+.rule-table td code {
+  font-family: "NanumBarunGothic-YetHangul", "Noto Sans KR", sans-serif;
+  font-size: 0.96em;
 }
 
 .rule-modal-header {
@@ -538,6 +546,16 @@ textarea {
   border-bottom: 1px solid rgba(36, 27, 22, 0.08);
   text-align: left;
   vertical-align: top;
+}
+
+.rule-table th {
+  color: #6e5948;
+  font-weight: 700;
+}
+
+.rule-row-highlight td {
+  background: rgba(177, 77, 31, 0.08);
+  color: #7a2f12;
 }
 
 @media (max-width: 1120px) {

@@ -809,7 +809,7 @@ export function ImeWorkbench() {
                   type="button"
                   onClick={() => toggleHelpSection('ctrl')}
                 >
-                  <strong>Ctrl + 문자 = 자형 변환</strong>
+                  <strong>Ctrl + 문자 = 자형 변환 (반치음은 Shift 예외)</strong>
                   <span>{helpSections.ctrl ? '접기' : '전체 보기'}</span>
                 </button>
                 <div className={`help-accordion-panel ${helpSections.ctrl ? 'help-accordion-panel-open' : ''}`}>
@@ -826,7 +826,7 @@ export function ImeWorkbench() {
                         </thead>
                         <tbody>
                           {CTRL_RULES.map(([input, output, description]) => (
-                            <tr key={input}>
+                            <tr className={input === 'Shift + ㅊ' ? 'rule-row-highlight' : ''} key={input}>
                               <td>{input}</td>
                               <td>{output}</td>
                               <td>{description}</td>

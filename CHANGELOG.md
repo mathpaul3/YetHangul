@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-25
+
 ### Changed
 
 - 입력 경로를 `normalized input event -> single dispatcher -> engine/editor` 흐름으로 수렴시키는 작업 진행

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import packageJson from '../../../../package.json'
 import { INPUT_SYMBOL_IDS } from '@/engine/tables/inputSymbolTable'
 import { useImeWorkbench } from '@/features/ime/hooks/useImeWorkbench'
 import { getEditorSurfaceTouchBehavior } from '@/features/ime/services/editorSurface'
@@ -8,6 +9,7 @@ const preferredMode = detectPreferredKeyboardMode()
 const REPOSITORY_URL = 'https://github.com/mathpaul3/YetHangul'
 const AUTHOR_URL = 'https://github.com/mathpaul3'
 const HELP_OVERLAY_DISMISSED_KEY = 'yethangul-help-overlay-dismissed'
+const APP_VERSION = packageJson.version
 const SHIFT_RULES = [
   ['Shift + ㄱ', 'ᄁ', '쌍기역'],
   ['Shift + ㄴ', 'ᄔ', '쌍니은'],
@@ -893,6 +895,8 @@ export function ImeWorkbench() {
           </a>
           <span>|</span>
           <span>Apache-2.0 License</span>
+          <span>|</span>
+          <span>{`v${APP_VERSION}`}</span>
         </footer>
       </main>
 

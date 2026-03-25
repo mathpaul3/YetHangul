@@ -499,6 +499,12 @@ function resolveModifiedSymbol(
   if (shiftActive && symbolId === INPUT_SYMBOL_IDS.O) {
     return INPUT_SYMBOL_IDS.SPECIAL_SHIFT_O
   }
+  if (shiftActive && symbolId === INPUT_SYMBOL_IDS.AE) {
+    return INPUT_SYMBOL_IDS.YAE
+  }
+  if (shiftActive && symbolId === INPUT_SYMBOL_IDS.E) {
+    return INPUT_SYMBOL_IDS.YE
+  }
   if (shiftActive && symbolId === INPUT_SYMBOL_IDS.EU) {
     return INPUT_SYMBOL_IDS.SPECIAL_SHIFT_EU
   }

@@ -80,6 +80,8 @@ describe('engine', () => {
       [{ symbolId: INPUT_SYMBOL_IDS.SIOS, modifiers: { leftShift: true } }, 'ᄊ'],
       [{ symbolId: INPUT_SYMBOL_IDS.IEUNG, modifiers: { leftShift: true } }, 'ᅇ'],
       [{ symbolId: INPUT_SYMBOL_IDS.CIEUC, modifiers: { leftShift: true } }, 'ᄍ'],
+      [{ symbolId: INPUT_SYMBOL_IDS.AE, modifiers: { leftShift: true } }, 'ᅤ'],
+      [{ symbolId: INPUT_SYMBOL_IDS.E, modifiers: { leftShift: true } }, 'ᅨ'],
       [{ symbolId: INPUT_SYMBOL_IDS.THIEUTH, modifiers: { leftShift: true } }, 'ꥹ'],
       [{ symbolId: INPUT_SYMBOL_IDS.HIEUH, modifiers: { leftShift: true } }, 'ᅘ'],
       [{ symbolId: INPUT_SYMBOL_IDS.O, modifiers: { leftShift: true } }, 'ᆂ'],

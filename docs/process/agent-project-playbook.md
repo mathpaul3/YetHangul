@@ -93,7 +93,7 @@
 권장 파일:
 
 - `docs/handoff/decisions.md`
-- `docs/handoff/spec-status-v1.md`
+- `docs/specs/active/spec-v1-status.md`
 - `CHANGELOG.md`
 
 ## 4. 문서 체계 권장안
@@ -117,14 +117,32 @@
   - 릴리스 단위 정의
   - changelog 작성 규칙
 
+- `docs/requirements/active.md`
+  - 현재 살아 있는 요구사항
+
+- `docs/tasks/active.md`
+  - 현재 실제 작업 항목
+
+- `docs/specs/active/*.md`
+  - 현재 제품/spec 상태
+
+- `docs/handoff/current.md`
+  - 지금 바로 읽어야 하는 현재 요약
+
 - `docs/handoff/decisions.md`
   - 다음 Agent가 빠르게 이어받아야 하는 핵심 결정
 
-- `docs/handoff/spec-status-v1.md`
+- `docs/specs/active/spec-v1-status.md`
   - spec 기준 완료/부분완료/미착수 상태
 
 - `docs/decisions/0001-*.md`
   - ADR 형식 설계 결정
+
+추가 권장 규칙:
+
+- 요구사항과 작업 항목을 섞지 않는다.
+- 완료된 iteration의 요구사항/작업은 archive로 이동한다.
+- `handoff`에는 current summary만 남기고, 완료 이력은 requirements/tasks/specs archive에 둔다.
 
 ## 5. 기획 단계 규칙
 
@@ -357,7 +375,7 @@
 - `MEMORY.md`
 - `CHANGELOG.md`
 - `docs/handoff/decisions.md`
-- `docs/handoff/spec-status-v1.md`
+- `docs/specs/active/spec-v1-status.md`
 - 기본 폴더 구조
 - 테스트 실행 명령
 - 빌드 명령

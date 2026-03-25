@@ -8,7 +8,7 @@
 - `MEMORY.md`
 - `CHANGELOG.md`
 - `docs/handoff/decisions.md`
-- `docs/handoff/spec-status-v1.md`
+- `docs/specs/active/spec-v1-status.md`
 - `docs/process/PROJECT_START_CHECKLIST.md`
 - `docs/process/AGENT_PROFILES.md`
 - `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`
@@ -30,7 +30,7 @@
 ## Operating Advice
 
 - 멀티 Agent 구조라면 commit은 Coordinator가 review 후 수행하는 것을 기본값으로 둡니다.
-- 목표는 `current-goals` 문서에서 atomic task 단위까지 쪼개 두는 것이 좋습니다.
+- 목표는 `requirements / tasks / specs / handoff current`를 분리해 관리하는 것이 좋습니다.
 - 한 cycle이 끝날 때마다 기능뿐 아니라 개발 과정, 문서, boilerplate, subagent lifecycle도 함께 회고합니다.
 
 ## Recommended Additions

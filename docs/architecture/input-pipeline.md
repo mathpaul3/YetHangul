@@ -1,11 +1,4 @@
-# YetHangul Input Flow Review
-
-이 문서는 하위 호환을 위한 legacy path다.
-현재 source of truth는 `docs/architecture/input-pipeline.md`다.
-
----
-
-# YetHangul Input Flow Review
+# YetHangul Input Pipeline
 
 이 문서는 현재 YetHangul의 입력 수집부터 입력 결과창 렌더링까지의 흐름을 함수 단위로 정리하고,
 어디서 분기가 생기며 어디를 공통 파이프라인으로 합쳐야 하는지 설명한다.

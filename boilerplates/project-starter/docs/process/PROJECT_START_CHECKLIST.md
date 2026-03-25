@@ -7,8 +7,10 @@
 - [ ] `CHANGELOG.md`
 - [ ] `docs/process/VERSIONING.md`
 - [ ] `docs/handoff/decisions.md`
-- [ ] `docs/handoff/spec-status-v1.md`
-- [ ] `docs/handoff/current-goals.md`
+- [ ] `docs/handoff/current.md`
+- [ ] `docs/requirements/active.md`
+- [ ] `docs/tasks/active.md`
+- [ ] `docs/specs/active/spec-v1-status.md`
 
 ## Project Setup
 

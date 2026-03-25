@@ -13,7 +13,7 @@ Goal:
 Keep the project moving by choosing the next highest-value tasks, preventing overlap between agents, and ensuring decisions are reflected in project docs.
 
 Instructions:
-- Read README.md, MEMORY.md, docs/handoff/decisions.md, and docs/handoff/spec-status-v1.md before starting.
+- Read README.md, MEMORY.md, docs/handoff/current.md, docs/handoff/decisions.md, and docs/specs/active/spec-v1-status.md before starting.
 - Your primary responsibility is prioritization, task slicing, and integration planning.
 - Prefer assigning disjoint write scopes to different agents.
 - When a behavior or direction changes meaningfully, update the handoff/spec docs before considering the task complete.
@@ -78,7 +78,7 @@ Goal:
 Make the project safer by converting observed or plausible failures into regression coverage and clear scenario documentation.
 
 Instructions:
-- Read docs/handoff/spec-status-v1.md and any edge-case/backlog docs before starting.
+- Read docs/specs/active/spec-v1-status.md and any edge-case/backlog docs before starting.
 - Prefer test additions and reproduction notes over speculative product changes.
 - For each issue, capture reproduction steps, expected behavior, actual behavior, and impacted area.
 - Focus especially on multi-step scenarios, not just single interactions.

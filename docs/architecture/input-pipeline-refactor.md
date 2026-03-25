@@ -1,12 +1,5 @@
 # YetHangul Input Pipeline Refactor Spec
 
-이 문서는 하위 호환을 위한 legacy path다.
-현재 source of truth는 `docs/architecture/input-pipeline-refactor.md`다.
-
----
-
-# YetHangul Input Pipeline Refactor Spec
-
 이 문서는 YetHangul의 입력 수집부터 입력 결과창 렌더링까지의 경로를 더 명확하게 정리하기 위한 refactor spec이다.
 이 작업은 **spec-first** 방식으로 진행한다.
 
@@ -169,7 +162,7 @@ Key Regression Tests:
 
 목표:
 - native 문자열 경로를 explicit batch adapter로 승격하고, shared normalized vocabulary를 더 직접적으로 공유하게 만든다.
-- current-goals의 atomic task ids는 `R25-2`, `R25-2a`, `R25-2b`로 추적한다.
+- 당시 atomic task ids는 `R25-2`, `R25-2a`, `R25-2b`로 추적했다.
 
 작업:
 - `dispatchNormalizedTextBatch(...)`의 역할을 batch adapter로 명시한다.
@@ -200,7 +193,7 @@ Current Atomic Slice:
 
 목표:
 - source와 무관하게 document mutation이 완전히 같은 helper 경로를 타게 만든다.
-- current-goals의 atomic task ids는 `R25-3`, `R25-3a`, `R25-3b`, `R25-3c`로 추적한다.
+- 당시 atomic task ids는 `R25-3`, `R25-3a`, `R25-3b`, `R25-3c`로 추적했다.
 
 작업:
 - selection replacement
@@ -244,7 +237,7 @@ Phase 3 Result:
 
 ## 8. Related Documents
 
-- `docs/handoff/input-flow-review.md`
+- `docs/architecture/input-pipeline.md`
 - `docs/handoff/decisions.md`
-- `docs/handoff/spec-status-v1.md`
-- `docs/handoff/current-goals.md`
+- `docs/specs/active/spec-v1-status.md`
+- `docs/handoff/current.md`

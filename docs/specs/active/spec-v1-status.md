@@ -1,13 +1,7 @@
 # YetHangul Spec v1 Status
 
-이 문서는 하위 호환을 위한 legacy path다.
-현재 source of truth는 `docs/specs/active/spec-v1-status.md`다.
-
----
-
-# YetHangul Spec v1 Status
-
-이 문서는 기존 "설계 명세 v1" 기준으로 현재 구현 상태를 정리한 것이다.
+이 문서는 현재 **active spec status source of truth**다.
+기존 "설계 명세 v1" 기준으로 현재 구현 상태를 정리한다.
 
 상태 표기:
 

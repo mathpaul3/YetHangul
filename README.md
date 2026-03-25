@@ -16,28 +16,35 @@
 - 현재도 유효한 핵심 결정
 - 프로젝트의 설계 의도
 
-3. [docs/handoff/current-goals.md](docs/handoff/current-goals.md)
-- 장기 목표
-- 이번 iteration의 단기 목표
-- coordinator의 즉시 우선순위
+3. [docs/handoff/current.md](docs/handoff/current.md)
+- 현재 릴리스/상태 요약
+- active requirement / task / spec 진입점
 
-4. [docs/handoff/input-flow-review.md](docs/handoff/input-flow-review.md)
+4. [docs/requirements/active.md](docs/requirements/active.md)
+- 현재 살아 있는 요구사항
+
+5. [docs/tasks/active.md](docs/tasks/active.md)
+- 현재 실제 작업 항목
+
+6. [docs/architecture/input-pipeline.md](docs/architecture/input-pipeline.md)
 - 입력 source가 왜 3개 adapter로 나뉘는지
 - 왜 `keydown` 하나로 통일하지 않는지
 - 어디까지가 공통 pipeline인지
 
-5. [docs/handoff/decisions.md](docs/handoff/decisions.md)
+7. [docs/handoff/decisions.md](docs/handoff/decisions.md)
 - 다음 Agent가 바로 이어받아야 하는 핵심 정책
 - 최근 결정 사항
 
-6. [docs/handoff/spec-status-v1.md](docs/handoff/spec-status-v1.md)
+8. [docs/specs/active/spec-v1-status.md](docs/specs/active/spec-v1-status.md)
 - spec 기준 구현 완료/부분완료 상태
 - 현재 우선순위
 
-7. 필요 시 세부 문서
+9. 필요 시 세부 문서
 - [docs/architecture/engine.md](docs/architecture/engine.md): 엔진 구조
+- [docs/architecture/input-pipeline-refactor.md](docs/architecture/input-pipeline-refactor.md): 입력 파이프라인 refactor 기록
 - [docs/decisions/0001-engine-architecture.md](docs/decisions/0001-engine-architecture.md): 주요 설계 결정
 - [docs/input-rules/keymap.md](docs/input-rules/keymap.md): 입력 규칙
+- [docs/process/document-structure.md](docs/process/document-structure.md): 문서 구조 규칙
 - [docs/process/agent-project-playbook.md](docs/process/agent-project-playbook.md): 재사용 가능한 협업/문서화/운영 원칙
 - [boilerplates/project-starter/](boilerplates/project-starter/README.md): 새 프로젝트 시작용 boilerplate
 
@@ -72,22 +79,29 @@
   - 장기 기억
   - 제품 방향성과 핵심 설계 의도
 
-- `docs/handoff/current-goals.md`
-  - 장기 목표와 단기 목표
-  - coordinator의 현재 iteration 우선순위
+- `docs/handoff/current.md`
+  - 현재 릴리스와 active 문서 진입점
+  - handoff용 현재 상태 요약
 
-- `docs/handoff/input-flow-review.md`
+- `docs/requirements/`
+  - active requirement와 iteration별 archive
+
+- `docs/tasks/`
+  - active task와 iteration별 archive
+
+- `docs/specs/`
+  - active spec 상태와 버전별 archive
+
+- `docs/architecture/input-pipeline.md`
   - UI keyboard / hardware keyboard / native keyboard의 입력 수집 경계
   - `normalized input event -> single dispatcher -> engine/editor` 원칙
-  - 인수인계 시 가장 먼저 이해해야 하는 입력 파이프라인 설명
 
 - `CHANGELOG.md`
   - 사용자 관점 변경 내역
   - 릴리스 시 `package.json`, footer, git tag와 같은 버전으로 맞춘다
 
 - `docs/handoff/`
-  - 단기 인수인계 문서
-  - 현재 결정, 구현 상태, 다음 우선순위
+  - 현재 handoff 요약과 빠른 결정 메모
 
 - `docs/architecture/`
   - 시스템 구조 문서
@@ -100,6 +114,7 @@
 
 - `docs/process/`
   - Agent 협업 방식과 프로젝트 운영 규칙
+  - 문서 구조 source of truth는 `docs/process/document-structure.md`
   - 새 프로젝트 starter의 source of truth는 `boilerplates/project-starter/`
 
 - `boilerplates/project-starter/`

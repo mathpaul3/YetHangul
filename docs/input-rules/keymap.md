@@ -1,7 +1,7 @@
 # Keymap Notes
 
 이 문서는 입력 규칙의 짧은 개요만 담는다.
-정확한 source of truth는 `docs/handoff/decisions.md`, 구현 상태는 `docs/handoff/spec-status-v1.md`다.
+정확한 source of truth는 `docs/handoff/decisions.md`, 구현 상태는 `docs/specs/active/spec-v1-status.md`다.
 
 ## Confirmed Rules
 

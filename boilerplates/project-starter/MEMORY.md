@@ -4,7 +4,7 @@
 
 이번 iteration의 현재 목표를 적는다.
 
-현재 장/단기 목표와 coordinator 기준 우선순위는 `docs/handoff/current-goals.md`를 source of truth로 사용한다.
+현재 handoff 요약은 `docs/handoff/current.md`, active requirement/task는 `docs/requirements/active.md`, `docs/tasks/active.md`를 source of truth로 사용한다.
 
 ## Product Goal
 

@@ -8,9 +8,11 @@
 
 1. `README.md`
 2. `MEMORY.md`
-3. `docs/handoff/current-goals.md`
-4. `docs/handoff/decisions.md`
-5. `docs/handoff/spec-status-v1.md`
+3. `docs/handoff/current.md`
+4. `docs/requirements/active.md`
+5. `docs/tasks/active.md`
+6. `docs/handoff/decisions.md`
+7. `docs/specs/active/spec-v1-status.md`
 6. 필요한 세부 문서
 
 작업 원칙:
@@ -41,18 +43,22 @@
 - `MEMORY.md`: 장기 방향성과 핵심 설계 의도
 - `CHANGELOG.md`: 사용자 관점 변경 내역
 - 릴리스 시 `package.json`, footer, `CHANGELOG.md`, git tag 버전을 서로 일치시킨다
-- `docs/handoff/`: 단기 인수인계 문서
-- `docs/handoff/current-goals.md`: 장기/단기 목표와 coordinator의 즉시 우선순위
+- `docs/handoff/`: 현재 인수인계 요약
+- `docs/handoff/current.md`: 지금 읽어야 할 문서와 현재 상태
+- `docs/requirements/`: active/archive 요구사항
+- `docs/tasks/`: active/archive 작업 항목
+- `docs/specs/`: active/archive spec 상태
 - `docs/architecture/`: 시스템 구조
 - `docs/decisions/`: 설계 결정 기록
 - `docs/process/`: 협업 규칙, 템플릿, system prompt
+- `docs/process/DOCUMENT_STRUCTURE.md`: 문서 계층 구조와 source of truth
 - `docs/process/AGENT_PROFILES.md`: 재사용 가능한 Agent 역할 정의
 - `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`: 범용 Agent system prompt 템플릿
 
 ## Process Notes
 
 - 이 starter 디렉토리가 새 프로젝트용 canonical source of truth다.
-- 고수준 목표는 `docs/handoff/current-goals.md`에서 atomic task id까지 분해해 관리하는 것을 권장한다.
+- current summary와 requirement/task/spec는 분리해서 관리하는 것을 권장한다.
 - 같은 작업이 두 라운드 이상 진전 없이 반복되면 더 작은 sub-task로 다시 쪼갠다.
 - cycle 종료 시에는 기능 리뷰와 별개로 개발 과정/문서/boilerplate/subagent lifecycle까지 함께 회고한다.
 

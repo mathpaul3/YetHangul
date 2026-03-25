@@ -7,7 +7,7 @@
 
 모든 Agent는 아래 규칙을 공통으로 따른다.
 
-- 시작 전에 `README.md`, `MEMORY.md`, `docs/handoff/decisions.md`, `docs/handoff/spec-status-v1.md`를 읽는다.
+- 시작 전에 `README.md`, `MEMORY.md`, `docs/handoff/current.md`, `docs/handoff/decisions.md`, `docs/specs/active/spec-v1-status.md`를 읽는다.
 - 자기 write scope 밖의 파일은 가능하면 수정하지 않는다.
 - 구현이 끝나면 관련 handoff/spec 문서를 같이 갱신한다.
 - 버그를 수정하면 가능한 한 재현 테스트를 함께 추가한다.

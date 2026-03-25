@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-03-26
+
+### Fixed
+
+- meta-row가 좁은 화면에서 자연스럽게 줄바꿈되면서도 도움말 버튼은 마지막 순서를 유지한 채 같은 줄의 오른쪽 끝에 붙도록 조정
+- compact keyboard의 `L Shift` / `R Shift` 표기를 글자로 고정
+- 도움말 아코디언의 설명 계층과 예시 레이아웃을 다듬고, 전체 규칙표의 가독성을 보강
+- 입력 결과창과 newline 렌더링, mixed punctuation / tone / modifier preview 관련 유지보수 수정 반영
+
 ## [0.2.0] - 2026-03-25
 
 ### Changed

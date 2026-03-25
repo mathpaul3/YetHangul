@@ -647,11 +647,11 @@ export function ImeWorkbench() {
           <div className="panel editor-panel">
             <div className="meta-row">
               <div className="meta-row-main">
-                <span className="badge" data-testid="preferred-mode" data-mode={preferredMode}>
+                <span className="badge meta-item meta-item-count" data-testid="preferred-mode" data-mode={preferredMode}>
                   글자 수 {syllableCount} / {decomposedCount}
                 </span>
-                <span className="badge">선택 {selectionLabel}</span>
-                <div className="toggle-group" role="tablist" aria-label="보기 전환">
+                <span className="badge meta-item meta-item-selection">선택 {selectionLabel}</span>
+                <div className="toggle-group meta-item meta-item-toggle" role="tablist" aria-label="보기 전환">
                   <button
                     className={`toggle-chip ${renderMode === 'composed' ? 'toggle-chip-active' : ''}`}
                     type="button"
@@ -669,7 +669,7 @@ export function ImeWorkbench() {
                 </div>
                 <button
                   aria-label="전체 복사"
-                  className="badge badge-button badge-icon-button"
+                  className="badge badge-button badge-icon-button meta-item meta-item-copy-all"
                   type="button"
                   onClick={() => void copyAllText()}
                 >
@@ -677,7 +677,7 @@ export function ImeWorkbench() {
                 </button>
                 <button
                   aria-label="선택 복사"
-                  className="badge badge-button badge-icon-button"
+                  className="badge badge-button badge-icon-button meta-item meta-item-copy-selection"
                   disabled={selectionRange == null}
                   type="button"
                   onClick={() => void copySelectionText()}
@@ -685,17 +685,15 @@ export function ImeWorkbench() {
                   {renderCopyIcon('selection')}
                 </button>
               </div>
-              <div className="meta-row-help">
-                <button
-                  aria-label="도움말 열기"
-                  className="badge badge-button badge-help-button"
-                  type="button"
-                  onClick={() => setShowHelpOverlay(true)}
-                >
-                  {renderHelpIcon()}
-                  <span>도움말</span>
-                </button>
-              </div>
+              <button
+                aria-label="도움말 열기"
+                className="badge badge-button badge-help-button meta-row-help-button"
+                type="button"
+                onClick={() => setShowHelpOverlay(true)}
+              >
+                {renderHelpIcon()}
+                <span>도움말</span>
+              </button>
             </div>
 
             <output className="sr-only" data-testid="rendered-text-value">

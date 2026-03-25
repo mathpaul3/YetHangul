@@ -227,15 +227,36 @@ textarea {
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
-  justify-content: space-between;
 }
 
-.meta-row-main,
-.meta-row-help {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+.meta-row-main {
+  display: contents;
+}
+
+.meta-row-help-button {
+  order: 99;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.meta-item-count {
+  order: 1;
+}
+
+.meta-item-selection {
+  order: 2;
+}
+
+.meta-item-toggle {
+  order: 3;
+}
+
+.meta-item-copy-all {
+  order: 4;
+}
+
+.meta-item-copy-selection {
+  order: 5;
 }
 
 .copy-toast {
@@ -703,16 +724,27 @@ textarea {
   }
 
   .meta-row {
-    justify-content: flex-start;
+    gap: 8px;
   }
 
-  .meta-row-main,
-  .meta-row-help {
-    width: 100%;
+  .meta-item-count {
+    order: 1;
   }
 
-  .meta-row-help {
-    justify-content: flex-end;
+  .meta-item-selection {
+    order: 2;
+  }
+
+  .meta-item-copy-all {
+    order: 3;
+  }
+
+  .meta-item-copy-selection {
+    order: 4;
+  }
+
+  .meta-item-toggle {
+    order: 5;
   }
 
   .keyboard-heading {

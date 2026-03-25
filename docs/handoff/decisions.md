@@ -123,6 +123,7 @@
 - 종성 뒤 모음을 이어쓰지 않고 끊어쓰고 싶을 때도 `Ctrl + Space`를 쓴다.
 - 즉 기본은 이어쓰기지만, `...종성 + Ctrl + Space + 모음`은 새 음절의 choseong filler를 강제로 만들어 `영ㅣ` 같은 표기를 가능하게 한다.
 - utility key(`Space`, `.`, `;`)는 on-screen modifier 상태뿐 아니라 현재 눌린 하드웨어 `Ctrl` 상태도 함께 본다.
+- on-screen utility key `.` / `;`는 `Ctrl`이 없을 때 literal punctuation으로 입력되고, `Ctrl`이 있을 때만 방점으로 해석한다.
 - `Enter`는 줄바꿈 literal input으로 처리한다.
 - `Ctrl + Shift + ㅎ -> ꥼ`, `Ctrl + Shift + ㅏ -> ᆢ`도 단계 축약 규칙으로 본다.
 - 소비된 `oneshot` modifier는 backspace undo 후에도 되살아나지 않는다.
@@ -252,6 +253,10 @@
   - 서비스 설명은 첫 방문에만 자동으로 열리는 도움말 오버레이에서 보여주고, 닫은 뒤에는 meta-row의 도움말 버튼으로 다시 열 수 있게 한다.
   - 도움말 오버레이에는 기반 원칙 3가지와 Shift / Ctrl 전체 규칙표를 함께 넣고, 길이는 scroll로 처리한다.
   - 좁은 화면에서 긴 keycap label은 아이콘으로 치환하되, 실제 label/data attribute는 유지해 하이라이트와 접근성을 보존한다.
+  - on-screen keyboard는 현재 modifier 상태를 미리 보여주는 preview surface로도 동작한다.
+    - `Shift` 활성 시 기본 자모 keycap은 쌍자모 출력 형태로 바뀐다.
+    - `L Ctrl` / `R Ctrl` 활성 시 해당 방향의 자형 변환 결과가 keycap에 표시된다.
+    - `Ctrl + Shift`가 동시에 활성인 경우, 정의된 결합 규칙이 있는 keycap은 결합 결과를 우선 표시한다.
 
 ## Objective Quality Criteria
 

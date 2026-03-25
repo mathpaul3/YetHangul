@@ -128,6 +128,62 @@ const modifierLabels = {
   rightShift: 'R Shift',
 } as const
 
+const SHIFT_DISPLAY_MAP: Record<string, string> = {
+  'ㄱ': 'ᄁ',
+  'ㄴ': 'ᄔ',
+  'ㄷ': 'ᄄ',
+  'ㄹ': 'ᄙ',
+  'ㅁ': 'ᅟᅠퟠ',
+  'ㅂ': 'ᄈ',
+  'ㅅ': 'ᄊ',
+  'ㅇ': 'ᅇ',
+  'ㅈ': 'ᄍ',
+  'ㅌ': 'ꥹ',
+  'ㅎ': 'ᅘ',
+  'ㅗ': 'ᆂ',
+  'ㅜ': 'ᆍ',
+  'ㅡ': 'ᆖ',
+  'ㅣ': 'ퟄ',
+}
+
+const LEFT_CTRL_DISPLAY_MAP: Record<string, string> = {
+  'ㅅ': 'ᄼ',
+  'ㅈ': 'ᅎ',
+  'ㅊ': 'ᅔ',
+  'ㅇ': 'ᅌ',
+  'ㅎ': 'ᅙ',
+  'ㅏ': 'ᆞ',
+  '.': '〮',
+  ';': '〯',
+}
+
+const RIGHT_CTRL_DISPLAY_MAP: Record<string, string> = {
+  'ㅅ': 'ᄾ',
+  'ㅈ': 'ᅐ',
+  'ㅊ': 'ᅕ',
+  'ㅇ': 'ᅌ',
+  'ㅎ': 'ᅙ',
+  'ㅏ': 'ᆞ',
+  '.': '〮',
+  ';': '〯',
+}
+
+const LEFT_CTRL_SHIFT_DISPLAY_MAP: Record<string, string> = {
+  'ㅅ': 'ᄽ',
+  'ㅈ': 'ᅏ',
+  'ㅊ': 'ᅀ',
+  'ㅎ': 'ꥼ',
+  'ㅏ': 'ᆢ',
+}
+
+const RIGHT_CTRL_SHIFT_DISPLAY_MAP: Record<string, string> = {
+  'ㅅ': 'ᄿ',
+  'ㅈ': 'ᅑ',
+  'ㅊ': 'ᅀ',
+  'ㅎ': 'ꥼ',
+  'ㅏ': 'ᆢ',
+}
+
 export function ImeWorkbench() {
   const rootRef = useRef<HTMLElement | null>(null)
   const nativeKeyboardRef = useRef<HTMLTextAreaElement | null>(null)
@@ -210,6 +266,55 @@ export function ImeWorkbench() {
     return pressedVisualKeys[label] ? 'keycap-pressed' : ''
   }
 
+  function getDisplayedKeyLabel(label: string, action: number | string) {
+    if (
+      action === 'backspace' ||
+      action === 'enter' ||
+      action === 'leftCtrl' ||
+      action === 'rightCtrl' ||
+      action === 'leftShift' ||
+      action === 'rightShift' ||
+      action === 'arrowLeft' ||
+      action === 'arrowRight' ||
+      action === 'home' ||
+      action === 'end'
+    ) {
+      return label
+    }
+
+    const leftCtrlActive =
+      engineState.modifierState.leftCtrl !== 'off' || hardwareModifierState.leftCtrl === true
+    const rightCtrlActive =
+      engineState.modifierState.rightCtrl !== 'off' || hardwareModifierState.rightCtrl === true
+    const shiftActive =
+      engineState.modifierState.leftShift !== 'off' ||
+      engineState.modifierState.rightShift !== 'off' ||
+      hardwareModifierState.leftShift === true ||
+      hardwareModifierState.rightShift === true
+
+    if (leftCtrlActive && shiftActive) {
+      return LEFT_CTRL_SHIFT_DISPLAY_MAP[label] ?? LEFT_CTRL_DISPLAY_MAP[label] ?? SHIFT_DISPLAY_MAP[label] ?? label
+    }
+
+    if (rightCtrlActive && shiftActive) {
+      return RIGHT_CTRL_SHIFT_DISPLAY_MAP[label] ?? RIGHT_CTRL_DISPLAY_MAP[label] ?? SHIFT_DISPLAY_MAP[label] ?? label
+    }
+
+    if (leftCtrlActive) {
+      return LEFT_CTRL_DISPLAY_MAP[label] ?? label
+    }
+
+    if (rightCtrlActive) {
+      return RIGHT_CTRL_DISPLAY_MAP[label] ?? label
+    }
+
+    if (shiftActive) {
+      return SHIFT_DISPLAY_MAP[label] ?? label
+    }
+
+    return label
+  }
+
   function renderEditorUnit(unit: string) {
     if (renderMode === 'decomposed') {
       return <span className="editor-decomposed-unit">{Array.from(unit).join(' ')}</span>
@@ -266,6 +371,8 @@ export function ImeWorkbench() {
     action: number | string,
     keyClassName = '',
   ) {
+    const displayedLabel = getDisplayedKeyLabel(label, action)
+
     if (action === 'backspace') {
       return (
         <button
@@ -282,7 +389,7 @@ export function ImeWorkbench() {
           onPointerLeave={clearBackspaceRepeat}
           onPointerUp={clearBackspaceRepeat}
         >
-          {renderKeyLabel(label, keyClassName)}
+          {renderKeyLabel(displayedLabel, keyClassName)}
         </button>
       )
     }
@@ -304,7 +411,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label, keyClassName)}
+          {renderKeyLabel(displayedLabel, keyClassName)}
         </button>
       )
     }
@@ -332,7 +439,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label, keyClassName)}
+          {renderKeyLabel(displayedLabel, keyClassName)}
         </button>
       )
     }
@@ -361,7 +468,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label, keyClassName)}
+          {renderKeyLabel(displayedLabel, keyClassName)}
         </button>
       )
     }
@@ -408,7 +515,7 @@ export function ImeWorkbench() {
             action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
           }
         >
-          {renderKeyLabel(label, keyClassName)}
+          {renderKeyLabel(displayedLabel, keyClassName)}
         </button>
       )
     }
@@ -431,7 +538,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label, keyClassName)}
+          {renderKeyLabel(displayedLabel, keyClassName)}
         </button>
       )
     }
@@ -452,7 +559,7 @@ export function ImeWorkbench() {
         }}
         onPointerDown={preventVirtualKeyboardFocus}
       >
-        {renderKeyLabel(label, keyClassName)}
+        {renderKeyLabel(displayedLabel, keyClassName)}
       </button>
     )
   }

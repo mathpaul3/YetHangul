@@ -778,6 +778,8 @@ export function useImeWorkbench() {
     }
 
     if (!ctrlActive) {
+      const literalText = utilityKey === 'period' ? '.' : ';'
+      handleLiteralInput(literalText, utilityLabelMap[utilityKey])
       return
     }
 

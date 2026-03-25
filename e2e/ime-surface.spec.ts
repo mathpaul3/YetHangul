@@ -355,8 +355,41 @@ test('onscreen ctrl and shift combinations do not duplicate sios output', async 
   await gotoApp(page)
   await ensureExpandedKeyboard(page)
 
+  await clickKey(page, 'L Ctrl')
+  await clickKey(page, 'L Shift')
+  await clickKey(page, 'ㅅ')
+  await expectRenderedText(page, 'ᄽ')
+
+  await clickKey(page, 'Backspace')
+  await expectRenderedText(page, '')
+
   await clickKey(page, 'R Ctrl')
   await clickKey(page, 'R Shift')
   await clickKey(page, 'ㅅ')
   await expectRenderedText(page, 'ᄿ')
+})
+
+test('onscreen punctuation stays literal without ctrl and keycaps reflect active modifiers', async ({ page }) => {
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
+
+  await clickKey(page, '.')
+  await expectRenderedText(page, '.')
+
+  await clickKey(page, 'Backspace')
+  await expectRenderedText(page, '')
+
+  await clickKey(page, 'L Shift')
+  await expect(page.locator('[data-key-label="ㅂ"]').first()).toHaveText('ᄈ')
+  await expect(page.locator('[data-key-label="ㅅ"]').first()).toHaveText('ᄊ')
+
+  await clickKey(page, 'L Shift')
+  await clickKey(page, 'L Shift')
+  await clickKey(page, 'L Ctrl')
+  await expect(page.locator('[data-key-label="ㅅ"]').first()).toHaveText('ᄼ')
+  await expect(page.locator('[data-key-label="ㅈ"]').first()).toHaveText('ᅎ')
+
+  await clickKey(page, 'L Shift')
+  await expect(page.locator('[data-key-label="ㅅ"]').first()).toHaveText('ᄽ')
+  await expect(page.locator('[data-key-label="ㅈ"]').first()).toHaveText('ᅏ')
 })

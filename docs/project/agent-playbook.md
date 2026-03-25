@@ -76,8 +76,8 @@
 
 - `docs/architecture/*.md`
 - `docs/decisions/*.md`
-- `docs/input-rules/*.md`
-- `docs/process/*.md`
+- `docs/specs/active/*.md`
+- `docs/project/*.md`
 - `MEMORY.md`
 
 ### 3-3. Short Term Memory
@@ -112,7 +112,7 @@
 
 - `CHANGELOG.md`
   - 사용자 관점 변경점
-- `docs/process/versioning.md`
+- `docs/project/versioning.md`
   - 버전 상승 기준
   - 릴리스 단위 정의
   - changelog 작성 규칙

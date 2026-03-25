@@ -198,7 +198,7 @@
 - `MINOR`는 사용자에게 설명 가능한 기능 단위나 단기 Goal iteration이 마무리될 때 올린다.
 - `PATCH`는 버그 수정, UI/UX polish, 문서/테스트/운영 안정화에 사용한다.
 - 버전은 커밋마다 올리지 않고, 릴리스 가능한 단위가 모였을 때만 올린다.
-- 세부 기준은 `docs/process/versioning.md`를 source of truth로 둔다.
+- 세부 기준은 `docs/project/versioning.md`를 source of truth로 둔다.
 
 ## Scope Clarification
 
@@ -236,12 +236,12 @@
 - 조합 버퍼를 문서에 flush할 때는 “어느 caret 위치에, 몇 개 unit을” 넣었는지를 helper 기준으로 결정하고, 그 결과를 문서 배열과 caret state에 동시에 반영한다.
 - 줄바꿈 unit은 editor surface에서 실제 line break처럼 보이도록 별도 unit class로 렌더링한다.
 - unit 위의 짧은 클릭은 selection을 남기지 않고 caret 이동으로 처리하고, 실제 drag가 일어났을 때만 selection을 만든다.
-- 극단적 상호작용 시나리오와 대응 전략은 `docs/handoff/extreme-interaction-cases.md`에 별도 정리한다.
+- 극단적 상호작용 시나리오와 대응 전략은 `docs/tasks/checklists/extreme-interaction-cases.md`에 별도 정리한다.
 - focus 이탈이나 `visibilitychange`가 발생하면 hardware modifier state, pressed key highlight, drag-in-progress 상태를 초기화한다.
 - editor blur 시에는 조합 중이던 composition buffer를 먼저 document에 commit하고, 그 뒤 hardware interaction state와 recent IME duplicate marker를 초기화한다.
 - selection replacement와 newline unit 삭제는 `editorUnits.ts` helper(`replaceSelectionWithUnits`, `deleteBackwardUnit`, `deleteForwardUnit`)를 기준으로 처리한다.
 - on-screen keyboard의 pointer down은 기본 포커스 이동을 막아서, 내부 버튼 클릭만으로 editor blur/commit이 발생하지 않게 한다.
-- 하드웨어와 on-screen 입력의 남은 차이는 `docs/handoff/input-parity-checklist.md`에 별도 추적한다.
+- 하드웨어와 on-screen 입력의 남은 차이는 `docs/tasks/checklists/input-parity.md`에 별도 추적한다.
 - browser-level smoke proof는 Playwright + system Chrome channel을 사용해 desktop/tablet/mobile/mobile-small surface를 검증한다.
 - mixed paste에서 literal text와 normalize 대상 문자가 섞여 있을 때도, canonical Unicode 문자열로 먼저 정규화한 뒤 document에 삽입해 원래 순서를 보존한다.
 - direct dispatch 직후의 `beforeinput` / `compositionend` suppression은 "완전히 같은 문자"뿐 아니라, 같은 기본 키에서 파생된 shift/control 변형도 같은 입력으로 간주해 억제한다.

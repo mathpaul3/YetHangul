@@ -301,5 +301,5 @@
 
 - 1. watch-only maintenance: 새 브라우저/기기군이 추가되면 smoke project를 확장하기
 - 2. 회귀 버그가 생기면 unit/service/e2e 세 레이어 중 맞는 위치에 즉시 추가하기
-- 극단 상호작용 시나리오 목록과 대응 초안은 `docs/handoff/extreme-interaction-cases.md`에 정리함
-- 하드웨어/on-screen 입력 차이 추적은 `docs/handoff/input-parity-checklist.md`에 정리함
+- 극단 상호작용 시나리오 목록과 대응 초안은 `docs/tasks/checklists/extreme-interaction-cases.md`에 정리함
+- 하드웨어/on-screen 입력 차이 추적은 `docs/tasks/checklists/input-parity.md`에 정리함

@@ -43,9 +43,9 @@
 - [docs/architecture/engine.md](docs/architecture/engine.md): 엔진 구조
 - [docs/architecture/input-pipeline-refactor.md](docs/architecture/input-pipeline-refactor.md): 입력 파이프라인 refactor 기록
 - [docs/decisions/0001-engine-architecture.md](docs/decisions/0001-engine-architecture.md): 주요 설계 결정
-- [docs/input-rules/keymap.md](docs/input-rules/keymap.md): 입력 규칙
-- [docs/process/document-structure.md](docs/process/document-structure.md): 문서 구조 규칙
-- [docs/process/agent-project-playbook.md](docs/process/agent-project-playbook.md): 재사용 가능한 협업/문서화/운영 원칙
+- [docs/specs/active/input-rules.md](docs/specs/active/input-rules.md): 입력 규칙
+- [docs/project/document-structure.md](docs/project/document-structure.md): 문서 구조 규칙
+- [docs/project/agent-playbook.md](docs/project/agent-playbook.md): 재사용 가능한 협업/문서화/운영 원칙
 - [boilerplates/project-starter/](boilerplates/project-starter/README.md): 새 프로젝트 시작용 boilerplate
 
 작업 원칙:
@@ -109,12 +109,12 @@
 - `docs/decisions/`
   - ADR 성격의 설계 결정 기록
 
-- `docs/input-rules/`
-  - 도메인 규칙 문서
+- `docs/specs/active/input-rules.md`
+  - 현재 입력 규칙 요약
 
-- `docs/process/`
-  - Agent 협업 방식과 프로젝트 운영 규칙
-  - 문서 구조 source of truth는 `docs/process/document-structure.md`
+- `docs/project/`
+  - Agent 협업 방식, 버저닝, 문서 구조 같은 프로젝트 운영 규칙
+  - 문서 구조 source of truth는 `docs/project/document-structure.md`
   - 새 프로젝트 starter의 source of truth는 `boilerplates/project-starter/`
 
 - `boilerplates/project-starter/`

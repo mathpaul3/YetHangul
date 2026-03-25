@@ -5,7 +5,7 @@ import { getEditorSurfaceTouchBehavior } from '@/features/ime/services/editorSur
 import { detectPreferredKeyboardMode } from '@/features/ime/services/keyboardMode'
 
 const preferredMode = detectPreferredKeyboardMode()
-const REPOSITORY_URL = 'https://github.com/mathpaul3/yet-hangul'
+const REPOSITORY_URL = 'https://github.com/mathpaul3/YetHangul'
 const AUTHOR_URL = 'https://github.com/mathpaul3'
 const HELP_OVERLAY_DISMISSED_KEY = 'yethangul-help-overlay-dismissed'
 const SHIFT_RULES = [
@@ -350,6 +350,14 @@ export function ImeWorkbench() {
     )
   }
 
+  function renderHelpIcon() {
+    return (
+      <span aria-hidden="true" className="icon-help">
+        ?
+      </span>
+    )
+  }
+
   function renderKeyLabel(label: string, keyClassName = '') {
     const isCompactShift =
       keyClassName.includes('keycap-compact') &&
@@ -636,51 +644,56 @@ export function ImeWorkbench() {
         <section className="workspace-grid" id="workspace">
           <div className="panel editor-panel">
             <div className="meta-row">
-              <span className="badge" data-testid="preferred-mode" data-mode={preferredMode}>
-                글자 수 {syllableCount} / {decomposedCount}
-              </span>
-              <span className="badge">선택 {selectionLabel}</span>
-              <div className="toggle-group" role="tablist" aria-label="보기 전환">
+              <div className="meta-row-main">
+                <span className="badge" data-testid="preferred-mode" data-mode={preferredMode}>
+                  글자 수 {syllableCount} / {decomposedCount}
+                </span>
+                <span className="badge">선택 {selectionLabel}</span>
+                <div className="toggle-group" role="tablist" aria-label="보기 전환">
+                  <button
+                    className={`toggle-chip ${renderMode === 'composed' ? 'toggle-chip-active' : ''}`}
+                    type="button"
+                    onClick={() => setRenderMode('composed')}
+                  >
+                    일반 보기
+                  </button>
+                  <button
+                    className={`toggle-chip ${renderMode === 'decomposed' ? 'toggle-chip-active' : ''}`}
+                    type="button"
+                    onClick={() => setRenderMode('decomposed')}
+                  >
+                    분해 보기
+                  </button>
+                </div>
                 <button
-                  className={`toggle-chip ${renderMode === 'composed' ? 'toggle-chip-active' : ''}`}
+                  aria-label="전체 복사"
+                  className="badge badge-button badge-icon-button"
                   type="button"
-                  onClick={() => setRenderMode('composed')}
+                  onClick={() => void copyAllText()}
                 >
-                  일반 보기
+                  {renderCopyIcon('all')}
                 </button>
                 <button
-                  className={`toggle-chip ${renderMode === 'decomposed' ? 'toggle-chip-active' : ''}`}
+                  aria-label="선택 복사"
+                  className="badge badge-button badge-icon-button"
+                  disabled={selectionRange == null}
                   type="button"
-                  onClick={() => setRenderMode('decomposed')}
+                  onClick={() => void copySelectionText()}
                 >
-                  분해 보기
+                  {renderCopyIcon('selection')}
                 </button>
               </div>
-              <button
-                aria-label="전체 복사"
-                className="badge badge-button badge-icon-button"
-                type="button"
-                onClick={() => void copyAllText()}
-              >
-                {renderCopyIcon('all')}
-              </button>
-              <button
-                aria-label="선택 복사"
-                className="badge badge-button badge-icon-button"
-                disabled={selectionRange == null}
-                type="button"
-                onClick={() => void copySelectionText()}
-              >
-                {renderCopyIcon('selection')}
-              </button>
-              <button
-                aria-label="도움말 열기"
-                className="badge badge-button"
-                type="button"
-                onClick={() => setShowHelpOverlay(true)}
-              >
-                도움말
-              </button>
+              <div className="meta-row-help">
+                <button
+                  aria-label="도움말 열기"
+                  className="badge badge-button badge-help-button"
+                  type="button"
+                  onClick={() => setShowHelpOverlay(true)}
+                >
+                  {renderHelpIcon()}
+                  <span>도움말</span>
+                </button>
+              </div>
             </div>
 
             <output className="sr-only" data-testid="rendered-text-value">

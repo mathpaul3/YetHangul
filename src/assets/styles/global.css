@@ -225,6 +225,15 @@ textarea {
 .meta-row {
   display: flex;
   flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.meta-row-main,
+.meta-row-help {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
 }
@@ -260,6 +269,25 @@ textarea {
 .badge-button {
   border: none;
   cursor: pointer;
+}
+
+.badge-help-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-help {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #7a2f12;
+  color: #fffaf5;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .badge-button:disabled {
@@ -672,6 +700,19 @@ textarea {
 
   .badge {
     font-size: 0.86rem;
+  }
+
+  .meta-row {
+    justify-content: flex-start;
+  }
+
+  .meta-row-main,
+  .meta-row-help {
+    width: 100%;
+  }
+
+  .meta-row-help {
+    justify-content: flex-end;
   }
 
   .keyboard-heading {

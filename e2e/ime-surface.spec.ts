@@ -382,6 +382,7 @@ test('onscreen punctuation stays literal without ctrl and keycaps reflect active
   await clickKey(page, 'L Shift')
   await expect(page.locator('[data-key-label="ㅂ"]').first()).toHaveText('ᄈ')
   await expect(page.locator('[data-key-label="ㅅ"]').first()).toHaveText('ᄊ')
+  await expect(page.locator('[data-key-label="ㅊ"]').first()).toHaveText('ᅀ')
 
   await clickKey(page, 'L Shift')
   await clickKey(page, 'L Shift')

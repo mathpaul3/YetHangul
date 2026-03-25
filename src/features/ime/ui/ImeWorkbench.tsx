@@ -138,6 +138,7 @@ const SHIFT_DISPLAY_MAP: Record<string, string> = {
   'ㅅ': 'ᄊ',
   'ㅇ': 'ᅇ',
   'ㅈ': 'ᄍ',
+  'ㅊ': 'ᅀ',
   'ㅌ': 'ꥹ',
   'ㅎ': 'ᅘ',
   'ㅗ': 'ᆂ',

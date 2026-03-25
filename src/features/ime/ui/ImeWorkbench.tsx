@@ -242,7 +242,15 @@ export function ImeWorkbench() {
     )
   }
 
-  function renderKeyLabel(label: string) {
+  function renderKeyLabel(label: string, keyClassName = '') {
+    const isCompactShift =
+      keyClassName.includes('keycap-compact') &&
+      (label === 'L Shift' || label === 'R Shift')
+
+    if (isCompactShift) {
+      return label
+    }
+
     const iconMap: Record<string, string> = {
       Backspace: '⌫',
       Enter: '↵',
@@ -274,7 +282,7 @@ export function ImeWorkbench() {
           onPointerLeave={clearBackspaceRepeat}
           onPointerUp={clearBackspaceRepeat}
         >
-          {renderKeyLabel(label)}
+          {renderKeyLabel(label, keyClassName)}
         </button>
       )
     }
@@ -296,7 +304,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label)}
+          {renderKeyLabel(label, keyClassName)}
         </button>
       )
     }
@@ -324,7 +332,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label)}
+          {renderKeyLabel(label, keyClassName)}
         </button>
       )
     }
@@ -353,7 +361,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label)}
+          {renderKeyLabel(label, keyClassName)}
         </button>
       )
     }
@@ -400,7 +408,7 @@ export function ImeWorkbench() {
             action === 'arrowLeft' || action === 'arrowRight' ? clearNavigationRepeat : undefined
           }
         >
-          {renderKeyLabel(label)}
+          {renderKeyLabel(label, keyClassName)}
         </button>
       )
     }
@@ -423,7 +431,7 @@ export function ImeWorkbench() {
           }}
           onPointerDown={preventVirtualKeyboardFocus}
         >
-          {renderKeyLabel(label)}
+          {renderKeyLabel(label, keyClassName)}
         </button>
       )
     }
@@ -444,7 +452,7 @@ export function ImeWorkbench() {
         }}
         onPointerDown={preventVirtualKeyboardFocus}
       >
-        {renderKeyLabel(label)}
+        {renderKeyLabel(label, keyClassName)}
       </button>
     )
   }

@@ -13,7 +13,7 @@
 5. `docs/tasks/active.md`
 6. `docs/handoff/decisions.md`
 7. `docs/specs/active/spec-v1-status.md`
-6. 필요한 세부 문서
+8. 필요한 세부 문서
 
 작업 원칙:
 
@@ -50,10 +50,10 @@
 - `docs/specs/`: active/archive spec 상태
 - `docs/architecture/`: 시스템 구조
 - `docs/decisions/`: 설계 결정 기록
-- `docs/process/`: 협업 규칙, 템플릿, system prompt
-- `docs/process/DOCUMENT_STRUCTURE.md`: 문서 계층 구조와 source of truth
-- `docs/process/AGENT_PROFILES.md`: 재사용 가능한 Agent 역할 정의
-- `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`: 범용 Agent system prompt 템플릿
+- `docs/project/`: 협업 규칙, 버저닝, Agent 운영 원칙
+- `docs/project/DOCUMENT_STRUCTURE.md`: 문서 계층 구조와 source of truth
+- `docs/project/AGENT_PROFILES.md`: 재사용 가능한 Agent 역할 정의
+- `docs/project/AGENT_SYSTEM_PROMPT_TEMPLATES.md`: 범용 Agent system prompt 템플릿
 
 ## Process Notes
 

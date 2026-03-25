@@ -152,5 +152,5 @@ scripts/create-project-from-boilerplate.sh /path/to/new-project "Project Name"
 이 스크립트는 다음을 수행합니다.
 
 - `boilerplates/project-starter/` 복사
-- 기본 디렉토리(`src`, `tests`, `docs/architecture`, `docs/decisions`, `docs/input-rules`) 생성
+- 기본 디렉토리(`src`, `tests`, `docs/architecture`, `docs/decisions`, `docs/requirements/archive`, `docs/tasks/archive`, `docs/tasks/checklists`, `docs/specs/active`, `docs/specs/archive`, `docs/project`) 생성
 - 선택적으로 `README.md`의 프로젝트 이름 치환

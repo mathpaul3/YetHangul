@@ -48,7 +48,12 @@ mkdir -p \
   "$TARGET_DIR/tests" \
   "$TARGET_DIR/docs/architecture" \
   "$TARGET_DIR/docs/decisions" \
-  "$TARGET_DIR/docs/input-rules"
+  "$TARGET_DIR/docs/requirements/archive" \
+  "$TARGET_DIR/docs/tasks/archive" \
+  "$TARGET_DIR/docs/tasks/checklists" \
+  "$TARGET_DIR/docs/specs/active" \
+  "$TARGET_DIR/docs/specs/archive" \
+  "$TARGET_DIR/docs/project"
 
 if [[ -n "$PROJECT_NAME" ]]; then
   README_PATH="$TARGET_DIR/README.md"
@@ -68,8 +73,7 @@ Created new project starter at:
 
 Next steps:
   1. Fill in README.md and MEMORY.md
-  2. Update docs/handoff/decisions.md
-  3. Update docs/handoff/spec-status-v1.md
-  4. Review docs/process/PROJECT_START_CHECKLIST.md
+  2. Update docs/handoff/current.md
+  3. Update docs/requirements/active.md, docs/tasks/active.md, and docs/specs/active/spec-v1-status.md
+  4. Review docs/project/PROJECT_START_CHECKLIST.md
 EOF
-

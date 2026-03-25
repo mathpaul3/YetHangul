@@ -7,19 +7,22 @@
 - `README.md`
 - `MEMORY.md`
 - `CHANGELOG.md`
+- `docs/handoff/current.md`
 - `docs/handoff/decisions.md`
 - `docs/specs/active/spec-v1-status.md`
-- `docs/process/PROJECT_START_CHECKLIST.md`
-- `docs/process/AGENT_PROFILES.md`
-- `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`
+- `docs/requirements/active.md`
+- `docs/tasks/active.md`
+- `docs/project/PROJECT_START_CHECKLIST.md`
+- `docs/project/AGENT_PROFILES.md`
+- `docs/project/AGENT_SYSTEM_PROMPT_TEMPLATES.md`
 
 ## How To Use
 
 1. 이 디렉토리 내용을 새 프로젝트 루트로 복사합니다.
 2. `README.md`에 프로젝트 개요와 실행 방법을 채웁니다.
 3. `MEMORY.md`에 장기 방향성과 핵심 제약을 적습니다.
-4. `docs/handoff/` 문서에 현재 iteration 목표와 구현 상태를 적습니다.
-5. `docs/process/AGENT_PROFILES.md`와 `docs/process/AGENT_SYSTEM_PROMPT_TEMPLATES.md`를 바탕으로 Agent 세트를 정합니다.
+4. `docs/handoff/current.md`, `docs/requirements/active.md`, `docs/tasks/active.md`, `docs/specs/active/spec-v1-status.md`를 초기 상태에 맞게 채웁니다.
+5. `docs/project/AGENT_PROFILES.md`와 `docs/project/AGENT_SYSTEM_PROMPT_TEMPLATES.md`를 바탕으로 Agent 세트를 정합니다.
 6. checklist를 보면서 초기 세팅을 마칩니다.
 
 ## Canonical Source
@@ -35,8 +38,6 @@
 
 ## Recommended Additions
 
-- `docs/architecture/`
-- `docs/decisions/`
-- `docs/input-rules/`
 - CI/CD workflow
 - 테스트 명령과 배포 명령
+- 프로젝트별 architecture / decisions 문서 본문

@@ -4,14 +4,44 @@ declare global {
   interface Window {
     dataLayer: unknown[]
     gtag?: (...args: unknown[]) => void
+    [key: `ga-disable-${string}`]: boolean | undefined
   }
 }
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_TRACKING_ID
+const IS_PRODUCTION = import.meta.env.PROD
+
+function isAnalyticsEnabled() {
+  return IS_PRODUCTION && Boolean(GA_MEASUREMENT_ID)
+}
+
+export function trackAnalyticsEvent(
+  action: string,
+  {
+    category = 'Input',
+    ...params
+  }: {
+    category?: string
+    [key: string]: string | number | boolean | undefined
+  } = {},
+) {
+  if (!isAnalyticsEnabled() || typeof window === 'undefined' || typeof window.gtag !== 'function') {
+    return
+  }
+
+  window.gtag('event', action, {
+    event_category: category,
+    ...params,
+  })
+}
 
 export function GoogleAnalytics() {
   useEffect(() => {
-    if (!GA_MEASUREMENT_ID) {
+    if (typeof window !== 'undefined' && GA_MEASUREMENT_ID) {
+      window[`ga-disable-${GA_MEASUREMENT_ID}`] = !IS_PRODUCTION
+    }
+
+    if (!isAnalyticsEnabled()) {
       return
     }
 

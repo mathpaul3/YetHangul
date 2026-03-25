@@ -331,6 +331,26 @@ test('onscreen tone can be reapplied after backspace', async ({ page }) => {
   await expectRenderedText(page, '랏〮')
 })
 
+test('literal punctuation after a toned syllable only removes the punctuation on backspace', async ({ page }, testInfo) => {
+  test.skip(!desktopProjects.has(testInfo.project.name))
+
+  await gotoApp(page)
+  await ensureExpandedKeyboard(page)
+
+  await clickKey(page, 'ㄹ')
+  await clickKey(page, 'ㅏ')
+  await clickKey(page, 'L Ctrl')
+  await clickKey(page, ';')
+  await expectRenderedText(page, '라〯')
+
+  await page.locator('main').focus()
+  await page.keyboard.press('.')
+  await expectRenderedText(page, '라〯.')
+
+  await page.keyboard.press('Backspace')
+  await expectRenderedText(page, '라〯')
+})
+
 test('onscreen ctrl and shift combinations do not duplicate sios output', async ({ page }) => {
   await gotoApp(page)
   await ensureExpandedKeyboard(page)

@@ -187,6 +187,9 @@
 - Docker Hub push 후 NAS 서버에서 pull/run 하는 구조다.
 - Google Analytics는 `VITE_GA_TRACKING_ID`가 제공될 때만 로드하는 optional scaffold로 둔다.
 - GA4 측정 ID는 client-side에 노출되는 public identifier이지만, 운영상은 hardcode하지 않고 deploy-time env로만 주입한다.
+- analytics script와 event 수집은 production에서만 활성화한다.
+- `window['ga-disable-${MEASUREMENT_ID}']`를 production 여부와 같이 설정해 dev 환경에서는 전역적으로 수집을 막는다.
+- 옛한글 입력 이벤트는 분해 보기 기준 출력 문자 수가 증가할 때만 `옛한글 입력` action으로 수집한다.
 
 ## Versioning Policy
 
@@ -218,6 +221,7 @@
 - 하드웨어 keydown, on-screen key press, native keyboard beforeinput/composition 경로는 가능한 한 `normalized input event -> single dispatcher -> engine/editor` 흐름으로 수렴시킨다.
 - direct key dispatch 직후 들어오는 동일 문자 `beforeinput` / `compositionend`는 짧은 suppression window로 억제한다.
 - native 문자열 입력은 Phase 2부터 raw text를 바로 document에 넣지 않고, 먼저 `NormalizedInputBatch`로 분해한 뒤 canonicalize / dispatch하는 경계를 사용한다.
+- composition buffer를 document로 commit한 직후의 follow-up `Backspace/Delete`가 stale rendered composition을 다시 건드리지 않도록, event handler는 memoized render 값 대신 `compositionUnitsRef`를 source of truth로 본다.
 - 현재 batch는 `symbol` / `literal` 이벤트만 포함하며, modifier / utility / navigation은 여전히 source adapter가 직접 만든다.
 - batch 경계 proof는 mixed literal + Hangul order, newline/tone, selection replacement, duplicate suppression을 unit/service/e2e로 나눠 유지한다.
 - native batch는 shared dispatcher와 같은 normalized event vocabulary를 재사용하되, 실제 document 반영은 batch canonicalization 경계를 통해 수행한다.

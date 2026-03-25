@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { trackAnalyticsEvent } from '@/app/GoogleAnalytics'
 import {
   applyContextualFiller,
   applyInput,
@@ -114,6 +115,7 @@ export function useImeWorkbench() {
   const caretIndexRef = useRef(0)
   const selectionRangeRef = useRef<SelectionRange>(null)
   const compositionActiveRef = useRef(false)
+  const compositionUnitsRef = useRef<string[]>([])
   const recentImeCommitRef = useRef<string | null>(null)
   const recentDirectDispatchRef = useRef<{
     text: string | null
@@ -169,6 +171,7 @@ export function useImeWorkbench() {
     [caretIndex, compositionUnits.length],
   )
   const renderedText = useMemo(() => renderedUnits.join(''), [renderedUnits])
+  const trackedInputCountRef = useRef<number | null>(null)
 
   useEffect(() => {
     documentUnitsRef.current = documentUnits
@@ -190,6 +193,10 @@ export function useImeWorkbench() {
   }, [documentUnits])
 
   useEffect(() => {
+    compositionUnitsRef.current = compositionUnits
+  }, [compositionUnits])
+
+  useEffect(() => {
     caretIndexRef.current = caretIndex
   }, [caretIndex])
 
@@ -202,6 +209,30 @@ export function useImeWorkbench() {
       window.getSelection()?.removeAllRanges()
     }
   }, [selectionRange])
+
+  useEffect(() => {
+    const nextTrackedCount = Array.from(renderedText).reduce((count, char) => {
+      return count + (normalizeUnicodeToInputSymbols(char).length > 0 ? 1 : 0)
+    }, 0)
+
+    if (trackedInputCountRef.current == null) {
+      trackedInputCountRef.current = nextTrackedCount
+      return
+    }
+
+    const delta = nextTrackedCount - trackedInputCountRef.current
+    trackedInputCountRef.current = nextTrackedCount
+
+    if (delta <= 0) {
+      return
+    }
+
+    for (let index = 0; index < delta; index += 1) {
+      trackAnalyticsEvent('옛한글 입력', {
+        category: 'Input',
+      })
+    }
+  }, [renderedText])
 
   function resetHardwareInteractionState() {
     pressedModifiersRef.current = {}
@@ -399,7 +430,7 @@ export function useImeWorkbench() {
       return true
     }
 
-    if (compositionUnits.length === 0) {
+    if (compositionUnitsRef.current.length === 0) {
       const nextState = deleteBackwardUnit(documentUnitsRef.current, caretIndexRef.current)
 
       if (
@@ -425,7 +456,10 @@ export function useImeWorkbench() {
       return
     }
 
-    if (compositionUnits.length === 0 && caretIndexRef.current < documentUnitsRef.current.length) {
+    if (
+      compositionUnitsRef.current.length === 0 &&
+      caretIndexRef.current < documentUnitsRef.current.length
+    ) {
       const nextState = deleteForwardUnit(documentUnitsRef.current, caretIndexRef.current)
       applyEditorMutation({
         units: nextState.units,
@@ -488,6 +522,7 @@ export function useImeWorkbench() {
   }
 
   function clearCompositionBuffer() {
+    compositionUnitsRef.current = []
     dispatch({ type: 'resetBuffer' })
   }
 
@@ -500,8 +535,13 @@ export function useImeWorkbench() {
   }
 
   function commitCompositionToDocument(targetCaretIndex = caretIndexRef.current) {
+    const snapshotCompositionUnits = compositionUnitsRef.current
     const snapshotUnits = documentUnitsRef.current
-    const nextState = commitCompositionUnits(snapshotUnits, targetCaretIndex, compositionUnits)
+    const nextState = commitCompositionUnits(
+      snapshotUnits,
+      targetCaretIndex,
+      snapshotCompositionUnits,
+    )
 
     if (nextState.units === snapshotUnits) {
       return {
@@ -1044,7 +1084,7 @@ export function useImeWorkbench() {
 
     if (
       symbolId === INPUT_SYMBOL_IDS.BACKSPACE &&
-      compositionUnits.length === 0 &&
+      compositionUnitsRef.current.length === 0 &&
       !selectionRangeRef.current
     ) {
       if (caretIndexRef.current > 0) {
@@ -1054,7 +1094,11 @@ export function useImeWorkbench() {
       return
     }
 
-    if (event.key === 'Delete' && compositionUnits.length === 0 && !selectionRangeRef.current) {
+    if (
+      event.key === 'Delete' &&
+      compositionUnitsRef.current.length === 0 &&
+      !selectionRangeRef.current
+    ) {
       if (caretIndexRef.current < documentUnitsRef.current.length) {
         event.preventDefault()
         handleEditorDelete()

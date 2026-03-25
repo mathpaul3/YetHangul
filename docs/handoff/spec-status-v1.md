@@ -191,6 +191,7 @@
 - composition-end / beforeinput family contract matrix가 `insertText`, `insertReplacementText`, `insertFromComposition`, `insertParagraph`, `insertLineBreak`까지 함께 묶어 안정화됨
 - browser-family-labeled surface breadth matrix가 chromium-like / webkit-like / gecko-like surface 차이를 묶어 coverage를 넓힘
 - hardware/on-screen parity regression에 key metadata(`code`, `location`)까지 포함한 작은 matrix가 추가됨
+- production에서만 `옛한글 입력` analytics event를 수집하고, dev에서는 `ga-disable-*` guard로 전역 비활성화함
 - proof:
   - browser-family-labeled service-level matrix로 chromium-like / webkit-like / gecko-like breadth 유지
   - Chrome desktop smoke에서 compositionend, focus-regain, Enter surface proof 통과
@@ -220,6 +221,7 @@
 - touch drag selection이 `pointerenter`에만 의존하지 않도록 pointer-move fallback과 target-index helper를 추가함
 - small-screen touch selection에서 browser pan/scroll gesture를 suppress하는 editor surface touch contract를 추가함
 - desktop에서는 native composition + mouse selection + on-screen replacement, mobile에서는 native composition + touch selection + on-screen delete가 같은 editor mutation helper surface를 쓴다는 mixed-source browser proof를 추가함
+- toned syllable 뒤에 literal punctuation이 온 경우 `Backspace`가 punctuation만 제거하고 직전 음절은 유지하는 desktop smoke를 추가함
 - proof:
   - helper regression + long-document/touch/pointer-cancel coverage
   - Chrome desktop/tablet/mobile/mobile-small smoke에서 caret placement, replacement, newline edit flow 통과
@@ -272,9 +274,9 @@
 - spec 기준 핵심 Ctrl/Shift 규칙 묶음 테스트 포함
 - `Shift + ㅁ` 문맥형 macro edge case 테스트 포함
 - modifier undo / locked 유지 테스트 포함
-- 현재 테스트 수: 218
+- 현재 테스트 수: 219
   - unit/service/engine regression: 184
-  - browser smoke (Playwright): 34
+  - browser smoke (Playwright): 35
 
 ## 24. MVP 완료 정의
 

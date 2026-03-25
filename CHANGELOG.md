@@ -16,6 +16,8 @@
 - input pipeline refactor Phase 3 첫 slice로 editor mutation result shape를 helper 중심으로 공통화
 - input pipeline refactor Phase 3 후속 slice로 newline 경계의 `←/→/Home/End`와 selection collapse를 line-aware helper 계약으로 고정
 - input pipeline refactor Phase 3 마지막 slice로 desktop/mobile mixed-source editor mutation smoke를 고정
+- production-only Google Analytics event helper를 추가하고, 분해 보기 기준 입력 글자 수 증가량만큼 `옛한글 입력` event를 수집하도록 보강
+- toned syllable 뒤 literal punctuation을 입력한 뒤 `Backspace`를 눌렀을 때 punctuation만 제거되도록 editor-layer 회귀를 추가
 
 ## [0.1.0]
 

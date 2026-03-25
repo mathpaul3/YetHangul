@@ -83,6 +83,7 @@
 
 - `CHANGELOG.md`
   - 사용자 관점 변경 내역
+  - 릴리스 시 `package.json`, footer, git tag와 같은 버전으로 맞춘다
 
 - `docs/handoff/`
   - 단기 인수인계 문서

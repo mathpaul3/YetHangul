@@ -40,6 +40,7 @@
 - `README.md`: 프로젝트 개요와 진입점
 - `MEMORY.md`: 장기 방향성과 핵심 설계 의도
 - `CHANGELOG.md`: 사용자 관점 변경 내역
+- 릴리스 시 `package.json`, footer, `CHANGELOG.md`, git tag 버전을 서로 일치시킨다
 - `docs/handoff/`: 단기 인수인계 문서
 - `docs/handoff/current-goals.md`: 장기/단기 목표와 coordinator의 즉시 우선순위
 - `docs/architecture/`: 시스템 구조

@@ -16,6 +16,8 @@
 
 - 버전은 커밋마다 올리지 않는다.
 - 릴리스 가능한 단위가 생겼을 때만 올린다.
+- 릴리스 커밋에는 반드시 같은 버전의 `vX.Y.Z` git tag를 붙인다.
+- CI/CD는 브랜치 push보다 `v...` tag push를 기준으로 두는 것을 권장한다.
 - `CHANGELOG.md`에는 사용자 관점의 변화만 적는다.
 
 ## Suggested Changelog Shape

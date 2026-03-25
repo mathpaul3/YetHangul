@@ -19,6 +19,7 @@ jobs:
       - name: Setup Env Variables
         run: |
           echo "VITE_GA_TRACKING_ID=${{ secrets.VITE_GA_TRACKING_ID }}" >> ".env"
+          echo "VITE_GOOGLE_SITE_VERIFICATION=${{ secrets.VITE_GOOGLE_SITE_VERIFICATION }}" >> ".env"
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4

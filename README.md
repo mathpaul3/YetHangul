@@ -21,15 +21,20 @@
 - 이번 iteration의 단기 목표
 - coordinator의 즉시 우선순위
 
-4. [docs/handoff/decisions.md](docs/handoff/decisions.md)
+4. [docs/handoff/input-flow-review.md](docs/handoff/input-flow-review.md)
+- 입력 source가 왜 3개 adapter로 나뉘는지
+- 왜 `keydown` 하나로 통일하지 않는지
+- 어디까지가 공통 pipeline인지
+
+5. [docs/handoff/decisions.md](docs/handoff/decisions.md)
 - 다음 Agent가 바로 이어받아야 하는 핵심 정책
 - 최근 결정 사항
 
-5. [docs/handoff/spec-status-v1.md](docs/handoff/spec-status-v1.md)
+6. [docs/handoff/spec-status-v1.md](docs/handoff/spec-status-v1.md)
 - spec 기준 구현 완료/부분완료 상태
 - 현재 우선순위
 
-6. 필요 시 세부 문서
+7. 필요 시 세부 문서
 - [docs/architecture/engine.md](docs/architecture/engine.md): 엔진 구조
 - [docs/decisions/0001-engine-architecture.md](docs/decisions/0001-engine-architecture.md): 주요 설계 결정
 - [docs/input-rules/keymap.md](docs/input-rules/keymap.md): 입력 규칙
@@ -70,6 +75,11 @@
 - `docs/handoff/current-goals.md`
   - 장기 목표와 단기 목표
   - coordinator의 현재 iteration 우선순위
+
+- `docs/handoff/input-flow-review.md`
+  - UI keyboard / hardware keyboard / native keyboard의 입력 수집 경계
+  - `normalized input event -> single dispatcher -> engine/editor` 원칙
+  - 인수인계 시 가장 먼저 이해해야 하는 입력 파이프라인 설명
 
 - `CHANGELOG.md`
   - 사용자 관점 변경 내역

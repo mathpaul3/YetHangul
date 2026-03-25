@@ -36,7 +36,7 @@ Coordinator와 subagent는 새로운 작업을 시작하기 전에 이 문서의
 2. nav / footer / logo / license / analytics scaffold를 service shell 묶음으로 유지한다.
 3. 새 회귀가 생기면 unit/service/e2e 중 맞는 레이어에 즉시 고정한다.
 4. input pipeline refactor는 spec-first로 진행하고, Phase 3는 editor mutation unification을 `R25-3` 계열 atomic task id로 쪼개서 한 번에 1개만 다룬다.
-5. input pipeline refactor Phase 3는 editor mutation unification을 `R25-3` 계열 atomic task id로 쪼개서 한 번에 1개만 다룬다.
+5. 인수인계 시에는 `docs/handoff/input-flow-review.md`를 먼저 읽고, adapter 분기와 shared dispatcher 경계를 기준으로 새 버그를 분류한다.
 
 ## Atomic Queue
 

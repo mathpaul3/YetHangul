@@ -3,6 +3,28 @@
 이 문서는 현재 YetHangul의 입력 수집부터 입력 결과창 렌더링까지의 흐름을 함수 단위로 정리하고,
 어디서 분기가 생기며 어디를 공통 파이프라인으로 합쳐야 하는지 설명한다.
 
+## Handoff Quick Takeaways
+
+인수인계받은 사람이나 agent가 먼저 기억해야 할 핵심은 아래 4가지다.
+
+1. 입력 source는 3개다.
+   - UI on-screen keyboard
+   - PC hardware keyboard
+   - 모바일/태블릿 native IME
+2. 이 3개는 입력 수집 단계에서 완전히 같아질 수 없다.
+3. 특히 native IME는 `keydown`보다 `beforeinput` / `compositionend`가 더 canonical하다.
+4. 대신 수집 이후에는 가능한 한 아래 경계로 모은다.
+
+```text
+source-specific adapter
+-> normalized input event
+-> single dispatcher
+-> engine/editor
+-> rendered units
+```
+
+즉, **분기는 adapter에 가두고 그 뒤는 공통 pipeline으로 수렴**시키는 것이 현재 구조의 핵심이다.
+
 ## 요약
 
 - 입력 source는 3개다.
@@ -23,6 +45,28 @@ source-specific adapter
 ```
 
 즉, **수집은 adapter별로 다르게 하고, 수집 결과를 normalized event boundary에서 통합**하는 것이 현재 구조와 가장 잘 맞는다.
+
+## 현재 코드에서 먼저 봐야 할 파일
+
+입력 파이프라인을 실제 코드로 따라갈 때는 아래 파일을 먼저 보면 된다.
+
+- `src/features/ime/ui/ImeWorkbench.tsx`
+  - on-screen keyboard click / tap 진입점
+  - output surface, native keyboard proxy, help UI
+- `src/features/ime/hooks/useImeWorkbench.ts`
+  - source adapter를 받아 공통 dispatcher와 editor mutation helper를 호출하는 중심 훅
+- `src/features/ime/services/normalizedInput.ts`
+  - `NormalizedInputEvent` 타입과 공통 vocabulary
+- `src/features/ime/services/normalizedDispatcher.ts`
+  - normalized event를 engine/editor에 전달하는 shared dispatcher
+- `src/features/ime/services/nativeTextBatch.ts`
+  - native `beforeinput` / `compositionend` 문자열을 batch로 정규화하는 adapter
+- `src/features/ime/services/inputInterop.ts`
+  - duplicate suppression, focus-regain, beforeinput/composition interop 규칙
+- `src/features/ime/services/editorUnits.ts`
+  - selection / replace / newline / delete / caret mutation helper
+- `src/engine/core/engine.ts`
+  - normalized symbol이 실제 옛한글 조합 로직으로 들어가는 엔진 진입점
 
 ## 1. UI 키보드 -> 입력 결과창
 
@@ -195,7 +239,8 @@ engine active syllable
 
 ## 현재 가장 중요한 구조적 차이
 
-현재도 공통 dispatcher는 존재하지만, native text 경로는 여전히 `dispatchUnicodeText(...)`라는 별도 우회 경로를 가진다.
+현재도 공통 dispatcher는 존재하지만, native text 경로는 event-by-event direct dispatch가 아니라
+`dispatchNormalizedTextBatch(...)`를 통해 batch canonicalization 경계를 지난다.
 
 즉 지금은:
 
@@ -204,11 +249,17 @@ engine active syllable
 - native IME
   - `resolveBeforeInputInterop(...)`
   - `resolveCompositionEndInterop(...)`
-  - `dispatchUnicodeText(...)`
+  - `dispatchNormalizedTextBatch(...)`
 
 로 되어 있다.
 
-이 구조는 실용적이지만, “완전히 같은 dispatcher”라고 보기엔 아직 1단계 덜 정리된 상태다.
+이 구조는 intentional하다.
+
+- UI/hardware는 symbol/literal 단위 이벤트가 잘 드러난다.
+- native IME는 committed text가 더 canonical하다.
+- 그래서 native는 먼저 batch로 정규화한 뒤 공통 vocabulary를 공유한다.
+
+즉 “완전히 같은 low-level adapter”는 아니지만, **같은 normalized vocabulary와 같은 engine/editor surface를 공유하는 구조**라고 이해하면 된다.
 
 ## 추천 구조 원칙
 
@@ -239,7 +290,7 @@ normalized input event
 
 ### 후보 A. native text -> normalized batch dispatcher
 
-현재 `dispatchUnicodeText(...)`는 문자열을 한 번에 임시 엔진 상태로 canonicalize한 뒤 문서에 삽입한다.
+현재 `dispatchNormalizedTextBatch(...)`는 native 문자열을 한 번에 batch로 정규화한 뒤 canonicalize해서 문서에 삽입한다.
 
 다음 단계에서는 이 경로를:
 - text
@@ -265,3 +316,14 @@ normalized input event
 - `keydown` 하나로 모든 source를 통일하는 것은 권장하지 않는다.
 - 대신 source-specific adapter는 유지하되,
 - **normalized input event boundary 이후는 반드시 하나의 dispatcher / engine-editor pipeline을 사용**하도록 계속 정리하는 것이 가장 안전하다.
+
+## Handoff Checklist
+
+이 문서를 읽은 뒤 다음을 바로 설명할 수 있어야 한다.
+
+1. 왜 native IME는 `keydown` 하나로 받지 않는가
+2. UI / hardware / native가 각각 어떤 adapter를 가지는가
+3. 어떤 지점부터 공통 dispatcher를 타는가
+4. duplicate suppression과 editor mutation helper가 왜 shared rule이어야 하는가
+
+위 4가지를 설명할 수 없으면, 아직 입력 파이프라인 문맥을 충분히 이어받지 못한 상태로 본다.

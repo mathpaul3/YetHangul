@@ -1060,13 +1060,18 @@ export function useImeWorkbench() {
     const symbolId = resolveInputSymbolFromKeyboardEvent(event.nativeEvent)
 
     if (symbolId == null) {
+      const eventTarget = event.target
+      const isProxyTextarea =
+        typeof HTMLTextAreaElement !== 'undefined' &&
+        eventTarget instanceof HTMLTextAreaElement
+
       if (
+        !isProxyTextarea &&
         !event.ctrlKey &&
         !event.altKey &&
         !event.metaKey &&
         !compositionActiveRef.current &&
-        event.key.length === 1 &&
-        !/[A-Za-z]/.test(event.key)
+        event.key.length === 1
       ) {
         event.preventDefault()
         dispatchNormalizedEvent({

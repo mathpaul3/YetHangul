@@ -36,6 +36,7 @@ function createKeyboardStub({
 function renderFromHardwareSequence(
   sequence: Array<{
     key: string
+    code?: string
     ctrlKey?: boolean
     shiftKey?: boolean
     pressedModifiers?: Partial<Record<ModifierKey, boolean>>
@@ -52,6 +53,7 @@ function renderFromHardwareSequence(
 
     const event = createKeyboardStub({
       key: step.key,
+      code: step.code,
       ctrlKey: step.ctrlKey,
       shiftKey: step.shiftKey,
     })
@@ -81,6 +83,16 @@ describe('hardware keyboard flow', () => {
 
   it('still maps direct hangul jamo keys into the engine flow', () => {
     expect(renderFromHardwareSequence([{ key: 'ㄱ' }, { key: 'ㅏ' }, { key: 'ㄴ' }])).toBe('간')
+  })
+
+  it('maps windows-style latin key values to hangul symbols by physical code', () => {
+    expect(
+      renderFromHardwareSequence([
+        { key: 'r', code: 'KeyR' },
+        { key: 'k', code: 'KeyK' },
+        { key: 's', code: 'KeyS' },
+      ]),
+    ).toBe('간')
   })
 
   it('maps left ctrl modifier flow to chidueum sios', () => {

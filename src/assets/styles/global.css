@@ -39,12 +39,14 @@ textarea {
 
 .native-keyboard-proxy {
   position: fixed;
-  left: -9999px;
+  left: 0;
   top: 0;
   width: 1px;
   height: 1px;
   opacity: 0;
+  z-index: -1;
   pointer-events: none;
+  caret-color: transparent;
 }
 
 .sr-only {

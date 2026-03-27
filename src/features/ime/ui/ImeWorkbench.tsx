@@ -341,6 +341,14 @@ export function ImeWorkbench() {
     rootRef.current?.focus()
   }
 
+  function summonNativeKeyboardFromPointer() {
+    if (!nativeKeyboardEnabled) {
+      return
+    }
+
+    nativeKeyboardRef.current?.focus({ preventScroll: true })
+  }
+
   function renderCopyIcon(type: 'all' | 'selection') {
     const label = type === 'all' ? '전체 복사' : '선택 복사'
 
@@ -704,6 +712,9 @@ export function ImeWorkbench() {
               className="editor-output editor-surface"
               data-testid="editor-surface"
               style={editorSurfaceTouchBehavior}
+              onPointerDownCapture={() => {
+                summonNativeKeyboardFromPointer()
+              }}
             >
               {renderedUnits.length === 0 ? (
                 <button

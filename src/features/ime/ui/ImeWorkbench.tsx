@@ -333,7 +333,7 @@ export function ImeWorkbench() {
   }
 
   function focusInputSurface() {
-    if (nativeKeyboardEnabled) {
+    if (nativeKeyboardRef.current) {
       nativeKeyboardRef.current?.focus({ preventScroll: true })
       return
     }
@@ -599,9 +599,9 @@ export function ImeWorkbench() {
 
   return (
     <>
-      <main
-        ref={rootRef}
-        className="page-shell"
+        <main
+          ref={rootRef}
+          className="page-shell"
         onBeforeInput={handleBeforeInput}
         onBlur={handleEditorBlur}
         onCompositionEnd={handleCompositionEnd}
@@ -632,7 +632,13 @@ export function ImeWorkbench() {
           onBlur={handleEditorBlur}
           onCompositionEnd={handleCompositionEnd}
           onCompositionStart={handleCompositionStart}
-          onFocus={handleEditorFocus}
+          onFocus={(event) => {
+            handleEditorFocus()
+
+            if (event.target === event.currentTarget) {
+              focusInputSurface()
+            }
+          }}
           onInput={(event) => {
             event.currentTarget.value = ''
           }}

@@ -85,14 +85,12 @@ describe('hardware keyboard flow', () => {
     expect(renderFromHardwareSequence([{ key: 'ㄱ' }, { key: 'ㅏ' }, { key: 'ㄴ' }])).toBe('간')
   })
 
-  it('maps windows-style latin key values to hangul symbols by physical code', () => {
+  it('does not reinterpret latin key values as hangul symbols by physical code', () => {
     expect(
-      renderFromHardwareSequence([
-        { key: 'r', code: 'KeyR' },
-        { key: 'k', code: 'KeyK' },
-        { key: 's', code: 'KeyS' },
-      ]),
-    ).toBe('간')
+      resolveInputSymbolFromKeyboardEvent(
+        createKeyboardStub({ key: 'r', code: 'KeyR' }),
+      ),
+    ).toBeNull()
   })
 
   it('maps left ctrl modifier flow to chidueum sios', () => {

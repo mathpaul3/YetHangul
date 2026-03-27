@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Windows에서 영문 `event.key`가 들어오는 환경에서도 한글 조합과 로마자 literal 입력이 서로 충돌하지 않도록 hardware/native 입력 경계를 다시 정리
+- editor surface focus 시 숨겨진 proxy input으로 포커스를 넘겨 모바일/태블릿 native keyboard summon 경로를 보강
+
 ## [0.2.1] - 2026-03-26
 
 ### Fixed

@@ -1065,7 +1065,8 @@ export function useImeWorkbench() {
         !event.altKey &&
         !event.metaKey &&
         !compositionActiveRef.current &&
-        event.key.length === 1
+        event.key.length === 1 &&
+        !/[A-Za-z]/.test(event.key)
       ) {
         event.preventDefault()
         dispatchNormalizedEvent({

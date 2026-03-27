@@ -86,6 +86,8 @@
 - 영문 QWERTY 물리 키(`r`, `k`, `s` 등)는 더 이상 두벌식 치환으로 해석하지 않는다.
 - 하드웨어 경로에서는 실제 한글 자모 key value(`ㄱ`, `ㅏ`, `ㄴ` 등)가 들어온 경우에만 엔진 조합 입력으로 본다.
 - 로마자/기타 외국어 입력은 literal text로 그대로 통과시킨다.
+- 로마자/기타 외국어 및 IME가 만든 일반 텍스트는 native text 경로(`beforeinput` / `composition*`)를 우선 source of truth로 본다.
+- 숫자/일반 구두점처럼 Hangul IME 조합과 충돌하지 않는 단순 literal은 keydown 경로에서도 직접 처리할 수 있다.
 - 특수 입력은 `L/R Ctrl`, `L/R Shift` 버튼 또는 물리 modifier 조합으로 접근한다.
 - 온스크린 UI는 두벌식 QWERTY 한글 배열을 그대로 따르는 일반 자모 버튼과 숫자 row, `L/R Ctrl`, `L/R Shift`, `Space`, `.`, `;`, `Backspace`, navigation row(`←`, `→`, `Home`, `End`)를 같은 키보드 배열 안에 배치한다.
 - 온스크린 키보드는 플랫폼별 기본 상태를 다르게 둔다.

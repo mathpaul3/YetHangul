@@ -52,10 +52,6 @@ const CODE_TO_VISUAL_KEY: Record<string, string> = {
   ArrowRight: '→',
 }
 
-const CODE_TO_BASE_KEY: Record<string, string> = Object.fromEntries(
-  Object.entries(CODE_TO_VISUAL_KEY).filter(([, value]) => /^[ㄱ-ㅎㅏ-ㅣ]$/.test(value)),
-)
-
 const BASE_KEY_TO_SYMBOL: Record<string, number> = {
   'ㄱ': INPUT_SYMBOL_IDS.GIYEOK,
   'ㄲ': INPUT_SYMBOL_IDS.GIYEOK,
@@ -211,17 +207,5 @@ export function resolveInputSymbolFromKeyboardEvent(event: KeyboardEvent) {
       : INPUT_SYMBOL_IDS.SPACE
   }
 
-  const directKey =
-    BASE_KEY_TO_SYMBOL[event.key] ?? BASE_KEY_TO_SYMBOL[event.key.toLowerCase()]
-
-  if (directKey != null) {
-    return directKey
-  }
-
-  const codeMappedKey = CODE_TO_BASE_KEY[event.code]
-  if (codeMappedKey) {
-    return BASE_KEY_TO_SYMBOL[codeMappedKey] ?? null
-  }
-
-  return null
+  return BASE_KEY_TO_SYMBOL[event.key] ?? BASE_KEY_TO_SYMBOL[event.key.toLowerCase()] ?? null
 }

@@ -4,7 +4,7 @@
 
 ## Current State
 
-- 현재 릴리스 버전: `0.2.1`
+- 현재 릴리스 버전: `0.2.2`
 - spec v1 상태: 전체 `Done`
 - 현재 active requirement: 없음
 - 현재 active task: 없음

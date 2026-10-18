@@ -23,7 +23,7 @@
     - `L/R Ctrl + ㅁ`(on-screen/하드웨어)이 `ᅀ`를 내고, `Shift + ㅊ`는 `ᅀ`를 내지 않는 테스트가 있다.
     - `ㅁ`/`ㅊ` 키캡의 모든 modifier 조합 미리보기가 엔진 실제 출력과 같다는 테스트가 있다.
     - `yarn test`, `yarn lint`, `yarn build`, `yarn test:e2e`가 통과한다.
-  - Status: `todo`
+  - Status: `landed` (`feat/v0.2.3`, review OK, main merge 대기)
 
 - `TASK-V023-002`
   - Related Requirement: `REQ-V023-002`
@@ -39,7 +39,7 @@
     - 모든 e2e 프로젝트에서 키보드가 기본 펼침이다.
     - desktop 하드웨어 입력 e2e/unit이 그대로 통과한다.
     - `yarn test`, `yarn lint`, `yarn build`, `yarn test:e2e`가 통과한다.
-  - Status: `todo`
+  - Status: `landed` (`feat/v0.2.3`, review OK, main merge 대기)
 
 - `TASK-V023-003`
   - Related Requirement: `REQ-V023-001`
@@ -57,7 +57,30 @@
     - 일본어/중국어 IME 이벤트 시퀀스(`Process` + 비한글 composition)는 literal 그대로 입력된다.
     - 영문 latin `Ctrl + a/d/...` keydown이 Ctrl 규칙 결과를 내고, selection이 있는 `Ctrl + C`는 입력을 만들지 않는다.
     - `yarn test`, `yarn lint`, `yarn build`, `yarn test:e2e`가 통과한다.
-  - Status: `todo`
+  - Status: `landed` (`feat/v0.2.3`, review OK, main merge 대기)
+
+## Release Gate (v0.2.3 태그 전)
+
+- macOS 동작은 실기기 관찰이 아니라 Chromium 소스 분석과 CDP 시뮬레이션으로만 검증했다. 따라서 아래 수동 확인을 마친 뒤 태그한다.
+  - 실제 Mac (Chrome / Safari, 두벌식)
+    - `가나`를 입력하고, 음절 중간에 `Backspace` / `Space` / `Enter` / `Ctrl + .`를 눌러 본다.
+    - ABC / 일본어 입력기로 전환해 본다.
+  - Windows (Chrome / Edge, Microsoft 한글 / 일본어 / 병음 IME)
+    - 한자 변환
+    - 한/영 전환
+    - `Ctrl` 규칙
+    - selection이 있을 때 `Ctrl + C`
+  - 태블릿: iPad / Android에 물리 키보드를 연결하고, OS 가상 키보드가 뜨지 않는지 확인한다.
+
+## Follow-up 후보 (v0.2.3 review 이월)
+
+- macOS가 보내는 `keyCode 229` keydown과 실제 keydown을 시간 창(40 ms) 대신 이벤트 순서로 짝지어 dedupe한다. 현재 빠른 반복 입력 일부가 누락되고, 긴 문서에서는 `Enter`가 이중 입력될 수 있다. base(0.2.2)와 동일한 동작이다.
+- macOS 음절 중간 `←`가 caret을 두 칸 옮긴다. base와 동일하다.
+- 휴대폰(`onscreen` 모드)에는 붙여넣기 경로가 없다. on-screen 붙여넣기 버튼 등은 제품 결정이 필요하다.
+- Tab으로 `<main>`에 포커스가 가면 Windows IME가 꺼진다. 숨겨진 텍스트 입력 요소로 포커스를 되돌려야 한다.
+- React 19에서 도달할 수 없는 `inputType` 분기(삭제 / 줄바꿈)를 정리한다.
+- `e2e/ime-surface.spec.ts:642`를 `expectExactRenderedText(page, '')`로 바꾼다.
+- Linux / ChromeOS 한글 IME(IBus, fcitx)는 아직 검증하지 않았다.
 
 ## Entry Template
 

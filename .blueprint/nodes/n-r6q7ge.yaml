@@ -1,0 +1,30 @@
+title: 입력 수집 파이프라인
+parent: n-h0vywr
+status: active
+explanation: |
+  입력 흐름: source별 adapter, normalized input event, single dispatcher, engine/editor, rendered units.
+
+  출처: docs/handoff/decisions.md의 "Input Collection Policy", "Keyboard Policy", "Current Design Direction"(Phase 3), docs/architecture/input-pipeline.md.
+decisions:
+  - id: d-m20kkb
+    question: 입력 source를 하나의 DOM 이벤트(keydown)로 통일하는가
+    chosen: 통일하지 않는다. source별 adapter(온스크린 키보드, 하드웨어 키보드, native IME)를 두고, adapter 출력을 normalized input event, single dispatcher, engine/editor 순으로 수렴시킨다
+    alternatives:
+      - option: 모든 source를 keydown 하나로 통일
+        rejected-reason: 모바일과 태블릿의 native IME는 의미 있는 keydown을 안정적으로 주지 않고, beforeinput과 compositionend 같은 committed text가 더 정확한 경우가 많다
+    rationale: 분기를 adapter 안에 가두고 그 뒤는 공통 파이프라인으로 처리하기 위해서다
+    status: accepted
+  - id: d-qj7tqd
+    question: 기기별로 어떤 입력을 우선하는가
+    chosen: 데스크톱은 하드웨어 키보드를 우선한다. 태블릿은 하드웨어 키보드가 감지되면 하드웨어, 아니면 자체 자판을 우선한다. 모바일은 자체 자판을 우선한다
+    status: accepted
+constraints:
+  - id: c-48k8fz
+    statement: source별 adapter는 입력 수집까지만 맡는다. selection, delete, newline, caret 변경은 공통 editor helper로만 수행한다
+implementation:
+  status: implemented
+  refs:
+    - path: src/features/ime/services/normalizedInput.ts
+    - path: src/features/ime/services/normalizedDispatcher.ts
+    - path: src/features/ime/services/nativeTextBatch.ts
+    - path: src/features/ime/hooks/useImeWorkbench.ts

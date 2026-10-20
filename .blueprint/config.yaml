@@ -1,0 +1,11 @@
+# .blueprint 설정. 형식: ProjectManager docs/blueprint-reference.md
+schema: 1
+rules:
+  decision-rationale: warn        # accepted 결정에 rationale이 없음
+  decision-alternatives: off      # 결정에 기각한 대안이 없음
+  decision-qa: warn               # accepted 결정을 ID로 직접 가리키는 QA 조건이 없음
+  implementation-path: warn       # implementation.refs[].path가 저장소에 없음
+  implementation-symbol: warn     # implementation.refs[].symbol이 그 파일에 없음
+  qa-path: warn                   # qa[].tests 경로가 저장소에 없음
+  actor-session: warn             # 에이전트의 Actor 트레일러에 세션 ID가 없음 (M3)
+  actor-unknown: warn             # 트레일러의 행위자 ID가 actors.yaml에 없음 (M3)

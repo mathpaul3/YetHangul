@@ -1,0 +1,53 @@
+title: 입력 엔진
+parent: n-h0vywr
+from-decision: d-2dny9d
+status: active
+explanation: |
+  committed(확정된 자모 id), active(편집 중인 음절), undoStack(입력 단계별 상태 스냅샷)으로 상태를 관리한다.
+
+  출처: docs/decisions/0001-engine-architecture.md, docs/architecture/engine.md, docs/handoff/decisions.md의 "Core Architecture"와 "Internal Representation".
+decisions:
+  - id: d-7v4k66
+    question: 엔진의 핵심 구조는 무엇인가
+    chosen: FSM + sparse transition table + undo log
+    alternatives:
+      - option: 입력마다 전체 문자열을 다시 파싱
+        rejected-reason: 입력 지연이 커지고 backspace 동작을 자연스럽게 유지하기 어렵다
+    rationale: 엔진 상태가 작고 예측 가능하며 입력 지연이 안정적이다. 하드웨어 키보드와 온스크린 키보드가 같은 엔진을 공유할 수 있다
+    status: accepted
+  - id: d-sjxgky
+    question: 엔진 안에서 문자를 어떻게 표현하는가
+    chosen: 문자열 대신 numeric id(InputSymbolId, JamoId, StateId)로 관리하고, Unicode 변환은 렌더링과 상호운용 경계에서만 mapper가 수행한다
+    rationale: Unicode 렌더링을 편집 로직과 분리하기 위해서다
+    status: accepted
+  - id: d-pgtceh
+    question: Backspace는 무엇을 지우는가
+    chosen: 문자열의 마지막 글자가 아니라 마지막 입력 단계를 undo한다
+    rationale: backspace 동작을 자연스럽게 유지하기 위해서다
+    status: accepted
+  - id: d-cjspwf
+    question: 단독 자음처럼 해석이 모호한 입력은 어떻게 처리하는가
+    chosen: 기본값은 초성이다. 종성은 현재 음절 문맥에서만 도출한다. ᆧ는 중성 전용이며 일반 종성 대상으로 확장하지 않는다
+    status: accepted
+constraints:
+  - id: c-acgdaj
+    statement: 일반 타이핑 중에는 전체 문자열을 일괄 재파싱하지 않는다. 편집 중인 마지막 음절만 active syllable로 다룬다
+qa:
+  - id: q-vymbec
+    condition: 같은 key sequence를 반복 입력하면 항상 같은 출력이 나온다
+    verifies: [c-5re0zw]
+    tests: [src/engine/tests/engine.test.ts]
+  - id: q-3qgb0x
+    condition: backspace 1회가 사용자 입력 1단계를 정확히 취소한다
+    verifies: [d-pgtceh]
+    tests: [src/engine/tests/engine.test.ts]
+  - id: q-yxw7sh
+    condition: 앞 음절 없이 입력한 단독 자음은 초성으로 해석된다
+    verifies: [d-cjspwf]
+implementation:
+  status: implemented
+  refs:
+    - path: src/engine/core/engine.ts
+    - path: src/engine/core/state.ts
+    - path: src/engine/fsm/transitions.ts
+    - path: src/engine/mapper/unicodeMapper.ts

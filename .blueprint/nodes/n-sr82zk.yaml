@@ -1,0 +1,30 @@
+title: 키캡 미리보기와 도움말 규칙표
+parent: n-kswhhx
+status: active
+explanation: |
+  키캡 미리보기 맵과 도움말 규칙표는 Modifier 규칙(n-bf2mwe)을 화면에 옮긴 것이다. 규칙이 바뀌면 함께 바뀌어야 한다. v0.2.3의 반치음 키 변경 때는 사람이 직접 찾아서 함께 고쳤다(TASK-V023-001). q-qptrma가 이 관계를 확인한다.
+
+  출처: docs/handoff/decisions.md의 "Current Design Direction"(product shell), docs/tasks/active.md의 TASK-V023-001.
+decisions:
+  - id: d-dasec0
+    question: 온스크린 키보드가 modifier 상태를 미리 보여주는가
+    chosen: 보여준다. Shift가 켜지면 기본 자모 키캡이 쌍자모 출력 형태로, L Ctrl이나 R Ctrl이 켜지면 그 방향의 자형 변환 결과로 바뀐다. Ctrl + Shift가 함께 켜지면 결합 규칙이 있는 키캡은 결합 결과를 먼저 표시한다
+    status: accepted
+qa:
+  - id: q-qptrma
+    condition: 키캡의 modifier 조합(Shift, L Ctrl, R Ctrl, Ctrl + Shift) 미리보기와 도움말 규칙표가 Modifier 규칙(n-bf2mwe)에 따른 엔진의 실제 출력과 같다
+    verifies: [d-dasec0, n-bf2mwe]
+implementation:
+  status: in-progress
+  plan: |
+    TASK-V023-001: 키캡 미리보기 맵(Shift, L Ctrl, R Ctrl, Ctrl + Shift)과 도움말 규칙표를 새 반치음 규칙에 맞추고, 반치음 예외 표기를 없앤다.
+    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+  refs:
+    - path: src/features/ime/ui/ImeWorkbench.tsx
+      symbol: SHIFT_RULES
+    - path: src/features/ime/ui/ImeWorkbench.tsx
+      symbol: CTRL_RULES
+    - path: src/features/ime/ui/ImeWorkbench.tsx
+      symbol: LEFT_CTRL_DISPLAY_MAP
+    - path: src/features/ime/ui/ImeWorkbench.tsx
+      symbol: RIGHT_CTRL_DISPLAY_MAP

@@ -1,0 +1,35 @@
+title: 온스크린 키보드
+parent: n-r6q7ge
+status: active
+explanation: |
+  출처: docs/handoff/decisions.md의 "Keyboard Policy", docs/requirements/active.md의 REQ-V023-002, docs/tasks/active.md의 TASK-V023-002.
+decisions:
+  - id: d-ebfs37
+    question: 온스크린 키보드는 어떤 배열인가
+    chosen: 두벌식 QWERTY 한글 배열의 일반 자모 버튼, 숫자 row, L/R Ctrl, L/R Shift, Space, 마침표, 세미콜론, Backspace, navigation row(←, →, Home, End)를 한 키보드 안에 둔다. 별도 modifier 패널은 두지 않는다
+    status: accepted
+  - id: d-rk9chx
+    question: 모바일과 태블릿에서 입력 결과창을 누르면 어떻게 하는가
+    chosen: OS native 키보드를 띄우지 않고 자체 가상 키보드로만 입력한다. 글자 키가 바로 보이도록 모든 모드에서 기본 펼침으로 시작한다
+    alternatives:
+      - option: offscreen textarea에 포커스를 보내 OS native 키보드를 호출하고, 모바일과 태블릿에서는 온스크린 키보드를 기본 접힘으로 시작한다
+        rejected-reason: OS native 키보드가 자체 가상 키보드와 겹쳐 화면을 가리고 UX를 해쳤다. v0.2.3에서 바꿨다 (REQ-V023-002)
+    rationale: 자체 가상 키보드만으로 모든 입력과 편집을 하게 해서, OS 키보드가 화면을 가리지 않게 한다 (REQ-V023-002)
+    status: accepted
+qa:
+  - id: q-2wpp4x
+    condition: 모바일과 태블릿에서 입력 결과창이나 키를 눌러도 OS 가상 키보드가 올라오지 않고, 모든 e2e 프로젝트에서 키보드가 기본 펼침이다
+    verifies: [d-rk9chx]
+    tests: [e2e/ime-surface.spec.ts]
+  - id: q-pg863n
+    condition: 온스크린 키보드의 글자 키는 두벌식 기본 자모(ㄱ-ㅎ, ㅏ-ㅣ)이고, 옛한글 확장 자모 전용 버튼은 없다
+    verifies: [d-8xcgv2, d-qv89kh]
+implementation:
+  status: in-progress
+  plan: |
+    TASK-V023-002: editor surface tap으로 OS native 키보드를 부르는 경로를 없앤다.
+    하드웨어 입력용으로 남기는 숨김 텍스트 입력 요소는 inputMode="none"으로 둔다.
+    키보드는 모든 모드에서 기본 펼침으로 시작하고, compact row 토글은 유지한다.
+    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+  refs:
+    - path: src/features/ime/ui/ImeWorkbench.tsx

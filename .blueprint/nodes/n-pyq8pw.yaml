@@ -1,0 +1,23 @@
+title: 편집기 레이어
+parent: n-h0vywr
+status: active
+explanation: |
+  출처: docs/handoff/decisions.md의 "Current Design Direction", docs/tasks/checklists/extreme-interaction-cases.md.
+decisions:
+  - id: d-rr9gsa
+    question: 입력 결과창의 편집 모델은 무엇인가
+    chosen: 입력기 위에 document units + caret index + selection range 레이어를 둔다. 브라우저 기본 selection은 가능한 한 배제하고, 자체 selection과 Copy All, Copy Selection 버튼을 우선한다
+    status: accepted
+  - id: d-jw893q
+    question: 편집기에서 포커스가 빠지면 조합 중이던 내용은 어떻게 되는가
+    chosen: composition buffer를 먼저 document에 commit하고, 그 뒤 하드웨어 상호작용 상태와 최근 IME 중복 표시를 초기화한다
+    status: accepted
+qa:
+  - id: q-54hx86
+    condition: 조합 중에 편집기 포커스가 빠져도 조합 중이던 글자가 document에 남는다
+    verifies: [d-jw893q]
+implementation:
+  status: implemented
+  refs:
+    - path: src/features/ime/services/editorUnits.ts
+    - path: src/features/ime/services/editorSurface.ts

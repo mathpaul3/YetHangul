@@ -1,0 +1,63 @@
+title: Modifier 규칙
+parent: n-tqpxap
+status: active
+explanation: |
+  v0.2.3에서 반치음 입력 키가 Shift + ㅊ에서 Ctrl + ㅁ으로 바뀌었다(REQ-V023-003). 이 변경은 아래 세 노드에 영향을 준다. 세 노드에는 각각 이 노드를 verifies로 가리키는 QA 조건이 있어서, 이 노드가 바뀌면 그 QA 조건들이 stale이 된다.
+
+  - 키캡 미리보기와 도움말 규칙표(n-sr82zk)
+  - 중복 입력 억제의 기본 키 매핑(n-046376)
+  - 하드웨어 키보드의 Ctrl 물리 키 해석(n-n3netb)
+
+  main에는 아직 Shift + ㅊ 구현과 테스트("maps shift + chieuch to banchieum")가 남아 있다.
+
+  출처: docs/handoff/decisions.md의 "Modifier Policy"와 "Shift + ㅁ Policy", docs/requirements/active.md의 REQ-V023-003, docs/tasks/active.md의 TASK-V023-001.
+decisions:
+  - id: d-zhzq5v
+    question: 온스크린 modifier 버튼은 누를 때마다 어떻게 바뀌는가
+    chosen: off, oneshot, locked, off 순으로 순환한다. hover만으로는 바뀌지 않는다
+    status: accepted
+  - id: d-48fdk6
+    question: backspace undo 후 modifier 상태는 어떻게 되는가
+    chosen: 이미 소비된 oneshot은 되살아나지 않고, locked는 유지된다
+    status: accepted
+  - id: d-hyxyxw
+    question: 반치음(ᅀ)은 어떤 키로 입력하는가
+    chosen: L Ctrl + ㅁ, R Ctrl + ㅁ. Shift + ㅊ는 다른 특수 규칙이 없는 Shift 조합처럼 동작한다
+    alternatives:
+      - option: Shift + ㅊ
+        rejected-reason: Ctrl = 자형 변환 원칙의 예외였다. v0.2.3에서 Ctrl + ㅁ으로 바꿨다 (REQ-V023-003)
+    rationale: UX 개선을 위해 Ctrl = 자형 변환 원칙에 맞추고 반치음 예외를 없앤다 (REQ-V023-003)
+    status: accepted
+  - id: d-vnq5bs
+    question: Shift + ㅁ은 어떻게 해석하는가
+    chosen: 문맥형 filler 매크로다. 초성만 있으면 중성 채움 + 쌍미음, 초중성이 있으면 쌍미음, 입력이 없거나 종성까지 있으면 초성 채움 + 중성 채움 + 쌍미음
+    status: accepted
+  - id: d-vh2tb9
+    question: Ctrl + Space는 어떻게 해석하는가
+    chosen: 문맥형 filler 연산이다. 종성 뒤 모음을 이어쓰지 않고 끊어쓸 때도 쓴다. Ctrl 없는 Space는 일반 공백이다
+    status: accepted
+constraints:
+  - id: c-pjwwez
+    statement: L Ctrl과 R Ctrl, L Shift와 R Shift는 각각 동시에 활성화되지 않는다. 한쪽을 켜면 반대쪽은 off가 된다
+qa:
+  - id: q-fwkkyp
+    condition: 온스크린과 하드웨어 모두 L/R Ctrl + ㅁ은 ᅀ를 내고, Shift + ㅊ는 ᅀ를 내지 않는다
+    verifies: [d-hyxyxw]
+    tests: [src/engine/tests/engine.test.ts]
+  - id: q-xpd3z2
+    condition: 소비된 oneshot modifier는 backspace undo 후 되살아나지 않고, locked modifier는 유지된다
+    verifies: [d-48fdk6]
+    tests: [src/engine/tests/engine.test.ts]
+  - id: q-hzp97x
+    condition: Shift + ㅁ이 초성만, 초중성, 중성만, 빈 상태, literal 뒤, 완성 음절 뒤에서 각각 정의된 결과를 내고, backspace 한 번에 통째로 취소된다
+    verifies: [d-vnq5bs]
+    tests: [src/engine/tests/engine.test.ts]
+implementation:
+  status: in-progress
+  plan: |
+    TASK-V023-001: 엔진 modifier 해석에 L/R Ctrl + ㅁ → ᅀ를 추가하고 Shift + ㅊ → ᅀ를 제거한다.
+    Ctrl + Shift + ㅁ은 Ctrl 우선 원칙에 따라 ᅀ, Ctrl + Shift + ㅊ은 L/R Ctrl + ㅊ 결과를 낸다.
+    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+  refs:
+    - path: src/engine/tables/inputSymbolTable.ts
+    - path: src/features/ime/services/modifierInteraction.ts

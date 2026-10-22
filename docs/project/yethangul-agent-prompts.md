@@ -12,7 +12,7 @@ Goal:
 Reduce the number of Partial items in docs/specs/active/spec-v1-status.md by choosing the next highest-value tasks, preventing overlap between agents, and keeping handoff docs synchronized with reality.
 
 Instructions:
-- Read README.md, MEMORY.md, docs/handoff/current.md, docs/handoff/decisions.md, docs/specs/active/spec-v1-status.md, docs/tasks/checklists/extreme-interaction-cases.md, and docs/tasks/checklists/input-parity.md before starting.
+- Read README.md, MEMORY.md, docs/handoff/current.md, docs/handoff/decisions.md, docs/specs/active/spec-v1-status.md, docs/tasks/checklists/extreme-interaction-cases.md, and docs/tasks/checklists/input-parity.md before starting. Also read the .blueprint/ nodes for the area you are working on, and follow AGENTS.md.
 - Prioritize work that closes Partial spec items or removes known interaction gaps.
 - Assign disjoint write scopes to different agents. Do not let two agents edit the same file set unless absolutely necessary.
 - Treat tests and handoff/spec updates as part of the definition of done.
@@ -38,7 +38,7 @@ Goal:
 Improve correctness and determinism of the YetHangul input engine under src/engine/**.
 
 Instructions:
-- Read README.md and all docs under docs/handoff/ before starting.
+- Read README.md and all docs under docs/handoff/ before starting. Also read the .blueprint/ nodes for the area you are working on, and follow AGENTS.md.
 - Your primary write scope is src/engine/** and engine-focused tests.
 - Preserve deterministic behavior: the same logical input sequence should map to the same internal/output result.
 - Prefer adding or updating tests before or alongside behavior changes.
@@ -59,7 +59,7 @@ Goal:
 Reduce the gap between hardware keyboard input, system IME input, and on-screen keyboard input while making the output surface behave more like a real text editor.
 
 Instructions:
-- Read README.md, docs/handoff/current.md, docs/handoff/decisions.md, docs/specs/active/spec-v1-status.md, docs/tasks/checklists/extreme-interaction-cases.md, and docs/tasks/checklists/input-parity.md before starting.
+- Read README.md, docs/handoff/current.md, docs/handoff/decisions.md, docs/specs/active/spec-v1-status.md, docs/tasks/checklists/extreme-interaction-cases.md, and docs/tasks/checklists/input-parity.md before starting. Also read the .blueprint/ nodes for the area you are working on, and follow AGENTS.md.
 - Your primary write scope is src/features/ime/** and, if necessary, src/assets/styles/global.css.
 - Treat interactions as multi-step state transitions, not isolated events.
 - Prioritize focus/blur, selection replacement, newline boundaries, beforeinput/composition parity, and on-screen/hardware parity.
@@ -80,7 +80,7 @@ Goal:
 Increase confidence in YetHangul by converting extreme interaction cases, parity gaps, and multi-step editing sequences into stable tests and clear reproducible scenarios.
 
 Instructions:
-- Read docs/specs/active/spec-v1-status.md, docs/tasks/checklists/extreme-interaction-cases.md, and docs/tasks/checklists/input-parity.md before starting.
+- Read docs/specs/active/spec-v1-status.md, docs/tasks/checklists/extreme-interaction-cases.md, and docs/tasks/checklists/input-parity.md before starting. Also read the .blueprint/ nodes for the area you are working on, and follow AGENTS.md.
 - Prefer test additions and scenario documentation over product changes unless a tiny code change is needed for testability.
 - Focus on multi-step sequences: composition -> move -> delete, selection -> replace, blur -> resume, paste -> reparse, etc.
 - For each issue, capture reproduction steps, expected behavior, actual behavior, and affected area.
@@ -100,7 +100,7 @@ Goal:
 Keep YetHangul secure-by-default while distinguishing correctly between public client-side config and true secrets.
 
 Instructions:
-- Read README.md, docs/handoff/current.md, docs/handoff/decisions.md, docs/specs/active/spec-v1-status.md, deployment docs, and environment-variable conventions before starting.
+- Read README.md, docs/handoff/current.md, docs/handoff/decisions.md, docs/specs/active/spec-v1-status.md, deployment docs, and environment-variable conventions before starting. Also read the .blueprint/ nodes for the area you are working on, and follow AGENTS.md.
 - Focus on third-party scripts, analytics integration, clipboard/export paths, unsafe HTML/URL handling, dependency risk, and deploy-time secret/public-config boundaries.
 - Treat GA measurement IDs and similar client-visible identifiers as public config, not true secrets, but prefer deploy-time env injection when it improves operational hygiene.
 - Recommend the smallest safe change that materially reduces risk.

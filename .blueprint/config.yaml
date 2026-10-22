@@ -1,9 +1,12 @@
-# .blueprint 설정. 형식: ProjectManager docs/blueprint-reference.md
+# .blueprint 설정. 형식: ProjectManager 저장소의 plugins/blueprint/skills/blueprint/references/blueprint-reference.md
 schema: 1
 rules:
   decision-rationale: warn        # accepted 결정에 rationale이 없음
   decision-alternatives: off      # 결정에 기각한 대안이 없음
   decision-qa: warn               # accepted 결정을 ID로 직접 가리키는 QA 조건이 없음
+  decision-expired: warn          # expires-when의 조건이 모두 충족된 결정이 남아 있음
+  decision-deferred: warn         # status가 deferred인 결정이 있음 (보류 알림)
+  duplicate-text: warn            # 문구가 같은 결정 질문이나 노드 제목이 있음
   implementation-path: warn       # implementation.refs[].path가 저장소에 없음
   implementation-symbol: warn     # implementation.refs[].symbol이 그 파일에 없음
   qa-path: warn                   # qa[].tests 경로가 저장소에 없음

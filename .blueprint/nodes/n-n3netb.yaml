@@ -2,17 +2,15 @@ title: 하드웨어 키보드
 parent: n-r6q7ge
 status: active
 explanation: |
-  d-we0xg7과 d-720vg1은 함께 성립한다. 영문 QWERTY 키를 일반적으로 두벌식으로 바꾸지는 않지만, Windows 한글 IME가 보낸 Process 키는 composition이 한글로 확인될 때만 물리 키 기준으로 해석한다.
-
-  Ctrl 조합을 물리 키 기준으로 해석할 때, Ctrl 규칙이 있는 키 목록은 Modifier 규칙(n-bf2mwe)을 따른다. q-6hcd3d가 이 관계를 확인한다.
-
-  출처: docs/requirements/active.md의 REQ-V023-001, docs/tasks/active.md의 TASK-V023-003, docs/handoff/decisions.md의 "Keyboard Policy".
+  물리 키보드와 OS 입력기(Windows 한글 IME 등)에서 오는 키 이벤트를 엔진 입력으로 해석하는 adapter. 화면 키보드는 형제 노드 "온스크린 키보드"에, 두 경로가 겹칠 때의 처리는 "중복 입력 억제"에 있다.
 decisions:
   - id: d-we0xg7
+    kind: product
     question: 하드웨어 키 입력 중 무엇을 엔진 조합 입력으로 보는가
     chosen: 실제 한글 자모 key value(ㄱ, ㅏ, ㄴ 등)가 들어온 경우만 조합 입력으로 본다. 영문 QWERTY 물리 키는 두벌식으로 치환하지 않고, 로마자와 외국어 입력은 literal로 통과시킨다
     status: accepted
   - id: d-720vg1
+    kind: product
     question: Windows 한글 IME의 Process keydown을 어떻게 처리하는가
     chosen: 바로 치환하지 않고 보류한다. 이어지는 composition 데이터가 한글일 때만 보류한 물리 키를 엔진 입력으로 확정하고, 한글이 아니면 버리고 native literal 경로에 맡긴다
     alternatives:
@@ -23,7 +21,7 @@ decisions:
 qa:
   - id: q-x3ervk
     condition: Windows 한글 IME 이벤트 시퀀스(Process + 한글 composition)로 ᄢᅮᆯ이 재현되고, Shift 쌍자모와 Backspace undo도 같은 결과를 낸다
-    verifies: [d-720vg1]
+    verifies: [d-720vg1, d-pgtceh]
     tests: [src/features/ime/services/hardwareKeyboard.test.ts]
   - id: q-982yqe
     condition: 일본어와 중국어 IME 이벤트 시퀀스(Process + 비한글 composition)는 literal 그대로 입력된다

@@ -2,11 +2,10 @@ title: 입력 수집 파이프라인
 parent: n-h0vywr
 status: active
 explanation: |
-  입력 흐름: source별 adapter, normalized input event, single dispatcher, engine/editor, rendered units.
-
-  출처: docs/handoff/decisions.md의 "Input Collection Policy", "Keyboard Policy", "Current Design Direction"(Phase 3), docs/architecture/input-pipeline.md.
+  온스크린 키보드, 하드웨어 키보드, native IME 같은 입력 source에서 입력을 받아 엔진과 편집기로 넘기는 경로. 장치별로 어떤 입력을 쓰는지와 source 사이의 공통 처리가 여기 있고, 받은 입력을 음절로 조합하는 일은 "입력 엔진"에 있다.
 decisions:
   - id: d-m20kkb
+    kind: practice
     question: 입력 source를 하나의 DOM 이벤트(keydown)로 통일하는가
     chosen: 통일하지 않는다. source별 adapter(온스크린 키보드, 하드웨어 키보드, native IME)를 두고, adapter 출력을 normalized input event, single dispatcher, engine/editor 순으로 수렴시킨다
     alternatives:
@@ -15,12 +14,28 @@ decisions:
     rationale: 분기를 adapter 안에 가두고 그 뒤는 공통 파이프라인으로 처리하기 위해서다
     status: accepted
   - id: d-qj7tqd
+    kind: product
     question: 기기별로 어떤 입력을 우선하는가
     chosen: 데스크톱은 하드웨어 키보드를 우선한다. 태블릿은 하드웨어 키보드가 감지되면 하드웨어, 아니면 자체 자판을 우선한다. 모바일은 자체 자판을 우선한다
     status: accepted
+  - id: d-rk9chx
+    kind: product
+    question: 모바일과 태블릿에서 입력 결과창을 누르면 어떻게 하는가
+    chosen: OS native 키보드를 띄우지 않고 자체 가상 키보드로만 입력한다. 글자 키가 바로 보이도록 모든 모드에서 기본 펼침으로 시작한다
+    alternatives:
+      - option: offscreen textarea에 포커스를 보내 OS native 키보드를 호출하고, 모바일과 태블릿에서는 온스크린 키보드를 기본 접힘으로 시작한다
+        rejected-reason: OS native 키보드가 자체 가상 키보드와 겹쳐 화면을 가리고 UX를 해쳤다. v0.2.3에서 바꿨다 (REQ-V023-002)
+    rationale: 자체 가상 키보드만으로 모든 입력과 편집을 하게 해서, OS 키보드가 화면을 가리지 않게 한다 (REQ-V023-002)
+    status: accepted
 constraints:
   - id: c-48k8fz
+    kind: practice
     statement: source별 adapter는 입력 수집까지만 맡는다. selection, delete, newline, caret 변경은 공통 editor helper로만 수행한다
+qa:
+  - id: q-2wpp4x
+    condition: 모바일과 태블릿에서 입력 결과창이나 키를 눌러도 OS 가상 키보드가 올라오지 않고, 모든 e2e 프로젝트에서 키보드가 기본 펼침이다
+    verifies: [d-rk9chx]
+    tests: [e2e/ime-surface.spec.ts]
 implementation:
   status: implemented
   refs:

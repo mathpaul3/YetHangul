@@ -3,11 +3,10 @@ parent: n-h0vywr
 from-decision: d-2dny9d
 status: active
 explanation: |
-  committed(확정된 자모 id), active(편집 중인 음절), undoStack(입력 단계별 상태 스냅샷)으로 상태를 관리한다.
-
-  출처: docs/decisions/0001-engine-architecture.md, docs/architecture/engine.md, docs/handoff/decisions.md의 "Core Architecture"와 "Internal Representation".
+  입력 심볼을 받아 음절로 조합하고 되돌리는 웹 앱 내부 엔진. 하위에 붙여넣기 정규화와 음절 경계와 재분석이 있고, 키와 조합이 무엇을 내는지는 "입력 규칙"에 있다.
 decisions:
   - id: d-7v4k66
+    kind: practice
     question: 엔진의 핵심 구조는 무엇인가
     chosen: FSM + sparse transition table + undo log
     alternatives:
@@ -16,21 +15,25 @@ decisions:
     rationale: 엔진 상태가 작고 예측 가능하며 입력 지연이 안정적이다. 하드웨어 키보드와 온스크린 키보드가 같은 엔진을 공유할 수 있다
     status: accepted
   - id: d-sjxgky
+    kind: practice
     question: 엔진 안에서 문자를 어떻게 표현하는가
     chosen: 문자열 대신 numeric id(InputSymbolId, JamoId, StateId)로 관리하고, Unicode 변환은 렌더링과 상호운용 경계에서만 mapper가 수행한다
     rationale: Unicode 렌더링을 편집 로직과 분리하기 위해서다
     status: accepted
   - id: d-pgtceh
+    kind: product
     question: Backspace는 무엇을 지우는가
     chosen: 문자열의 마지막 글자가 아니라 마지막 입력 단계를 undo한다
     rationale: backspace 동작을 자연스럽게 유지하기 위해서다
     status: accepted
   - id: d-cjspwf
+    kind: product
     question: 단독 자음처럼 해석이 모호한 입력은 어떻게 처리하는가
     chosen: 기본값은 초성이다. 종성은 현재 음절 문맥에서만 도출한다. ᆧ는 중성 전용이며 일반 종성 대상으로 확장하지 않는다
     status: accepted
 constraints:
   - id: c-acgdaj
+    kind: practice
     statement: 일반 타이핑 중에는 전체 문자열을 일괄 재파싱하지 않는다. 편집 중인 마지막 음절만 active syllable로 다룬다
 qa:
   - id: q-vymbec

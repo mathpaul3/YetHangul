@@ -1,43 +1,48 @@
 title: YetHangul 옛한글 웹 입력기
 status: active
 explanation: |
-  어떤 OS와 브라우저에서도 직관적인 규칙으로 옛한글을 입력할 수 있는 웹 입력기. 사용자는 현대 한글 자모 규칙과 modifier 규칙을 바탕으로 옛한글을 입력한다.
-
-  이 그래프는 아래 문서에서 옮겨 적었다(2026-10-19 작성, 2026-10-21 형식 갱신). 기존 문서는 그대로 두었다.
-
-  - docs/handoff/decisions.md
-  - docs/decisions/0001-engine-architecture.md
-  - docs/architecture/engine.md, docs/architecture/input-pipeline.md
-  - docs/specs/active/*.md
-  - docs/requirements/active.md, docs/tasks/active.md (v0.2.3)
-  - MEMORY.md
-
-  아직 옮기지 않은 정책: 폰트, 배포, analytics, 반응형 구간, product shell.
-
-  v0.2.3의 결정(REQ-V023-001~003)은 accepted다. 구현은 아직 feat/v0.2.3 브랜치에만 있으므로, 해당 노드의 implementation.status는 in-progress로 두었다.
+  어떤 OS와 브라우저에서도 현대 한글 자모와 modifier 조합으로 옛한글을 입력하게 하는 웹 입력기. 아래에 입력 규칙(키와 조합이 무엇을 내는가), 입력 수집(키보드와 IME에서 입력을 받는 방식), 입력 엔진(음절 조합), 입력 결과창 편집기가 있다.
 decisions:
   - id: d-2dny9d
+    kind: product
     question: 옛한글 조합을 누가 수행하는가
     chosen: OS 기본 입력기에 의존하지 않고 웹 앱 내부 입력 엔진이 직접 조합한다
     rationale: 어떤 OS와 브라우저에서도 같은 규칙으로 옛한글을 입력할 수 있게 하기 위해서다
     status: accepted
   - id: d-e1ytc6
+    kind: product
     question: 지원할 옛한글 범위는 어디까지인가
     chosen: 문자 집합 위키의 "유니코드 옛한글 1638750자" 기준으로 초성 125자, 중성 95자, 종성 138자 전체. 초성, 중성, 종성 중 한 성분 이상이 없는 경우도 포함한다
     status: accepted
   - id: d-qv89kh
+    kind: product
     question: 옛한글 특수 자모를 개별 버튼이나 직접 키로 노출하는가
     chosen: 노출하지 않는다. 특수 자모 전용 팔레트도 두지 않고, 일반 자모 직접 입력과 modifier 조합으로 만든다
     rationale: 입력 버튼 집합을 최대한 단순하게 유지하기 위해서다
     non-goal: true
     status: accepted
+  - id: d-n6y559
+    kind: operation
+    question: 버전은 어떻게 올리는가
+    chosen: 1.0 전에는 0.MINOR.PATCH를 쓴다. 커밋마다 올리지 않고 릴리스 가능한 단위가 모였을 때만 올리며, 릴리스 커밋에 같은 버전의 vX.Y.Z 태그를 붙인다. 배포는 태그 push로 시작한다
+    status: accepted
+  - id: d-ttm6dj
+    kind: practice
+    question: 여러 에이전트가 함께 일할 때 커밋은 누가 하는가
+    chosen: 기본적으로 coordinator가 커밋 권한을 가진다. subagent는 서로 겹치지 않는 쓰기 범위 안에서만 작업한다
+    status: accepted
 constraints:
   - id: c-5re0zw
+    kind: product
     statement: 같은 key sequence는 항상 같은 Unicode 출력으로 수렴한다 (입력 보존성)
   - id: c-mgy0y6
+    kind: product
     statement: 목표 inventory 초성 125, 중성 95, 종성 138 전체가 primitive 또는 automatic rule 경로 중 하나로 설명된다 (전 범위 커버리지)
 qa:
   - id: q-t92844
     condition: inventory coverage가 초성 125/125, 중성 95/95, 종성 138/138이고 missing sample이 없다
     verifies: [d-e1ytc6, c-mgy0y6]
     tests: [src/engine/tests/engine.test.ts]
+  - id: q-gzc3et
+    condition: 모든 릴리스 커밋에 같은 버전의 vX.Y.Z 태그가 있다
+    verifies: [d-n6y559]

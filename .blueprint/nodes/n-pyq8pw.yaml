@@ -13,6 +13,7 @@ decisions:
     kind: product
     question: 입력 결과창에서 선택과 복사는 어떻게 하는가
     chosen: 브라우저 기본 selection은 가능한 한 배제하고, 자체 selection과 Copy All, Copy Selection 버튼을 우선한다
+    rationale: 입력 요소의 기본 동작을 그대로 두면 조합형 글자가 쪼개져 선택되는 등 선택이 기대와 다르게 동작하는 경우가 많아 자체 selection을 둔다. 모바일 사용자도 편하게 복사할 수 있게 복사 기능은 버튼으로 제공한다
     status: accepted
   - id: d-jw893q
     kind: product

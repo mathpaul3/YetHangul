@@ -32,14 +32,16 @@ qa:
     condition: Shift + ㅁ이 초성만, 초중성, 중성만, 빈 상태, literal 뒤, 완성 음절 뒤에서 각각 정의된 결과를 내고, backspace 한 번에 통째로 취소된다
     verifies: [d-vnq5bs, d-pgtceh]
     tests: [src/engine/tests/engine.test.ts]
-implementation:
-  status: in-progress
-  plan: |
-    v0.2.3에서 반치음 입력 키가 Shift + ㅊ에서 Ctrl + ㅁ으로 바뀌었다(REQ-V023-003).
-    TASK-V023-001: 엔진 modifier 해석에 L/R Ctrl + ㅁ → ᅀ를 추가하고 Shift + ㅊ → ᅀ를 제거한다.
-    Ctrl + Shift + ㅁ은 Ctrl 우선 원칙에 따라 ᅀ, Ctrl + Shift + ㅊ은 L/R Ctrl + ㅊ 결과를 낸다.
-    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
-    main에는 아직 Shift + ㅊ 구현과 테스트("maps shift + chieuch to banchieum")가 남아 있다.
-  refs:
-    - path: src/engine/tables/inputSymbolTable.ts
-    - path: src/features/ime/services/modifierInteraction.ts
+implementations:
+  - id: i-tvq8c6
+    name: Modifier 규칙
+    status: in-progress
+    plan: |
+      v0.2.3에서 반치음 입력 키가 Shift + ㅊ에서 Ctrl + ㅁ으로 바뀌었다(REQ-V023-003).
+      TASK-V023-001: 엔진 modifier 해석에 L/R Ctrl + ㅁ → ᅀ를 추가하고 Shift + ㅊ → ᅀ를 제거한다.
+      Ctrl + Shift + ㅁ은 Ctrl 우선 원칙에 따라 ᅀ, Ctrl + Shift + ㅊ은 L/R Ctrl + ㅊ 결과를 낸다.
+      feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+      main에는 아직 Shift + ㅊ 구현과 테스트("maps shift + chieuch to banchieum")가 남아 있다.
+    refs:
+      - path: src/engine/tables/inputSymbolTable.ts
+      - path: src/features/ime/services/modifierInteraction.ts

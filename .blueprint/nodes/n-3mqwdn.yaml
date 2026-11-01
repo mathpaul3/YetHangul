@@ -14,8 +14,10 @@ qa:
     condition: 목표 inventory 초성 125, 중성 95, 종성 138 전체에 대해 direct jamo 붙여넣기 정규화가 통과한다
     verifies: [d-t6exxs]
     tests: [src/engine/tests/engine.test.ts]
-implementation:
-  status: implemented
-  refs:
-    - path: src/engine/mapper/inputMapper.ts
-    - path: src/features/ime/services/normalizePaste.ts
+implementations:
+  - id: i-6h0y0y
+    name: 붙여넣기 정규화
+    status: implemented
+    refs:
+      - path: src/engine/mapper/inputMapper.ts
+      - path: src/features/ime/services/normalizePaste.ts

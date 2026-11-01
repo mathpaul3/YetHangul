@@ -33,10 +33,12 @@ qa:
     condition: ㄴ + ㄱ + ㅏ + ㅏ + ㅊ 입력이 ᄓᅡᅟᅡᆾ가 된다
     verifies: [d-h226h8]
     tests: [src/engine/tests/engine.test.ts]
-implementation:
-  status: implemented
-  refs:
-    - path: src/engine/fsm/transitions.ts
-      symbol: reparse_final_as_initial
-    - path: src/engine/core/engine.ts
-      symbol: reparse_final_as_initial
+implementations:
+  - id: i-r85jp9
+    name: 음절 경계와 재분석
+    status: implemented
+    refs:
+      - path: src/engine/fsm/transitions.ts
+        symbol: reparse_final_as_initial
+      - path: src/engine/core/engine.ts
+        symbol: reparse_final_as_initial

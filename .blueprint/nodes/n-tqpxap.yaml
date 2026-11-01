@@ -20,9 +20,11 @@ qa:
     condition: ㅂ + ㅅ + ㄱ + ㅜ + ㄹ 입력이 ᄢᅮᆯ이 되고, ㄱ + ㅠ + ㅏ + ㄴ 입력이 ᄀᆎᆫ이 된다
     verifies: [d-0dsbdg]
     tests: [src/engine/tests/engine.test.ts]
-implementation:
-  status: implemented
-  refs:
-    - path: src/engine/tables/compositionTables.ts
-    - path: src/engine/tables/archaicRuleCatalog.ts
-    - path: src/engine/tables/archaicPrimitiveCatalog.ts
+implementations:
+  - id: i-6f9s90
+    name: 입력 규칙
+    status: implemented
+    refs:
+      - path: src/engine/tables/compositionTables.ts
+      - path: src/engine/tables/archaicRuleCatalog.ts
+      - path: src/engine/tables/archaicPrimitiveCatalog.ts

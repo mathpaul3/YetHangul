@@ -36,10 +36,12 @@ qa:
     condition: 모바일과 태블릿에서 입력 결과창이나 키를 눌러도 OS 가상 키보드가 올라오지 않고, 모든 e2e 프로젝트에서 키보드가 기본 펼침이다
     verifies: [d-rk9chx]
     tests: [e2e/ime-surface.spec.ts]
-implementation:
-  status: implemented
-  refs:
-    - path: src/features/ime/services/normalizedInput.ts
-    - path: src/features/ime/services/normalizedDispatcher.ts
-    - path: src/features/ime/services/nativeTextBatch.ts
-    - path: src/features/ime/hooks/useImeWorkbench.ts
+implementations:
+  - id: i-9t3nxx
+    name: 입력 수집 파이프라인
+    status: implemented
+    refs:
+      - path: src/features/ime/services/normalizedInput.ts
+      - path: src/features/ime/services/normalizedDispatcher.ts
+      - path: src/features/ime/services/nativeTextBatch.ts
+      - path: src/features/ime/hooks/useImeWorkbench.ts

@@ -31,12 +31,14 @@ qa:
     condition: 소비된 oneshot modifier는 backspace undo 후 되살아나지 않고, locked modifier는 유지된다
     verifies: [d-48fdk6, d-pgtceh]
     tests: [src/engine/tests/engine.test.ts]
-implementation:
-  status: in-progress
-  plan: |
-    TASK-V023-002: editor surface tap으로 OS native 키보드를 부르는 경로를 없앤다.
-    하드웨어 입력용으로 남기는 숨김 텍스트 입력 요소는 inputMode="none"으로 둔다.
-    키보드는 모든 모드에서 기본 펼침으로 시작하고, compact row 토글은 유지한다.
-    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
-  refs:
-    - path: src/features/ime/ui/ImeWorkbench.tsx
+implementations:
+  - id: i-hmtw5r
+    name: 온스크린 키보드
+    status: in-progress
+    plan: |
+      TASK-V023-002: editor surface tap으로 OS native 키보드를 부르는 경로를 없앤다.
+      하드웨어 입력용으로 남기는 숨김 텍스트 입력 요소는 inputMode="none"으로 둔다.
+      키보드는 모든 모드에서 기본 펼침으로 시작하고, compact row 토글은 유지한다.
+      feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+    refs:
+      - path: src/features/ime/ui/ImeWorkbench.tsx

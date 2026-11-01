@@ -31,12 +31,6 @@ decisions:
     question: 여러 에이전트가 함께 일할 때 커밋은 누가 하는가
     chosen: 기본적으로 coordinator가 커밋 권한을 가진다. subagent는 서로 겹치지 않는 쓰기 범위 안에서만 작업한다
     status: accepted
-  - id: d-emh23w
-    kind: work
-    question: 아직 그래프로 옮기지 않은 정책(폰트, 배포, analytics, 반응형 구간, product shell)은 언제 옮기는가
-    chosen: 필요해질 때 하나씩 옮긴다. 옮긴 정책은 이 목록에서 빼고, 모두 옮기면 이 결정을 지운다
-    rationale: 그래프에 아직 없는 정책을 잊지 않게 lint가 계속 보이게 한다
-    status: accepted
 constraints:
   - id: c-5re0zw
     kind: product
@@ -52,3 +46,10 @@ qa:
   - id: q-gzc3et
     condition: 모든 릴리스 커밋에 같은 버전의 vX.Y.Z 태그가 있다
     verifies: [d-n6y559]
+implementations:
+  - id: i-jevktj
+    name: 그래프로 옮기지 않은 정책
+    status: planned
+    plan: |
+      아직 그래프로 옮기지 않은 정책: 폰트, 배포, analytics, 반응형 구간, product shell.
+      필요해질 때 하나씩 옮기고, 옮긴 정책은 이 목록에서 뺀다. 모두 옮기면 implemented로 바꾼다.

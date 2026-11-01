@@ -24,8 +24,10 @@ qa:
   - id: q-54hx86
     condition: 조합 중에 편집기 포커스가 빠져도 조합 중이던 글자가 document에 남는다
     verifies: [d-jw893q]
-implementation:
-  status: implemented
-  refs:
-    - path: src/features/ime/services/editorUnits.ts
-    - path: src/features/ime/services/editorSurface.ts
+implementations:
+  - id: i-ax6wgz
+    name: 입력 결과창 편집기
+    status: implemented
+    refs:
+      - path: src/features/ime/services/editorUnits.ts
+      - path: src/features/ime/services/editorSurface.ts

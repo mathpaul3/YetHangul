@@ -17,13 +17,15 @@ qa:
     tests: [src/features/ime/services/inputInterop.test.ts]
   - id: q-h8kgh2
     condition: 중복 억제가 쓰는 기본 키 매핑이 Modifier 규칙(n-bf2mwe)의 파생 관계와 같다. 예를 들어 ᅀ의 기본 키는 ㅁ이다
-    verifies: [n-bf2mwe]
+    verifies: [d-hyxyxw]
     tests: [src/features/ime/services/inputInterop.test.ts]
-implementation:
-  status: in-progress
-  plan: |
-    TASK-V023-001: direct dispatch 중복 억제의 기본 키 매핑에서 ᅀ의 기본 키를 ㅊ에서 ㅁ으로 바꾼다.
-    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
-  refs:
-    - path: src/features/ime/services/inputInterop.ts
-      symbol: shouldSuppressInteropTextAfterDirectDispatch
+implementations:
+  - id: i-sgvywt
+    name: 중복 입력 억제
+    status: in-progress
+    plan: |
+      TASK-V023-001: direct dispatch 중복 억제의 기본 키 매핑에서 ᅀ의 기본 키를 ㅊ에서 ㅁ으로 바꾼다.
+      feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+    refs:
+      - path: src/features/ime/services/inputInterop.ts
+        symbol: shouldSuppressInteropTextAfterDirectDispatch

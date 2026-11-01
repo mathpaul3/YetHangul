@@ -12,18 +12,20 @@ decisions:
 qa:
   - id: q-qptrma
     condition: 키캡의 modifier 조합(Shift, L Ctrl, R Ctrl, Ctrl + Shift) 미리보기와 도움말 규칙표가 Modifier 규칙(n-bf2mwe)에 따른 엔진의 실제 출력과 같다
-    verifies: [d-dasec0, n-bf2mwe]
-implementation:
-  status: in-progress
-  plan: |
-    TASK-V023-001: 키캡 미리보기 맵(Shift, L Ctrl, R Ctrl, Ctrl + Shift)과 도움말 규칙표를 새 반치음 규칙에 맞추고, 반치음 예외 표기를 없앤다.
-    feat/v0.2.3에 반영됐고 main 머지를 기다린다.
-  refs:
-    - path: src/features/ime/ui/ImeWorkbench.tsx
-      symbol: SHIFT_RULES
-    - path: src/features/ime/ui/ImeWorkbench.tsx
-      symbol: CTRL_RULES
-    - path: src/features/ime/ui/ImeWorkbench.tsx
-      symbol: LEFT_CTRL_DISPLAY_MAP
-    - path: src/features/ime/ui/ImeWorkbench.tsx
-      symbol: RIGHT_CTRL_DISPLAY_MAP
+    verifies: [d-dasec0, d-hyxyxw, d-vnq5bs, d-vh2tb9]
+implementations:
+  - id: i-h534gz
+    name: 키캡 미리보기와 도움말 규칙표
+    status: in-progress
+    plan: |
+      TASK-V023-001: 키캡 미리보기 맵(Shift, L Ctrl, R Ctrl, Ctrl + Shift)과 도움말 규칙표를 새 반치음 규칙에 맞추고, 반치음 예외 표기를 없앤다.
+      feat/v0.2.3에 반영됐고 main 머지를 기다린다.
+    refs:
+      - path: src/features/ime/ui/ImeWorkbench.tsx
+        symbol: SHIFT_RULES
+      - path: src/features/ime/ui/ImeWorkbench.tsx
+        symbol: CTRL_RULES
+      - path: src/features/ime/ui/ImeWorkbench.tsx
+        symbol: LEFT_CTRL_DISPLAY_MAP
+      - path: src/features/ime/ui/ImeWorkbench.tsx
+        symbol: RIGHT_CTRL_DISPLAY_MAP

@@ -47,10 +47,12 @@ qa:
   - id: q-yxw7sh
     condition: 앞 음절 없이 입력한 단독 자음은 초성으로 해석된다
     verifies: [d-cjspwf]
-implementation:
-  status: implemented
-  refs:
-    - path: src/engine/core/engine.ts
-    - path: src/engine/core/state.ts
-    - path: src/engine/fsm/transitions.ts
-    - path: src/engine/mapper/unicodeMapper.ts
+implementations:
+  - id: i-7zrntq
+    name: 입력 엔진
+    status: implemented
+    refs:
+      - path: src/engine/core/engine.ts
+      - path: src/engine/core/state.ts
+      - path: src/engine/fsm/transitions.ts
+      - path: src/engine/mapper/unicodeMapper.ts

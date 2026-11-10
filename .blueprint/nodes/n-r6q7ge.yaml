@@ -7,25 +7,53 @@ decisions:
   - id: d-m20kkb
     kind: practice
     question: 입력 source를 하나의 DOM 이벤트(keydown)로 통일하는가
-    chosen: 통일하지 않는다. source별 adapter(온스크린 키보드, 하드웨어 키보드, native IME)를 두고, adapter 출력을 normalized input event, single dispatcher, engine/editor 순으로 수렴시킨다
-    alternatives:
-      - option: 모든 source를 keydown 하나로 통일
-        rejected-reason: 모바일과 태블릿의 native IME는 의미 있는 keydown을 안정적으로 주지 않고, beforeinput과 compositionend 같은 committed text가 더 정확한 경우가 많다
-    rationale: 분기를 adapter 안에 가두고 그 뒤는 공통 파이프라인으로 처리하기 위해서다
+    options:
+      - id: o-80b24d
+        text: 입력 source를 하나의 DOM 이벤트(keydown)로 통일하지 않는다
+        status: accepted
+        reason: 모바일과 태블릿의 native IME는 의미 있는 keydown을 안정적으로 주지 않고, beforeinput과 compositionend 같은 committed text가 더 정확한 경우가 많다
+      - id: o-tvy089
+        text: 온스크린 키보드 adapter를 둔다
+        status: accepted
+      - id: o-pr11yq
+        text: 하드웨어 키보드 adapter를 둔다
+        status: accepted
+      - id: o-y4dzp6
+        text: native IME adapter를 둔다
+        status: accepted
+      - id: o-zfq16m
+        text: adapter 출력을 normalized input event, single dispatcher, engine/editor 순으로 수렴시킨다
+        status: accepted
+    rationale: |
+      분기를 adapter 안에 가두고 그 뒤는 공통 파이프라인으로 처리하기 위해서다
     status: accepted
   - id: d-qj7tqd
     kind: product
     question: 기기별로 어떤 입력을 우선하는가
-    chosen: 데스크톱은 하드웨어 키보드를 우선한다. 태블릿은 하드웨어 키보드가 감지되면 하드웨어, 아니면 자체 자판을 우선한다. 모바일은 자체 자판을 우선한다
+    options:
+      - id: o-nywtmh
+        text: 데스크톱은 하드웨어 키보드를 우선한다
+        status: accepted
+      - id: o-1z55fa
+        text: 태블릿은 하드웨어 키보드가 감지되면 하드웨어, 아니면 자체 자판을 우선한다
+        status: accepted
+      - id: o-1zcm00
+        text: 모바일은 자체 자판을 우선한다
+        status: accepted
     status: accepted
   - id: d-rk9chx
     kind: product
     question: 모바일과 태블릿에서 입력 결과창을 누르면 어떻게 하는가
-    chosen: OS native 키보드를 띄우지 않고 자체 가상 키보드로만 입력한다. 글자 키가 바로 보이도록 모든 모드에서 기본 펼침으로 시작한다
-    alternatives:
-      - option: offscreen textarea에 포커스를 보내 OS native 키보드를 호출하고, 모바일과 태블릿에서는 온스크린 키보드를 기본 접힘으로 시작한다
-        rejected-reason: OS native 키보드가 자체 가상 키보드와 겹쳐 화면을 가리고 UX를 해쳤다. v0.2.3에서 바꿨다 (REQ-V023-002)
-    rationale: 자체 가상 키보드만으로 모든 입력과 편집을 하게 해서, OS 키보드가 화면을 가리지 않게 한다 (REQ-V023-002)
+    options:
+      - id: o-48mgs3
+        text: 모바일과 태블릿에서 입력 결과창을 누르면 OS native 키보드를 띄우지 않고 자체 가상 키보드로만 입력한다
+        status: accepted
+        reason: OS native 키보드가 자체 가상 키보드와 겹쳐 화면을 가리고 UX를 해쳤다. v0.2.3에서 바꿨다 (REQ-V023-002)
+      - id: o-p6ety1
+        text: 글자 키가 바로 보이도록 모든 모드에서 기본 펼침으로 시작한다
+        status: accepted
+    rationale: |
+      자체 가상 키보드만으로 모든 입력과 편집을 하게 해서, OS 키보드가 화면을 가리지 않게 한다 (REQ-V023-002)
     status: accepted
 constraints:
   - id: c-48k8fz

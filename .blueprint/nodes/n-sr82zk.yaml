@@ -7,7 +7,19 @@ decisions:
   - id: d-dasec0
     kind: product
     question: 온스크린 키보드가 modifier 상태를 미리 보여주는가
-    chosen: 보여준다. Shift가 켜지면 기본 자모 키캡이 쌍자모 출력 형태로, L Ctrl이나 R Ctrl이 켜지면 그 방향의 자형 변환 결과로 바뀐다. Ctrl + Shift가 함께 켜지면 결합 규칙이 있는 키캡은 결합 결과를 먼저 표시한다
+    options:
+      - id: o-3pc5k8
+        text: 온스크린 키보드는 modifier 상태를 미리 보여준다
+        status: accepted
+      - id: o-j6ejhp
+        text: Shift가 켜지면 기본 자모 키캡이 쌍자모 출력 형태로 바뀐다
+        status: accepted
+      - id: o-6p9988
+        text: L Ctrl이나 R Ctrl이 켜지면 키캡이 그 방향의 자형 변환 결과로 바뀐다
+        status: accepted
+      - id: o-dz1nfd
+        text: Ctrl + Shift가 함께 켜지면 결합 규칙이 있는 키캡은 결합 결과를 먼저 표시한다
+        status: accepted
     status: accepted
 qa:
   - id: q-qptrma

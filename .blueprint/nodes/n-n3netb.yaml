@@ -7,16 +7,33 @@ decisions:
   - id: d-we0xg7
     kind: product
     question: 하드웨어 키 입력 중 무엇을 엔진 조합 입력으로 보는가
-    chosen: 실제 한글 자모 key value(ㄱ, ㅏ, ㄴ 등)가 들어온 경우만 조합 입력으로 본다. 영문 QWERTY 물리 키는 두벌식으로 치환하지 않고, 로마자와 외국어 입력은 literal로 통과시킨다
+    options:
+      - id: o-hhzea6
+        text: 실제 한글 자모 key value(ㄱ, ㅏ, ㄴ 등)가 들어온 경우만 조합 입력으로 본다
+        status: accepted
+      - id: o-vzahmb
+        text: 영문 QWERTY 물리 키는 두벌식으로 치환하지 않는다
+        status: accepted
+      - id: o-4246qa
+        text: 로마자와 외국어 입력은 literal로 통과시킨다
+        status: accepted
     status: accepted
   - id: d-720vg1
     kind: product
     question: Windows 한글 IME의 Process keydown을 어떻게 처리하는가
-    chosen: 바로 치환하지 않고 보류한다. 이어지는 composition 데이터가 한글일 때만 보류한 물리 키를 엔진 입력으로 확정하고, 한글이 아니면 버리고 native literal 경로에 맡긴다
-    alternatives:
-      - option: Process keydown을 물리 키 기준 두벌식으로 즉시 치환
-        rejected-reason: v0.2.3 첫 시도에서 일본어와 중국어 IME 입력까지 한글로 바뀌어 롤백되었다
-    rationale: Windows 한글 IME가 켜진 상태에서도 하드웨어 키보드로 옛한글을 입력하되, 한글이 아닌 IME 입력은 건드리지 않기 위해서다 (REQ-V023-001)
+    options:
+      - id: o-597z5j
+        text: Windows 한글 IME의 Process keydown은 바로 치환하지 않고 보류한다
+        status: accepted
+        reason: v0.2.3 첫 시도에서 일본어와 중국어 IME 입력까지 한글로 바뀌어 롤백되었다
+      - id: o-kw44pq
+        text: 이어지는 composition 데이터가 한글일 때만 보류한 물리 키를 엔진 입력으로 확정한다
+        status: accepted
+      - id: o-1vd2mw
+        text: 이어지는 composition 데이터가 한글이 아니면 보류한 물리 키를 버리고 native literal 경로에 맡긴다
+        status: accepted
+    rationale: |
+      Windows 한글 IME가 켜진 상태에서도 하드웨어 키보드로 옛한글을 입력하되, 한글이 아닌 IME 입력은 건드리지 않기 위해서다 (REQ-V023-001)
     status: accepted
 qa:
   - id: q-x3ervk

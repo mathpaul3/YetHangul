@@ -7,21 +7,50 @@ decisions:
   - id: d-hyxyxw
     kind: product
     question: 반치음(ᅀ)은 어떤 키로 입력하는가
-    chosen: L Ctrl + ㅁ, R Ctrl + ㅁ. Shift + ㅊ는 다른 특수 규칙이 없는 Shift 조합처럼 동작한다
-    alternatives:
-      - option: Shift + ㅊ
-        rejected-reason: Ctrl = 자형 변환 원칙의 예외였다. v0.2.3에서 Ctrl + ㅁ으로 바꿨다 (REQ-V023-003)
-    rationale: UX 개선을 위해 Ctrl = 자형 변환 원칙에 맞추고 반치음 예외를 없앤다 (REQ-V023-003)
+    options:
+      - id: o-hcdxa3
+        text: 반치음(ᅀ)은 L Ctrl + ㅁ으로 입력한다
+        status: accepted
+      - id: o-hbbqx2
+        text: 반치음(ᅀ)은 R Ctrl + ㅁ으로 입력한다
+        status: accepted
+      - id: o-jk3yt8
+        text: Shift + ㅊ는 다른 특수 규칙이 없는 Shift 조합처럼 동작한다
+        status: accepted
+        reason: Ctrl = 자형 변환 원칙의 예외였다. v0.2.3에서 Ctrl + ㅁ으로 바꿨다 (REQ-V023-003)
+    rationale: |
+      UX 개선을 위해 Ctrl = 자형 변환 원칙에 맞추고 반치음 예외를 없앤다 (REQ-V023-003)
     status: accepted
   - id: d-vnq5bs
     kind: product
     question: Shift + ㅁ은 어떻게 해석하는가
-    chosen: 문맥형 filler 매크로다. 초성만 있으면 중성 채움 + 쌍미음, 초중성이 있으면 쌍미음, 입력이 없거나 종성까지 있으면 초성 채움 + 중성 채움 + 쌍미음
+    options:
+      - id: o-y0vvtf
+        text: Shift + ㅁ은 문맥형 filler 매크로다
+        status: accepted
+      - id: o-zr4j1n
+        text: 초성만 있으면 Shift + ㅁ은 중성 채움 + 쌍미음이다
+        status: accepted
+      - id: o-5c1png
+        text: 초중성이 있으면 Shift + ㅁ은 쌍미음이다
+        status: accepted
+      - id: o-cjdphz
+        text: 입력이 없거나 종성까지 있으면 Shift + ㅁ은 초성 채움 + 중성 채움 + 쌍미음이다
+        status: accepted
     status: accepted
   - id: d-vh2tb9
     kind: product
     question: Ctrl + Space는 어떻게 해석하는가
-    chosen: 문맥형 filler 연산이다. 종성 뒤 모음을 이어쓰지 않고 끊어쓸 때도 쓴다. Ctrl 없는 Space는 일반 공백이다
+    options:
+      - id: o-8x9m0v
+        text: Ctrl + Space는 문맥형 filler 연산이다
+        status: accepted
+      - id: o-asnbkm
+        text: Ctrl + Space는 종성 뒤 모음을 이어쓰지 않고 끊어쓸 때도 쓴다
+        status: accepted
+      - id: o-a3yrxm
+        text: Ctrl 없는 Space는 일반 공백이다
+        status: accepted
     status: accepted
 qa:
   - id: q-fwkkyp

@@ -7,18 +7,33 @@ decisions:
   - id: d-pz9asz
     kind: product
     question: 종성 뒤에 모음이 입력되면 어떻게 하는가
-    chosen: 마지막 종성 자음을 다음 음절의 초성으로 재분석한다. 복합 종성이면 마지막 자음만 떼어내고 나머지는 앞 음절에 남긴다
+    options:
+      - id: o-pgnnz7
+        text: 종성 뒤에 모음이 입력되면 마지막 종성 자음을 다음 음절의 초성으로 재분석한다
+        status: accepted
+      - id: o-q6ej9n
+        text: 복합 종성이면 마지막 자음만 떼어내고 나머지는 앞 음절에 남긴다
+        status: accepted
     status: accepted
   - id: d-yw869e
     kind: product
     question: 재분석 직후 입력한 모음을 지우면 어떻게 되는가
-    chosen: 재분석 이전 상태로 되돌린다
+    options:
+      - id: o-emvc1c
+        text: 재분석 직후 입력한 모음을 지우면 재분석 이전 상태로 되돌린다
+        status: accepted
     status: accepted
   - id: d-h226h8
     kind: product
     question: 완성된 초중성 뒤에 조합되지 않는 모음이 오면 어떻게 하는가
-    chosen: 기존 중성을 덮어쓰지 않는다. 현재 음절을 commit하고 초성 채움 + 새 모음으로 새 음절을 시작한다
-    rationale: 조합되지 않는 추가 입력이 기존 음절을 덮어쓰지 않아야 사용자가 놀라지 않는다 (최소 surprise 기준)
+    options:
+      - id: o-rx5snh
+        text: 완성된 초중성 뒤에 조합되지 않는 모음이 오면 기존 중성을 덮어쓰지 않는다
+        status: accepted
+        reason: 조합되지 않는 추가 입력이 기존 음절을 덮어쓰지 않아야 사용자가 놀라지 않는다 (최소 surprise 기준)
+      - id: o-gjcbka
+        text: 현재 음절을 commit하고 초성 채움 + 새 모음으로 새 음절을 시작한다
+        status: accepted
     status: accepted
 constraints:
   - id: c-0a98yq
